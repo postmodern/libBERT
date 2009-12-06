@@ -20,7 +20,7 @@ inline int16_t bert_read_int16(const unsigned char *ptr)
 	return (int16_t)((ptr[0] << 8) | ptr[1]);
 }
 
-inline bert_magic_t berk_read_magic(const unsigned char *ptr)
+inline bert_magic_t bert_read_magic(const unsigned char *ptr)
 {
 	return (bert_magic_t)(*ptr);
 }
