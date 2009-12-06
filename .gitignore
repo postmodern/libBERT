@@ -2,6 +2,7 @@ CMakeCache.txt
 CMakeFiles
 Makefile
 cmake_install.cmake
+install_manifest.txt
 include/bert/config.h
 *.o
 *.a
