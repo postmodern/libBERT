@@ -1,6 +1,5 @@
 #include <bert.h>
-
-#define BERT_VERSION	"0.0.1"
+#include <bert/config.h>
 
 const char * bert_version()
 {
