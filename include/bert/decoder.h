@@ -10,7 +10,7 @@ struct bert_decoder
 
 	unsigned int index;
 };
-typedef bert_decoder_t bert_decoder;
+typedef struct bert_decoder bert_decoder_t;
 
 void bert_decode_init(bert_decoder_t *decoder,const unsigned char *buffer,size_t buffer_length);
 
