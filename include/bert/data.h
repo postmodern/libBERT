@@ -66,8 +66,10 @@ struct bert_data
 };
 typedef struct bert_data bert_data_t;
 
-extern bert_list_node_t * bert_list_node_create();
+extern bert_list_node_t * bert_list_node_create(bert_data_t *data);
 extern void bert_list_node_destroy(bert_list_node_t *node);
+
+extern bert_list_append(bert_data_t *list,bert_data_t *data);
 
 extern bert_data_t * bert_data_create();
 extern bert_data_t * bert_data_create_null();

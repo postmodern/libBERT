@@ -3,7 +3,7 @@
 #include <malloc.h>
 #include <string.h>
 
-bert_list_node_t * bert_list_node_create()
+bert_list_node_t * bert_list_node_create(bert_data_t *data)
 {
 	bert_list_node_t *new_node;
 
@@ -13,7 +13,7 @@ bert_list_node_t * bert_list_node_create()
 		return NULL;
 	}
 
-	new_node->data = NULL;
+	new_node->data = data;
 	new_node->next = NULL;
 	return new_node;
 }
@@ -36,6 +36,36 @@ void bert_list_node_destroy(bert_list_node_t *node)
 	}
 
 	free(node);
+}
+
+int bert_list_append(bert_data_t *list,bert_data_t *data)
+{
+	if (list->type != bert_data_list)
+	{
+		// not a list
+		return -1;
+	}
+
+	bert_list_node_t *new_node;
+
+	if (!(new_node = bert_list_node_create(data)))
+	{
+		// malloc failed
+		return -1;
+	}
+
+	if (list->list.head)
+	{
+		list->list.tail->next = new_node;
+		list->list.tail = new_node;
+	}
+	else
+	{
+		list->list.head = new_node;
+		list->list.tail = new_node;
+	}
+
+	return 0;
 }
 
 bert_data_t * bert_data_create()
