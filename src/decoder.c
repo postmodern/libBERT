@@ -427,6 +427,20 @@ inline int bert_decode_tuple(bert_decoder_t *decoder,bert_data_t **data,size_t s
 	return BERT_SUCCESS;
 }
 
+inline int bert_decode_small_tuple(bert_decoder_t *decoder,bert_data_t **data)
+{
+	BERT_ASSERT_BYTES(2)
+
+	return bert_decode_tuple(decoder,data,bert_decode_uint16(decoder));
+}
+
+inline int bert_decode_big_tuple(bert_decoder_t *decoder,bert_data_t **data)
+{
+	BERT_ASSERT_BYTES(4)
+
+	return bert_decode_tuple(decoder,data,bert_decode_uint32(decoder));
+}
+
 int bert_decode_list(bert_decoder_t *decoder,bert_data_t **data)
 {
 	BERT_ASSERT_BYTES(4)
