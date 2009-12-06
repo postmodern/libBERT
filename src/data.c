@@ -85,7 +85,7 @@ bert_data_t * bert_data_create()
 	return new_data;
 }
 
-bert_data_t * bert_data_create_null()
+bert_data_t * bert_data_create_nil()
 {
 	bert_data_t *new_data;
 
@@ -95,7 +95,7 @@ bert_data_t * bert_data_create_null()
 		return NULL;
 	}
 
-	new_data->type = bert_data_null;
+	new_data->type = bert_data_nil;
 	return new_data;
 }
 
@@ -308,7 +308,7 @@ void bert_data_destroy(bert_data_t *data)
 	{
 		case bert_data_int:
 		case bert_data_float:
-		case bert_data_null:
+		case bert_data_nil:
 		case bert_data_none:
 			break;
 		case bert_data_atom:

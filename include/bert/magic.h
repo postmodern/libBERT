@@ -13,7 +13,7 @@ typedef uint8_t bert_magic_t;
 #define BERT_ATOM		((bert_magic_t) 100)
 #define BERT_SMALL_TUPLE	((bert_magic_t) 104)
 #define BERT_LARGE_TUPLE	((bert_magic_t) 105)
-#define BERT_NULL		((bert_magic_t) 106)
+#define BERT_NIL		((bert_magic_t) 106)
 #define BERT_STRING		((bert_magic_t) 107)
 #define BERT_LIST		((bert_magic_t) 108)
 #define BERT_BIN		((bert_magic_t) 109)
