@@ -25,6 +25,16 @@ Dependencies
 
 * CMake >= 2.6.0 [2]
 
+Installing libBERT
+----------------
+
+  $ cmake .
+
+  * Or run "ccmake ." for a ncurses based configuration menu.
+
+  $ make
+  $ sudo make install
+
 References
 ----------
 
