@@ -21,6 +21,8 @@ typedef uint8_t bert_magic_t;
 #define BERT_NEW_FUN		((bert_magic_t) 112)
 #define BERT_MAGIC		((bert_magic_t) 131)
 
+#define BERT_VALID_MAGIC(m)	(((97 <= m) && (m <= 100)) || ((104 <= m) && (m <= 111)))
+
 #define BERT_MAX_INT	((1 << 27) - 1)
 #define BERT_MIN_INT	(-(1 << 27))
 
