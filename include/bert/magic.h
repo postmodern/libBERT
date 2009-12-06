@@ -3,7 +3,7 @@
 
 #include <sys/types.h>
 
-typedef bert_magic_t uint8_t;
+typedef uint8_t bert_magic_t;
 
 #define BERT_SMALL_INT		((bert_magic_t) 97)
 #define BERT_INT		((bert_magic_t) 98)
