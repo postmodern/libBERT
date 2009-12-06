@@ -2,6 +2,7 @@
 #include <bert/dict.h>
 #include <bert/magic.h>
 #include <bert/errno.h>
+#include <string.h>
 
 #include "read.h"
 
