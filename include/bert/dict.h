@@ -22,7 +22,7 @@ struct bert_dict
 typedef struct bert_dict bert_dict_t;
 
 extern bert_dict_t * bert_dict_create();
-extern bert_dict_append(bert_dict_t *dict,struct bert_data *key,struct bert_data *value);
+extern int bert_dict_append(bert_dict_t *dict,struct bert_data *key,struct bert_data *value);
 extern void bert_dict_destroy(bert_dict_t *dict);
 
 #endif
