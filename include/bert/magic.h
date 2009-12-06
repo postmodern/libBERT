@@ -1,5 +1,5 @@
-#ifndef _BERT_TYPES_H_
-#define _BERT_TYPES_H_
+#ifndef _BERT_MAGIC_H_
+#define _BERT_MAGIC_H_
 
 #include <sys/types.h>
 
