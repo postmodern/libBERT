@@ -470,12 +470,12 @@ int bert_decode_data(bert_decoder_t *decoder,bert_data_t **data)
 		return 0;
 	}
 
-	bert_magic_t magic = bert_read_magic(decoder);
+	bert_magic_t magic = bert_decode_magic(decoder);
 
 	// skip the BERT MAGIC start byte
 	if (magic == BERT_MAGIC)
 	{
-		magic = bert_read_magic(decoder);
+		magic = bert_decode_magic(decoder);
 	}
 
 	int result;
