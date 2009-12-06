@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 2.6)
 project(BERT C)
 
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/modules)
+include(install_paths)
+
 set(LIBRARY_VERSION "0.1.0")
 set(LIBRARY_SOVERSION "0")
 
