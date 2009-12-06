@@ -19,6 +19,7 @@ Benefits of libBERT
 * Robust.
 * Small.
 * Fast (did I mention it was written in C, the language of fast?).
+* Under the MIT "as-is" License.
 
 Dependencies
 ------------
