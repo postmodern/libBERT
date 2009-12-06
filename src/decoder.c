@@ -183,14 +183,14 @@ inline int bert_decode_small_bignum(bert_decoder_t *decoder,bert_data_t **data)
 {
 	BERT_ASSERT_BYTES(1)
 
-	return bert_read_bignum(decoder,data,bert_read_uint8(decoder->ptr));
+	return bert_decode_bignum(decoder,data,bert_read_uint8(decoder->ptr));
 }
 
 inline int bert_decode_big_bignum(bert_decoder_t *decoder,bert_data_t **data)
 {
 	BERT_ASSERT_BYTES(4)
 
-	return bert_read_bignum(decoder,data,bert_read_uint32(decoder->ptr));
+	return bert_decode_bignum(decoder,data,bert_read_uint32(decoder->ptr));
 }
 
 inline int bert_decode_string(bert_decoder_t *decoder,bert_data_t **data)
