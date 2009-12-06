@@ -8,8 +8,8 @@ full BERT format to C programmers.
 Benefits of BERT
 ----------------
 
-* Compact Binary representation.
-* Defined by a Specification.
+* Compact binary representation.
+* Defined by a specification [1].
 
 Benefits of libBERT
 -------------------
