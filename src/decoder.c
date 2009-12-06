@@ -493,10 +493,10 @@ int bert_decode_data(bert_decoder_t *decoder,bert_data_t **data)
 			result = bert_decode_big_int(decoder,data);
 			break;
 		case BERT_SMALL_BIGNUM:
-			result = bert_read_small_bignum(decoder,data);
+			result = bert_decode_small_bignum(decoder,data);
 			break;
 		case BERT_LARGE_BIGNUM:
-			result = bert_read_big_bignum(decoder,data);
+			result = bert_decode_big_bignum(decoder,data);
 			break;
 		case BERT_FLOAT:
 			// TODO: implement float decoding
