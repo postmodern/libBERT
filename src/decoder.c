@@ -68,13 +68,29 @@ inline bert_magic_t bert_decode_magic(bert_decoder_t *decoder)
 	return m;
 }
 
-void bert_decode_init(bert_decoder_t *decoder,const unsigned char *buffer,size_t length)
+bert_decoder_t * bert_decoder_create()
 {
-	decoder->buffer = buffer;
-	decoder->length = length;
+	bert_decoder_t *new_decoder;
 
-	decoder->index = 0;
-	decoder->ptr = decoder->buffer;
+	if (!(new_decoder = malloc(sizeof(bert_buffer_t))))
+	{
+		// malloc failed
+		return NULL;
+	}
+
+	new_decoder->buffer_head = NULL;
+	new_decoder->buffer_tail = NULL;
+
+	new_decoder->chunk_index = 0;
+	new_decoder->buffer_ptr = NULL;
+
+	return new_decoder;
+}
+
+void bert_decoder_destroy(bert_decoder_t *decoder)
+{
+	bert_buffer_destroy(decoder->buffer_tail);
+	free(decoder);
 }
 
 inline int bert_decode_nil(bert_decoder_t *decoder,bert_data_t **data)
