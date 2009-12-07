@@ -42,7 +42,7 @@ bert_buffer_t * bert_buffer_extend(bert_buffer_t *buffer,size_t length)
 
 	// adjust length for space left in the buffer's chunk
 	unsigned int adjusted_length = (length - BERT_BUFFER_REMAINING(buffer));
-	unsigned int chunks = (even_length / BERT_BUFFER_CHUNK);
+	unsigned int chunks = (adjusted_length / BERT_BUFFER_CHUNK);
 
 	if (adjusted_length % BERT_BUFFER_CHUNK)
 	{
@@ -83,7 +83,7 @@ bert_buffer_t * bert_buffer_fill(bert_buffer_t *buffer,const unsigned char *data
 {
 	bert_buffer_t *new_buffer;
 
-	if (!(new_buffer = bert_buffer_extend(buffer)))
+	if (!(new_buffer = bert_buffer_extend(buffer,length)))
 	{
 		// malloc failed
 		return NULL;
