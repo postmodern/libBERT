@@ -5,12 +5,6 @@
 
 #include <sys/types.h>
 
-#define BERT_DECODE_MEMORY	-3
-#define BERT_DECODE_MISSING	-2
-#define BERT_DECODE_INVALID	-1
-#define BERT_DECODE_NONE	0
-#define BERT_DECODE_DATA	1
-
 struct bert_decoder
 {
 	const unsigned char *buffer;
