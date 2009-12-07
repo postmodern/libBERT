@@ -17,6 +17,7 @@ struct bert_decoder
 	unsigned int chunk_index;
 	const unsigned char *buffer_ptr;
 
+	size_t boarder_length;
 	unsigned char boarder_buffer[BERT_SHORT_BUFFER];
 };
 typedef struct bert_decoder bert_decoder_t;
