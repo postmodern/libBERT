@@ -1,5 +1,7 @@
 #include "read.h"
 
+#include <string.h>
+
 inline uint8_t bert_read_uint8(const unsigned char *ptr)
 {
 	return (uint8_t)(*ptr);
@@ -33,4 +35,15 @@ inline uint32_t bert_read_uint32(const unsigned char *ptr)
 inline int32_t bert_read_int32(const unsigned char *ptr)
 {
 	return (int32_t)((ptr[0] << 24 ) | (ptr[1] << 16) | (ptr[2] << 8) | ptr[3]);
+}
+
+inline void bert_read_string(char *dest,unsigned char *ptr,size_t length)
+{
+	memcpy(dest,ptr,sizeof(char) * length);
+	dest[length] = '\0';
+}
+
+inline void bert_read_binary(unsigned char *dest,unsigned char *ptr,size_t length)
+{
+	memcpy(dest,ptr,sizeof(unsigned char) * length);
 }
