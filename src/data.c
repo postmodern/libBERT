@@ -321,6 +321,41 @@ bert_data_t * bert_data_create_time(time_t timestamp)
 	return new_data;
 }
 
+bert_data_t * bert_data_create_regex(const char *source,bert_bin_size_t length)
+{
+	char *new_source;
+	size_t new_length = length + 1;
+
+	if (!(new_source = malloc(sizeof(char) * new_length)))
+	{
+		// malloc failed
+		goto cleanup;
+	}
+
+	memcpy(new_source,source,sizeof(char) * length);
+	new_source[length] = '\0';
+
+	bert_data_t *new_data;
+
+	if (!(new_data = bert_data_create()))
+	{
+		// malloc failed
+		goto cleanup_source;
+	}
+
+	new_data->type = bert_data_regex;
+	new_data->regex.length = length;
+	new_data->regex.source = new_source;
+	return new_data;
+
+cleanup_source:
+	// free the new_source
+	free(new_source);
+cleanup:
+	// error
+	return NULL;
+}
+
 void bert_data_destroy(bert_data_t *data)
 {
 	unsigned int i;
