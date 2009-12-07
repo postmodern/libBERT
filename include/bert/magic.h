@@ -1,9 +1,9 @@
 #ifndef _BERT_MAGIC_H_
 #define _BERT_MAGIC_H_
 
-#include <sys/types.h>
+#include <bert/types.h>
 
-typedef uint8_t bert_magic_t;
+#include <sys/types.h>
 
 #define BERT_SMALL_INT		((bert_magic_t) 97)
 #define BERT_INT		((bert_magic_t) 98)
