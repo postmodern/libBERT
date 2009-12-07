@@ -3,7 +3,7 @@
 
 #include <sys/types.h>
 
-#define BERT_BUFFER_CHUNK	128
+#define BERT_BUFFER_CHUNK	256
 
 struct bert_buffer
 {
