@@ -59,9 +59,7 @@ inline int32_t bert_decode_int32(bert_decoder_t *decoder)
 
 inline bert_magic_t bert_decode_magic(bert_decoder_t *decoder)
 {
-	bert_magic_t m;
-
-	m = bert_read_magic(decoder->ptr);
+	bert_magic_t m = bert_read_magic(decoder->ptr);
 
 	++(decoder->ptr);
 	++(decoder->index);
@@ -253,75 +251,80 @@ int bert_decode_complex(bert_decoder_t *decoder,bert_data_t **data)
 		bert_data_t *key;
 		bert_data_t *value;
 
-		switch (bert_decode_magic(decoder))
+		if (!(new_data = bert_data_create_dict()))
 		{
-			case BERT_LIST:
-				BERT_ASSERT_BYTES(4)
+			return BERT_ERRNO_MALLOC;
+		}
 
-				list_size = bert_decode_uint32(decoder);
-				new_data = bert_data_create_dict();
+		magic = bert_decode_magic(decoder);
 
-				for (i=0;i<list_size;i++)
+		if (magic != BERT_LIST && magic != BERT_NIL)
+		{
+			return BERT_ERRNO_INVALID;
+		}
+
+		if (magic == BERT_LIST)
+		{
+			if (BERT_BYTES_LEFT < 4)
+			{
+				goto cleanup_short;
+			}
+
+			list_size = bert_decode_uint32(decoder);
+
+			for (i=0;i<list_size;i++)
+			{
+				// must have atleast a magic byte
+				if (BERT_BYTES_LEFT < 1)
 				{
-					// must have atleast a magic byte
-					if (BERT_BYTES_LEFT < 1)
-					{
-						bert_data_destroy(new_data);
-						return BERT_ERRNO_SHORT;
-					}
-
-					// must be a tuple contain the key -> value pair
-					if ((magic = bert_decode_magic(decoder)) != BERT_SMALL_TUPLE)
-					{
-						bert_data_destroy(new_data);
-						return BERT_ERRNO_INVALID;
-					}
-
-					// must have more than the 2 bytes for the tuple length
-					if (BERT_BYTES_LEFT <= 2)
-					{
-						bert_data_destroy(new_data);
-						return BERT_ERRNO_SHORT;
-					}
-
-					// the tuple must have exactly 2 elements
-					if (bert_decode_uint16(decoder) != 2)
-					{
-						bert_data_destroy(new_data);
-						return BERT_ERRNO_INVALID;
-					}
-
-					// decode the key data
-					if ((result = bert_decode_data(decoder,&key)) != BERT_SUCCESS)
-					{
-						bert_data_destroy(new_data);
-						return result;
-					}
-
-					// decode the value data
-					if ((result = bert_decode_data(decoder,&value)) != BERT_SUCCESS)
-					{
-						bert_data_destroy(key);
-						bert_data_destroy(new_data);
-						return result;
-					}
-
-					// append the key -> value pair to the dict
-					if (bert_dict_append(new_data->dict,key,value) == BERT_ERRNO_MALLOC)
-					{
-						bert_data_destroy(value);
-						bert_data_destroy(key);
-						bert_data_destroy(new_data);
-						return BERT_ERRNO_MALLOC;
-					}
+					goto cleanup_short;
 				}
 
-				// eat the nil byte
-				bert_decode_uint8(decoder);
-			case BERT_NIL:
-				break;
-			default:
-				return BERT_ERRNO_INVALID;
+				// must be a tuple contain the key -> value pair
+				if ((magic = bert_decode_magic(decoder)) != BERT_SMALL_TUPLE)
+				{
+					goto cleanup_invalid;
+				}
+
+				// must have more than the 2 bytes for the tuple length
+				if (BERT_BYTES_LEFT <= 2)
+				{
+					goto cleanup_short;
+				}
+
+				// the tuple must have exactly 2 elements
+				if (bert_decode_uint16(decoder) != 2)
+				{
+					goto cleanup_invalid;
+				}
+
+				// decode the key data
+				if ((result = bert_decode_data(decoder,&key)) != BERT_SUCCESS)
+				{
+					bert_data_destroy(new_data);
+					return result;
+				}
+
+				// decode the value data
+				if ((result = bert_decode_data(decoder,&value)) != BERT_SUCCESS)
+				{
+					bert_data_destroy(key);
+					bert_data_destroy(new_data);
+					return result;
+				}
+
+				// append the key -> value pair to the dict
+				if (bert_dict_append(new_data->dict,key,value) == BERT_ERRNO_MALLOC)
+				{
+					bert_data_destroy(value);
+					bert_data_destroy(key);
+					bert_data_destroy(new_data);
+					return BERT_ERRNO_MALLOC;
+				}
+			}
+
+			// eat the nil byte
+			bert_decode_uint8(decoder);
 		}
 	}
 	else
@@ -329,8 +332,21 @@ int bert_decode_complex(bert_decoder_t *decoder,bert_data_t **data)
 		return BERT_ERRNO_INVALID;
 	}
 
+	if (!new_data)
+	{
+		return BERT_ERRNO_MALLOC;
+	}
+
 	*data = new_data;
 	return BERT_SUCCESS;
+
+cleanup_short:
+	bert_data_destroy(new_data);
+	return BERT_ERRNO_SHORT;
+
+cleanup_invalid:
+	bert_data_destroy(new_data);
+	return BERT_ERRNO_INVALID;
 }
 
 int bert_decode_atom(bert_decoder_t *decoder,bert_data_t **data)
