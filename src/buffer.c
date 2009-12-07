@@ -20,6 +20,30 @@ bert_buffer_t * bert_buffer_create()
 	return new_buffer;
 }
 
+bert_buffer_t * bert_buffer_append(bert_buffer_t *buffer,size_t length)
+{
+	unsigned int chunks = (length / BERT_BUFFER_CHUNK);
+	unsigned int i;
+
+	bert_buffer_t *last_buffer = buffer;
+	bert_buffer_t *new_buffer;
+
+	for (i=0;i<chunks;i++)
+	{
+		if (!(new_buffer = bert_buffer_create()))
+		{
+			// malloc failed
+			return NULL;
+		}
+
+		last_buffer->next = new_buffer;
+		new_buffer->prev = last_buffer;
+		last_buffer = new_buffer;
+	}
+
+	return new_buffer;
+}
+
 void bert_buffer_destroy(bert_buffer_t *buffer)
 {
 	bert_buffer_t *prev = buffer;
