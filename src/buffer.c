@@ -24,7 +24,7 @@ bert_buffer_t * bert_buffer_create()
 
 size_t bert_buffer_length(const bert_buffer_t *buffer)
 {
-	bert_buffer_t *next_buffer = buffer;
+	const bert_buffer_t *next_buffer = buffer;
 	size_t s;
 
 	while (next_buffer)
