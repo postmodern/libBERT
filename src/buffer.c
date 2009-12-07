@@ -22,6 +22,20 @@ bert_buffer_t * bert_buffer_create()
 	return new_buffer;
 }
 
+size_t bert_buffer_length(const bert_buffer_t *buffer)
+{
+	bert_buffer_t *next_buffer = buffer;
+	size_t s;
+
+	while (next_buffer)
+	{
+		s += next_buffer->chunk_length;
+		next_buffer = next_buffer->next;
+	}
+
+	return s;
+}
+
 bert_buffer_t * bert_buffer_extend(bert_buffer_t *buffer,size_t length)
 {
 	bert_buffer_t *next_buffer = buffer;
