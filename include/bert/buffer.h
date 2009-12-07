@@ -1,0 +1,21 @@
+#ifndef _BERT_BUFFER_H_
+#define _BERT_BUFFER_H_
+
+#include <sys/types.h>
+
+#define BERT_BUFFER_CHUNK	128
+
+struct bert_buffer
+{
+	size_t chunk_length;
+	unsigned char chunk[BERT_BUFFER_CHUNK];
+
+	struct bert_buffer *prev;
+	struct bert_buffer *next;
+};
+typedef struct bert_buffer bert_buffer_t;
+
+bert_buffer_t * bert_buffer_create();
+void bert_buffer_destroy(bert_buffer_t *buffer);
+
+#endif

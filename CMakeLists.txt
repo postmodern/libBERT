@@ -12,7 +12,7 @@ configure_file(config.h.cmake ${BERT_SOURCE_DIR}/include/bert/config.h)
 include_directories(${BERT_SOURCE_DIR}/include)
 
 add_definitions("-Wall")
-add_library(BERT SHARED src/read.c src/list.c src/dict.c src/data.c src/decoder.c src/bert.c)
+add_library(BERT SHARED src/read.c src/buffer.c src/list.c src/dict.c src/data.c src/decoder.c src/bert.c)
 
 install(TARGETS BERT
 	LIBRARY DESTINATION ${LIB_INSTALL_DIR})
