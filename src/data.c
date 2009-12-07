@@ -340,6 +340,9 @@ void bert_data_destroy(bert_data_t *data)
 		case bert_data_list:
 			bert_list_destroy(data->list);
 			break;
+		case bert_data_dict:
+			bert_dict_destroy(data->dict);
+			break;
 		case bert_data_bin:
 			free(data->bin.data);
 			break;
