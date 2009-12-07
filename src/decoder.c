@@ -68,24 +68,6 @@ inline bert_magic_t bert_decode_magic(bert_decoder_t *decoder)
 	return m;
 }
 
-inline const char * bert_read_string(bert_decoder_t *decoder,bert_string_size_t length)
-{
-	char *s;
-	
-	s = (char *)(decoder->buffer + decoder->index);
-	decoder->index += length;
-	return s;
-}
-
-inline const unsigned char * bert_read_binary(bert_decoder_t *decoder,bert_bin_size_t length)
-{
-	unsigned char *s;
-	
-	s = (unsigned char *)(decoder->buffer + decoder->index);
-	decoder->index += length;
-	return s;
-}
-
 void bert_decode_init(bert_decoder_t *decoder,const unsigned char *buffer,size_t length)
 {
 	decoder->buffer = buffer;
