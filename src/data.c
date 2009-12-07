@@ -38,36 +38,6 @@ void bert_list_node_destroy(bert_list_node_t *node)
 	free(node);
 }
 
-int bert_list_append(bert_data_t *list,bert_data_t *data)
-{
-	if (list->type != bert_data_list)
-	{
-		// not a list
-		return -1;
-	}
-
-	bert_list_node_t *new_node;
-
-	if (!(new_node = bert_list_node_create(data)))
-	{
-		// malloc failed
-		return -1;
-	}
-
-	if (list->list.head)
-	{
-		list->list.tail->next = new_node;
-		list->list.tail = new_node;
-	}
-	else
-	{
-		list->list.head = new_node;
-		list->list.tail = new_node;
-	}
-
-	return 0;
-}
-
 bert_data_t * bert_data_create()
 {
 	bert_data_t *new_data;
@@ -96,6 +66,36 @@ bert_data_t * bert_data_create_nil()
 	}
 
 	new_data->type = bert_data_nil;
+	return new_data;
+}
+
+bert_data_t * bert_data_create_true()
+{
+	bert_data_t *new_data;
+
+	if (!(new_data = bert_data_create()))
+	{
+		// malloc failed
+		return NULL;
+	}
+
+	new_data->type = bert_data_boolean;
+	new_data->boolean = 1;
+	return new_data;
+}
+
+bert_data_t * bert_data_create_false()
+{
+	bert_data_t *new_data;
+
+	if (!(new_data = bert_data_create()))
+	{
+		// malloc failed
+		return NULL;
+	}
+
+	new_data->type = bert_data_boolean;
+	new_data->boolean = 0;
 	return new_data;
 }
 
@@ -129,7 +129,7 @@ bert_data_t * bert_data_create_float(float f)
 	return new_data;
 }
 
-bert_data_t * bert_data_create_atom(const char *name,size_t length)
+bert_data_t * bert_data_create_atom(const char *name,bert_atom_size_t length)
 {
 	// +1 is for null terminating byte
 	size_t new_length = length + 1;
@@ -167,7 +167,7 @@ cleanup:
 	return NULL;
 }
 
-bert_data_t * bert_data_create_string(const char *text,size_t length)
+bert_data_t * bert_data_create_string(const char *text,bert_string_size_t length)
 {
 	// +1 is for null terminating byte
 	size_t new_length = length + 1;
@@ -205,7 +205,7 @@ cleanup:
 	return NULL;
 }
 
-bert_data_t * bert_data_create_tupel(unsigned int length)
+bert_data_t * bert_data_create_tuple(bert_tuple_size_t length)
 {
 	bert_data_t **new_elements;
 
@@ -231,9 +231,9 @@ bert_data_t * bert_data_create_tupel(unsigned int length)
 		goto cleanup_elements;
 	}
 
-	new_data->type = bert_data_tupel;
-	new_data->tupel.length = length;
-	new_data->tupel.elements = new_elements;
+	new_data->type = bert_data_tuple;
+	new_data->tuple.length = length;
+	new_data->tuple.elements = new_elements;
 	return new_data;
 
 cleanup_elements:
@@ -254,14 +254,26 @@ bert_data_t * bert_data_create_list()
 	}
 
 	new_data->type = bert_data_list;
-
-	// be explicit about zeroing the pointers
-	new_data->list.head = NULL;
-	new_data->list.tail = NULL;
+	new_data->list = bert_list_create();
 	return new_data;
 }
 
-bert_data_t * bert_data_create_bin(unsigned char *binary_data,size_t length)
+bert_data_t * bert_data_create_dict()
+{
+	bert_data_t *new_data;
+
+	if (!(new_data = bert_data_create()))
+	{
+		// malloc failed
+		return NULL;
+	}
+
+	new_data->type = bert_data_dict;
+	new_data->dict = bert_dict_create();
+	return new_data;
+}
+
+bert_data_t * bert_data_create_bin(unsigned char *binary_data,bert_binary_size_t length)
 {
 	unsigned char *new_binary_data;
 
@@ -317,16 +329,16 @@ void bert_data_destroy(bert_data_t *data)
 		case bert_data_string:
 			free(data->string.text);
 			break;
-		case bert_data_tupel:
-			length = data->tupel.length;
+		case bert_data_tuple:
+			length = data->tuple.length;
 
 			for (i=0; i<length; i++)
 			{
-				bert_data_destroy(data->tupel.elements[i]);
+				bert_data_destroy(data->tuple.elements[i]);
 			}
 			break;
 		case bert_data_list:
-			bert_list_node_destroy(data->list.head);
+			bert_list_destroy(data->list);
 			break;
 		case bert_data_bin:
 			free(data->bin.data);
