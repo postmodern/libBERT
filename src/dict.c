@@ -19,9 +19,9 @@ bert_dict_t * bert_dict_create()
 
 int bert_dict_append(bert_dict_t *dict,bert_data_t *key,bert_data_t *value)
 {
-	bert_dict_note_t *new_node;
+	bert_dict_node_t *new_node;
 
-	if (!(new_node = malloc(sizeof(bert_dict_note_t))))
+	if (!(new_node = malloc(sizeof(bert_dict_node_t))))
 	{
 		return BERT_ERRNO_MALLOC;
 	}
