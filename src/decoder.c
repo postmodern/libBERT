@@ -93,6 +93,19 @@ void bert_decode_init(bert_decoder_t *decoder,const unsigned char *buffer,size_t
 	decoder->ptr = decoder->buffer;
 }
 
+inline int bert_decode_nil(bert_decoder_t *decoder,bert_data_t **data)
+{
+	bert_data_t *new_data;
+
+	if (!(new_data = bert_data_create_nil()))
+	{
+		return BERT_ERRNO_MALLOC;
+	}
+
+	*data = new_data;
+	return BERT_SUCCESS;
+}
+
 inline int bert_decode_small_int(bert_decoder_t *decoder,bert_data_t **data)
 {
 	BERT_ASSERT_BYTES(1)
@@ -201,9 +214,9 @@ inline int bert_decode_string(bert_decoder_t *decoder,bert_data_t **data)
 
 inline int bert_decode_atom(bert_decoder_t *decoder,bert_data_t **data)
 {
-	BERT_ASSERT_BYTES(4)
+	BERT_ASSERT_BYTES(2)
 
-	size_t size = bert_decode_uint32(decoder);
+	size_t size = bert_decode_uint16(decoder);
 
 	BERT_ASSERT_BYTES(size)
 
@@ -279,6 +292,9 @@ int bert_decode_data(bert_decoder_t *decoder,bert_data_t **data)
 	// decode primative data first
 	switch (magic)
 	{
+		case BERT_NIL:
+			result = bert_decode_nil(decoder,data);
+			break;
 		case BERT_SMALL_INT:
 			result = bert_decode_small_int(decoder,data);
 			break;
@@ -312,6 +328,8 @@ int bert_decode_data(bert_decoder_t *decoder,bert_data_t **data)
 		case BERT_LIST:
 			result = bert_decode_list(decoder,data);
 			break;
+		default:
+			return BERT_ERRNO_INVALID;
 	}
 
 	if (result != BERT_SUCCESS)
