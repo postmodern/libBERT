@@ -9,6 +9,7 @@ typedef uint32_t bert_string_size_t;
 typedef uint16_t bert_atom_size_t;
 
 typedef uint32_t bert_bin_size_t;
+typedef bert_bin_size_t bert_regex_size_t;
 
 typedef uint32_t bert_tuple_size_t;
 typedef uint32_t bert_list_size_t;

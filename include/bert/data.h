@@ -66,7 +66,7 @@ struct bert_data
 		
 		struct
 		{
-			bert_bin_size_t length;
+			bert_regex_size_t length;
 			char *source;
 		} regex;
 	};
@@ -85,7 +85,7 @@ extern bert_data_t * bert_data_create_tuple(bert_tuple_size_t length);
 extern bert_data_t * bert_data_create_list();
 extern bert_data_t * bert_data_create_dict();
 extern bert_data_t * bert_data_create_time(time_t timestamp);
-extern bert_data_t * bert_data_create_regex(const char *source,bert_bin_size_t length);
+extern bert_data_t * bert_data_create_regex(const char *source,bert_regex_size_t length);
 extern bert_data_t * bert_data_create_bin(const unsigned char *data,bert_bin_size_t length);
 
 extern void bert_data_destroy(bert_data_t *data);

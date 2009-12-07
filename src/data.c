@@ -321,7 +321,7 @@ bert_data_t * bert_data_create_time(time_t timestamp)
 	return new_data;
 }
 
-bert_data_t * bert_data_create_regex(const char *source,bert_bin_size_t length)
+bert_data_t * bert_data_create_regex(const char *source,bert_regex_size_t length)
 {
 	char *new_source;
 	size_t new_length = length + 1;
