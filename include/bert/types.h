@@ -1,7 +1,7 @@
 #ifndef _BERT_TYPES_H_
 #define _BERT_TYPES_H_
 
-#include <sys/types.h>
+#include <stdint.h>
 
 typedef uint8_t bert_magic_t;
 
