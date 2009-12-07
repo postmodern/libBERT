@@ -332,9 +332,12 @@ void bert_data_destroy(bert_data_t *data)
 		case bert_data_tuple:
 			length = data->tuple.length;
 
-			for (i=0; i<length; i++)
+			if (data->tupel.elements)
 			{
-				bert_data_destroy(data->tuple.elements[i]);
+				for (i=0;i<length;i++)
+				{
+					bert_data_destroy(data->tuple.elements[i]);
+				}
 			}
 			break;
 		case bert_data_list:
