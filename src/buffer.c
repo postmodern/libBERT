@@ -3,7 +3,6 @@
 #include <malloc.h>
 #include <string.h>
 
-#define BERT_BUFFER_REMAINING(buffer)	(BERT_BUFFER_CHUNK - buffer->chunk_length)
 #define BERT_BUFFER_PTR(buffer)		(buffer->chunk + buffer->chunk_length)
 
 bert_buffer_t * bert_buffer_create()
@@ -30,7 +29,7 @@ bert_buffer_t * bert_buffer_extend(bert_buffer_t *buffer,size_t length)
 
 	while (next_buffer)
 	{
-		remaining += BERT_BUFFER_REMAINING(next_buffer);
+		remaining += BERT_BUFFER_LEFT(next_buffer);
 		next_buffer = next_buffer->next;
 	}
 
@@ -41,7 +40,7 @@ bert_buffer_t * bert_buffer_extend(bert_buffer_t *buffer,size_t length)
 	}
 
 	// adjust length for space left in the buffer's chunk
-	unsigned int adjusted_length = (length - BERT_BUFFER_REMAINING(buffer));
+	unsigned int adjusted_length = (length - BERT_BUFFER_LEFT(buffer));
 	unsigned int chunks = (adjusted_length / BERT_BUFFER_CHUNK);
 
 	if (adjusted_length % BERT_BUFFER_CHUNK)
@@ -95,7 +94,7 @@ bert_buffer_t * bert_buffer_write(bert_buffer_t *buffer,const unsigned char *dat
 
 	while (next_buffer && (index < length))
 	{
-		remaining = BERT_BUFFER_REMAINING(next_buffer);
+		remaining = BERT_BUFFER_LEFT(next_buffer);
 		memcpy(BERT_BUFFER_PTR(next_buffer),data+index,remaining * sizeof(unsigned char));
 
 		next_buffer = next_buffer->next;
