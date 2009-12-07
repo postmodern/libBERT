@@ -16,7 +16,7 @@ struct bert_buffer
 typedef struct bert_buffer bert_buffer_t;
 
 bert_buffer_t * bert_buffer_create();
-bert_buffer_t * bert_buffer_append(bert_buffer_t *buffer,size_t length);
+bert_buffer_t * bert_buffer_extend(bert_buffer_t *buffer,size_t length);
 void bert_buffer_destroy(bert_buffer_t *buffer);
 
 #endif

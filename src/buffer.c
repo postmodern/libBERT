@@ -20,7 +20,7 @@ bert_buffer_t * bert_buffer_create()
 	return new_buffer;
 }
 
-bert_buffer_t * bert_buffer_append(bert_buffer_t *buffer,size_t length)
+bert_buffer_t * bert_buffer_extend(bert_buffer_t *buffer,size_t length)
 {
 	unsigned int chunks = (length / BERT_BUFFER_CHUNK);
 	unsigned int i;
