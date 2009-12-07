@@ -197,7 +197,7 @@ inline int bert_decode_string(bert_decoder_t *decoder,bert_data_t **data)
 {
 	BERT_ASSERT_BYTES(4)
 
-	size_t size = bert_decode_uint32(decoder);
+	bert_string_size_t size = bert_decode_uint32(decoder);
 
 	BERT_ASSERT_BYTES(size)
 
@@ -216,7 +216,7 @@ inline int bert_decode_atom(bert_decoder_t *decoder,bert_data_t **data)
 {
 	BERT_ASSERT_BYTES(2)
 
-	size_t size = bert_decode_uint16(decoder);
+	bert_atom_size_t size = bert_decode_uint16(decoder);
 
 	BERT_ASSERT_BYTES(size)
 
@@ -235,7 +235,7 @@ inline int bert_decode_bin(bert_decoder_t *decoder,bert_data_t **data)
 {
 	BERT_ASSERT_BYTES(4)
 
-	size_t size = bert_decode_uint32(decoder);
+	bert_bin_size_t size = bert_decode_uint32(decoder);
 
 	BERT_ASSERT_BYTES(size)
 
