@@ -79,7 +79,7 @@ bert_buffer_t * bert_buffer_extend(bert_buffer_t *buffer,size_t length)
 	return new_buffer;
 }
 
-bert_buffer_t * bert_buffer_fill(bert_buffer_t *buffer,const unsigned char *data,size_t length)
+bert_buffer_t * bert_buffer_write(bert_buffer_t *buffer,const unsigned char *data,size_t length)
 {
 	bert_buffer_t *new_buffer;
 
