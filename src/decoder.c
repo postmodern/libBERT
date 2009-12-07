@@ -307,6 +307,7 @@ inline int bert_decode_atom(bert_decoder_t *decoder,bert_data_t **data)
 						return result;
 					}
 
+					// append the key -> value pair to the dict
 					if (bert_dict_append(new_data->dict,key,value) == BERT_ERRNO_MALLOC)
 					{
 						bert_data_destroy(value);
@@ -382,6 +383,42 @@ inline int bert_decode_tuple(bert_decoder_t *decoder,bert_data_t **data,size_t s
 	return BERT_SUCCESS;
 }
 
+int bert_decode_list(bert_decoder_t *decoder,bert_data_t **data)
+{
+	BERT_ASSERT_BYTES(4)
+
+	bert_list_size_t list_size = bert_decode_uint32(decoder);
+	bert_data_t *new_data;
+
+	if (!(new_data = bert_data_create_list()))
+	{
+		return BERT_ERRNO_MALLOC;
+	}
+
+	bert_data_t *list_element;
+	unsigned int i;
+	int result;
+
+	for (i=0;i<list_size;i++)
+	{
+		if ((result = bert_decode_data(decoder,&list_element)) != BERT_SUCCESS)
+		{
+			bert_data_destroy(new_data);
+			return result;
+		}
+
+		if (bert_list_append(new_data->list,list_element) == BERT_ERRNO_MALLOC)
+		{
+			bert_data_destroy(list_element);
+			bert_data_destroy(new_data);
+			return BERT_ERRNO_MALLOC;
+		}
+	}
+
+	*data = new_data;
+	return BERT_SUCCESS;
+}
+
 int bert_decode_data(bert_decoder_t *decoder,bert_data_t **data)
 {
 	BERT_ASSERT_BYTES(1)
@@ -443,112 +480,6 @@ int bert_decode_data(bert_decoder_t *decoder,bert_data_t **data)
 	{
 		return result;
 	}
-
-	/*
-	switch (magic)
-	{
-		case BERT_NIL:
-			new_data = bert_data_create_nil();
-			break;
-		case BERT_SMALL_INT:
-		case BERT_INT:
-		case BERT_SMALL_BIGNUM:
-		case BERT_LARGE_BIGNUM:
-			new_data = bert_data_create_int(integer);
-			break;
-		case BERT_FLOAT:
-			// TODO: implement float decoding
-			break;
-		case BERT_ATOM:
-			// decode complex types
-			if ((string_length == 3) && (strncmp(string,"nil",3) == 0))
-			{
-				new_data = bert_data_create_nil();
-			}
-			else if ((string_length == 4) && (strncmp(string,"true",4) == 0))
-			{
-				new_data = bert_data_create_true();
-			}
-			else if ((string_length == 5) && (strncmp(string,"false",5) == 0))
-			{
-				new_data = bert_data_create_false();
-			}
-			else if ((string_length == 4) && (strncmp(string,"time",4) == 0))
-			{
-			}
-			else if ((string_length == 4) && (strncmp(string,"dict",4) == 0))
-			{
-				magic = bert_read_magic(decoder);
-
-				switch (magic)
-				{
-					case BERT_LIST:
-						// TODO: add each 2-tuple pair to new_data
-					case BERT_NIL:
-						// empty dictionary
-						break;
-					default:
-						return BERT_DECODE_INVALID;
-				}
-			}
-			else
-			{
-				new_data = bert_data_create_atom(string,string_length);
-			}
-			break;
-		case BERT_STRING:
-			new_data = bert_data_create_string(string,string_length);
-			break;
-		case BERT_BIN:
-			new_data = bert_data_create_binary(binary_data,binary_data_length);
-			break;
-		case BERT_SMALL_TUPLE:
-		case BERT_LARGE_TUPLE:
-			if (!(new_data = bert_data_create_tuple(tuple_length)))
-			{
-				return BERT_DECODE_MEMORY;
-			}
-
-			for (i=0;i<tuple_length;i++)
-			{
-				result = bert_decoder_data(decoder,&(new_data->tuple.elements[i]));
-
-				if (result != BERT_DECODE_DATA)
-				{
-					bert_data_destroy(new_data);
-					return result;
-				}
-			}
-			break;
-		case BERT_LIST:
-			if (!(new_data = bert_data_create_list()))
-			{
-				return BERT_DECODE_MEMORY;
-			}
-
-			// read the list length
-			list_length = bert_read_uint32(decoder);
-
-			for (i=0;i<list_length;i++)
-			{
-				result = bert_decoder_data(decoder,&new_list_data);
-
-				if (result != BERT_DECODE_DATA)
-				{
-					bert_data_destroy(new_data);
-					return result;
-				}
-
-				bert_list_append(new_data,new_list_data);
-			}
-
-			// read the tailing byte
-			bert_read_uint8(decoder);
-			break;
-		default:
-			return BERT_DECODE_INVALID;
-	}
-	*/
 
 	return result;
 }
