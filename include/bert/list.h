@@ -21,7 +21,7 @@ struct bert_list
 typedef struct bert_list bert_list_t;
 
 extern bert_list_t * bert_list_create();
-extern bert_list_append(struct bert_data *list,struct bert_data *data);
+extern bert_list_append(bert_list_t *list,struct bert_data *data);
 extern void bert_list_destroy(bert_list_t *list);
 
 #endif

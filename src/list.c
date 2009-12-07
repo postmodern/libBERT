@@ -16,15 +16,17 @@ bert_list_t * bert_list_create()
 	return new_list;
 }
 
-int bert_list_append(bert_list_t *list,bert_data_t *data)
+int bert_list_append(bert_list_t *list,struct bert_data *data)
 {
 	bert_list_node_t *new_node;
 
-	if (!(new_node = bert_list_node_create(data)))
+	if (!(new_node = malloc(sizeof(bert_list_node_t))))
 	{
 		// malloc failed
 		return -1;
 	}
+
+	new_node->data = data;
 
 	if (list->head)
 	{
