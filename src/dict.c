@@ -1,4 +1,5 @@
 #include <bert/dict.h>
+#include <bert/errno.h>
 
 #include <malloc.h>
 
@@ -14,6 +15,32 @@ bert_dict_t * bert_dict_create()
 	new_dict->head = NULL;
 	new_dict->tail = NULL;
 	return new_dict;
+}
+
+int bert_dict_append(bert_dict_t *dict,bert_data_t *key,bert_data_t *value)
+{
+	bert_dict_note_t *new_node;
+
+	if (!(new_node = malloc(sizeof(bert_dict_note_t))))
+	{
+		return BERT_ERRNO_MALLOC;
+	}
+
+	new_node->key = key;
+	new_node->value = value;
+
+	if (dict->head)
+	{
+		dict->tail->next = new_node;
+		dict->tail = new_node;
+	}
+	else
+	{
+		dict->head = new_node;
+		dict->tail = new_node;
+	}
+
+	return BERT_SUCCESS;
 }
 
 void bert_dict_destroy(bert_dict_t *dict)
