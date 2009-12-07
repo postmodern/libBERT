@@ -1,28 +1,26 @@
 #ifndef _BERT_DATA_H_
 #define _BERT_DATA_H_
 
-#include <sys/types.h>
+#include <bert/types.h>
+#include <bert/list.h>
+#include <bert/dict.h>
+
+#include <stdint.h>
 
 typedef enum
 {
 	bert_data_none = 0,
+	bert_data_boolean,
 	bert_data_int,
 	bert_data_float,
 	bert_data_atom,
 	bert_data_string,
-	bert_data_tupel,
+	bert_data_tuple,
 	bert_data_list,
+	bert_data_dict,
 	bert_data_bin,
 	bert_data_nil
 } bert_data_type;
-
-struct bert_list_node
-{
-	struct bert_data *data;
-
-	struct bert_list_node *next;
-};
-typedef struct bert_list_node bert_list_node_t;
 
 struct bert_data
 {
@@ -30,56 +28,52 @@ struct bert_data
 
 	union
 	{
+		unsigned int boolean;
 		int integer;
 		float floating_point;
 
 		struct
 		{
-			size_t length;
+			bert_atom_size_t length;
 			char *name;
 		} atom;
 
 		struct
 		{
-			size_t length;
+			bert_string_size_t length;
 			char *text;
 		} string;
 
 		struct
 		{
-			unsigned int length;
-			struct bert_data **elements;
-		} tupel;
-
-		struct
-		{
-			struct bert_list_node *head;
-			struct bert_list_node *tail;
-		} list;
-
-		struct
-		{
-			size_t length;
+			bert_binary_size_t length;
 			unsigned char *data;
 		} bin;
+
+		struct
+		{
+			bert_tuple_size_t length;
+			struct bert_data **elements;
+		} tuple;
+
+		struct bert_list *list;
+		struct bert_dict *dict;
 	};
 };
 typedef struct bert_data bert_data_t;
 
-extern bert_list_node_t * bert_list_node_create(bert_data_t *data);
-extern void bert_list_node_destroy(bert_list_node_t *node);
-
-extern bert_list_append(bert_data_t *list,bert_data_t *data);
-
 extern bert_data_t * bert_data_create();
 extern bert_data_t * bert_data_create_nil();
+extern bert_data_t * bert_data_create_true();
+extern bert_data_t * bert_data_create_false();
 extern bert_data_t * bert_data_create_int(int i);
 extern bert_data_t * bert_data_create_float(float f);
-extern bert_data_t * bert_data_create_atom(const char *name,size_t length);
-extern bert_data_t * bert_data_create_string(const char *name,size_t length);
-extern bert_data_t * bert_data_create_tupel(unsigned int length);
+extern bert_data_t * bert_data_create_atom(const char *name,bert_atom_size_t length);
+extern bert_data_t * bert_data_create_string(const char *name,bert_string_size_t length);
+extern bert_data_t * bert_data_create_tuple(bert_tuple_size_t length);
 extern bert_data_t * bert_data_create_list();
-extern bert_data_t * bert_data_create_bin(unsigned char *data,size_t length);
+extern bert_data_t * bert_data_create_dict();
+extern bert_data_t * bert_data_create_bin(const unsigned char *data,bert_binary_size_t length);
 
 extern void bert_data_destroy(bert_data_t *data);
 

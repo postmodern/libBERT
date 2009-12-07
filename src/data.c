@@ -273,7 +273,7 @@ bert_data_t * bert_data_create_dict()
 	return new_data;
 }
 
-bert_data_t * bert_data_create_bin(unsigned char *binary_data,bert_binary_size_t length)
+bert_data_t * bert_data_create_bin(const unsigned char *binary_data,bert_binary_size_t length)
 {
 	unsigned char *new_binary_data;
 
