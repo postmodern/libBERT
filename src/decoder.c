@@ -240,7 +240,6 @@ inline int bert_decode_atom(bert_decoder_t *decoder,bert_data_t **data)
 	else if ((size == 4) && (strncmp(ptr,"time",4) == 0))
 	{
 		// TODO: add support for the time data-type
-		return BERT_NOTHING;
 	}
 	else if ((size = 4) && (strncmp(ptr,"dict",4) == 0))
 	{
@@ -421,7 +420,10 @@ int bert_decode_list(bert_decoder_t *decoder,bert_data_t **data)
 
 int bert_decode_data(bert_decoder_t *decoder,bert_data_t **data)
 {
-	BERT_ASSERT_BYTES(1)
+	if (BERT_BYTES_LEFT < 0)
+	{
+		return 0;
+	}
 
 	bert_magic_t magic = bert_read_magic(decoder);
 
@@ -453,7 +455,7 @@ int bert_decode_data(bert_decoder_t *decoder,bert_data_t **data)
 			break;
 		case BERT_FLOAT:
 			// TODO: implement float decoding
-			return BERT_NOTHING;
+			break;
 		case BERT_ATOM:
 			result = bert_decode_atom(decoder,data);
 			break;
@@ -481,5 +483,5 @@ int bert_decode_data(bert_decoder_t *decoder,bert_data_t **data)
 		return result;
 	}
 
-	return result;
+	return 1;
 }
