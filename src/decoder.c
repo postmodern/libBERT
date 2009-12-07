@@ -1,10 +1,12 @@
 #include <bert/decoder.h>
+#include <bert/dict.h>
 #include <bert/magic.h>
 #include <bert/errno.h>
 
 #include "read.h"
 
-#define BERT_ASSERT_BYTES(bytes)	if ((decoder->length - decoder->index) < (bytes)) { return BERT_ERRNO_SHORT; }
+#define BERT_BYTES_LEFT			(decoder->length - decoder->index)
+#define BERT_ASSERT_BYTES(bytes)	if (BERT_BYTES_LEFT < (bytes)) { return BERT_ERRNO_SHORT; }
 
 inline uint8_t bert_decode_uint8(bert_decoder_t *decoder)
 {
@@ -75,7 +77,7 @@ inline const char * bert_read_string(bert_decoder_t *decoder,bert_string_size_t 
 	return s;
 }
 
-inline const unsigned char * bert_read_binary(bert_decoder_t *decoder,bert_binary_size_t length)
+inline const unsigned char * bert_read_binary(bert_decoder_t *decoder,bert_bin_size_t length)
 {
 	unsigned char *s;
 	
@@ -220,9 +222,114 @@ inline int bert_decode_atom(bert_decoder_t *decoder,bert_data_t **data)
 
 	BERT_ASSERT_BYTES(size)
 
+	const char *ptr = (const char *)(decoder->ptr);
 	bert_data_t *new_data;
 
-	if (!(new_data = bert_data_create_atom((const char *)(decoder->ptr),size)))
+	if ((size == 3) && (strncmp(ptr,"nil",3) == 0))
+	{
+		new_data = bert_data_create_nil();
+	}
+	else if ((size == 4) && (strncmp(ptr,"true",4) == 0))
+	{
+		new_data = bert_data_create_true();
+	}
+	else if ((size == 5) && (strncmp(ptr,"false",5) == 0))
+	{
+		new_data = bert_data_create_false();
+	}
+	else if ((size == 4) && (strncmp(ptr,"time",4) == 0))
+	{
+		// TODO: add support for the time data-type
+		return BERT_NOTHING;
+	}
+	else if ((size = 4) && (strncmp(ptr,"dict",4) == 0))
+	{
+		BERT_ASSERT_BYTES(1)
+
+		bert_magic_t magic;
+		bert_list_size_t list_size;
+		unsigned int i;
+
+		int result;
+		bert_data_t *key;
+		bert_data_t *value;
+
+		switch (bert_decode_magic(decoder))
+		{
+			case BERT_LIST:
+				BERT_ASSERT_BYTES(4)
+
+				list_size = bert_decode_uint32(decoder);
+				new_data = bert_data_create_dict();
+
+				for (i=0;i<list_size;i++)
+				{
+					// must have atleast a magic byte
+					if (BERT_BYTES_LEFT < 1)
+					{
+						bert_data_destroy(new_data);
+						return BERT_ERRNO_SHORT;
+					}
+
+					// must be a tuple contain the key -> value pair
+					if ((magic = bert_decode_magic(decoder)) != BERT_SMALL_TUPLE)
+					{
+						bert_data_destroy(new_data);
+						return BERT_ERRNO_INVALID;
+					}
+
+					// must have more than the 2 bytes for the tuple length
+					if (BERT_BYTES_LEFT <= 2)
+					{
+						bert_data_destroy(new_data);
+						return BERT_ERRNO_SHORT;
+					}
+
+					// the tuple must have exactly 2 elements
+					if (bert_decode_uint16(decoder) != 2)
+					{
+						bert_data_destroy(new_data);
+						return BERT_ERRNO_INVALID;
+					}
+
+					// decode the key data
+					if ((result = bert_decode_data(decoder,&key)) != BERT_SUCCESS)
+					{
+						bert_data_destroy(new_data);
+						return result;
+					}
+
+					// decode the value data
+					if ((result = bert_decode_data(decoder,&value)) != BERT_SUCCESS)
+					{
+						bert_data_destroy(key);
+						bert_data_destroy(new_data);
+						return result;
+					}
+
+					if (bert_dict_append(new_data->dict,key,value) == BERT_ERRNO_MALLOC)
+					{
+						bert_data_destroy(value);
+						bert_data_destroy(key);
+						bert_data_destroy(new_data);
+						return BERT_ERRNO_MALLOC;
+					}
+				}
+
+				// eat the nil byte
+				bert_decode_uint8(decoder);
+			case BERT_NIL:
+				break;
+			default:
+				return BERT_ERRNO_INVALID;
+		}
+	}
+	else
+	{
+		new_data = bert_data_create_atom((const char *)(decoder->ptr),size);
+	}
+
+	if (!new_data)
 	{
 		return BERT_ERRNO_MALLOC;
 	}
@@ -368,7 +475,6 @@ int bert_decode_data(bert_decoder_t *decoder,bert_data_t **data)
 			}
 			else if ((string_length == 4) && (strncmp(string,"time",4) == 0))
 			{
-				// TODO: add support for the time data-type
 			}
 			else if ((string_length == 4) && (strncmp(string,"dict",4) == 0))
 			{
