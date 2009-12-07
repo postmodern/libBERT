@@ -46,7 +46,7 @@ struct bert_data
 
 		struct
 		{
-			bert_binary_size_t length;
+			bert_bin_size_t length;
 			unsigned char *data;
 		} bin;
 
@@ -73,7 +73,7 @@ extern bert_data_t * bert_data_create_string(const char *name,bert_string_size_t
 extern bert_data_t * bert_data_create_tuple(bert_tuple_size_t length);
 extern bert_data_t * bert_data_create_list();
 extern bert_data_t * bert_data_create_dict();
-extern bert_data_t * bert_data_create_bin(const unsigned char *data,bert_binary_size_t length);
+extern bert_data_t * bert_data_create_bin(const unsigned char *data,bert_bin_size_t length);
 
 extern void bert_data_destroy(bert_data_t *data);
 
