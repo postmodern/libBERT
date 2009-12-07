@@ -22,16 +22,41 @@ bert_buffer_t * bert_buffer_create()
 
 bert_buffer_t * bert_buffer_extend(bert_buffer_t *buffer,size_t length)
 {
-	unsigned int chunks = (length / BERT_BUFFER_CHUNK);
-	unsigned int i;
+	unsigned int remaining = (BERT_BUFFER_CHUNK - buffer->chunk_length);
+
+	if (length <= remaining)
+	{
+		// there is still room left in the buffer's chunk
+		return buffer;
+	}
+
+	// adjust length for space left in the buffer's chunk
+	unsigned int adjusted_length = (length - remaining);
+	unsigned int chunks = (even_length / BERT_BUFFER_CHUNK);
+
+	if (adjusted_length % BERT_BUFFER_CHUNK)
+	{
+		// add a chunk for any length left over
+		++chunks;
+	}
 
 	bert_buffer_t *last_buffer = buffer;
 	bert_buffer_t *new_buffer;
+	unsigned int i;
 
 	for (i=0;i<chunks;i++)
 	{
 		if (!(new_buffer = bert_buffer_create()))
 		{
+			last_buffer = buffer->next;
+
+			// cleanup our new buffers
+			while (last_buffer)
+			{
+				free(last_buffer);
+				last_buffer = last_buffer->next;
+			}
+
 			// malloc failed
 			return NULL;
 		}
