@@ -214,7 +214,7 @@ inline int bert_decode_string(bert_decoder_t *decoder,bert_data_t **data)
 	return BERT_SUCCESS;
 }
 
-inline int bert_decode_atom(bert_decoder_t *decoder,bert_data_t **data)
+int bert_decode_complex(bert_decoder_t *decoder,bert_data_t **data)
 {
 	BERT_ASSERT_BYTES(2)
 
@@ -222,8 +222,8 @@ inline int bert_decode_atom(bert_decoder_t *decoder,bert_data_t **data)
 
 	BERT_ASSERT_BYTES(size)
 
-	const char *ptr = (const char *)(decoder->ptr);
 	bert_data_t *new_data;
+	const char *ptr = (const char *)(decoder->ptr);
 
 	if ((size == 3) && (strncmp(ptr,"nil",3) == 0))
 	{
@@ -326,10 +326,31 @@ inline int bert_decode_atom(bert_decoder_t *decoder,bert_data_t **data)
 	}
 	else
 	{
-		new_data = bert_data_create_atom((const char *)(decoder->ptr),size);
+		return BERT_ERRNO_INVALID;
 	}
 
-	if (!new_data)
+	*data = new_data;
+	return BERT_SUCCESS;
+}
+
+int bert_decode_atom(bert_decoder_t *decoder,bert_data_t **data)
+{
+	BERT_ASSERT_BYTES(2)
+
+	bert_atom_size_t size = bert_decode_uint16(decoder);
+
+	BERT_ASSERT_BYTES(size)
+
+	const char *ptr = (const char *)(decoder->ptr);
+
+	if ((size == 4) && (strncmp(ptr,"bert",4) == 0))
+	{
+		return bert_decode_complex(decoder,data);
+	}
+
+	bert_data_t *new_data;
+
+	if (!(new_data = bert_data_create_atom((const char *)(decoder->ptr),size)))
 	{
 		return BERT_ERRNO_MALLOC;
 	}
