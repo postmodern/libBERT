@@ -6,6 +6,7 @@
 #include <bert/dict.h>
 
 #include <stdint.h>
+#include <time.h>
 
 typedef enum
 {
@@ -19,6 +20,7 @@ typedef enum
 	bert_data_list,
 	bert_data_dict,
 	bert_data_bin,
+	bert_data_time,
 	bert_data_nil
 } bert_data_type;
 
@@ -58,6 +60,8 @@ struct bert_data
 
 		struct bert_list *list;
 		struct bert_dict *dict;
+
+		time_t time;
 	};
 };
 typedef struct bert_data bert_data_t;
@@ -73,6 +77,7 @@ extern bert_data_t * bert_data_create_string(const char *name,bert_string_size_t
 extern bert_data_t * bert_data_create_tuple(bert_tuple_size_t length);
 extern bert_data_t * bert_data_create_list();
 extern bert_data_t * bert_data_create_dict();
+extern bert_data_t * bert_data_create_time(time_t timestamp);
 extern bert_data_t * bert_data_create_bin(const unsigned char *data,bert_bin_size_t length);
 
 extern void bert_data_destroy(bert_data_t *data);

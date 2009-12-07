@@ -306,6 +306,21 @@ cleanup:
 	return NULL;
 }
 
+bert_data_t * bert_data_create_time(time_t timestamp)
+{
+	bert_data_t *new_data;
+
+	if (!(new_data = bert_data_create()))
+	{
+		// malloc failed
+		return NULL;
+	}
+
+	new_data->type = bert_data_time;
+	new_data->time = timestamp;
+	return new_data;
+}
+
 void bert_data_destroy(bert_data_t *data)
 {
 	unsigned int i;

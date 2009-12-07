@@ -3,6 +3,7 @@
 #include <bert/magic.h>
 #include <bert/errno.h>
 #include <string.h>
+#include <time.h>
 
 #include "read.h"
 
@@ -213,6 +214,46 @@ inline int bert_decode_string(bert_decoder_t *decoder,bert_data_t **data)
 	return BERT_SUCCESS;
 }
 
+int bert_decode_time(bert_decoder_t *decoder,bert_data_t **data)
+{
+	// 3 magic bytes and 4 uint32s
+	BERT_ASSERT_BYTES(3 * (1 + 4))
+
+	// must be an integer
+	if (bert_decode_magic(decoder) != BERT_INT)
+	{
+		return BERT_ERRNO_INVALID;
+	}
+
+	uint32_t megaseconds = bert_decode_uint32(decoder);
+
+	// must be an integer
+	if (bert_decode_magic(decoder) != BERT_INT)
+	{
+		return BERT_ERRNO_INVALID;
+	}
+
+	uint32_t seconds = bert_decode_uint32(decoder);
+
+	// must be an integer
+	if (bert_decode_magic(decoder) != BERT_INT)
+	{
+		return BERT_ERRNO_INVALID;
+	}
+
+	uint32_t microseconds = bert_decode_uint32(decoder);
+
+	time_t timestamp = (megaseconds * 1000000) + seconds + (microseconds / 1000000);
+	bert_data_t *new_data;
+
+	if (!(new_data = bert_data_create_time(timestamp)))
+	{
+		return BERT_ERRNO_MALLOC;
+	}
+
+	return BERT_SUCCESS;
+}
+
 int bert_decode_dict(bert_decoder_t *decoder,bert_data_t **data)
 {
 	BERT_ASSERT_BYTES(1)
@@ -337,7 +378,7 @@ int bert_decode_complex(bert_decoder_t *decoder,bert_data_t **data)
 	}
 	else if ((size == 4) && (strncmp(ptr,"time",4) == 0))
 	{
-		// TODO: add support for the time data-type
+		return bert_decode_time(decoder,data);
 	}
 	else if ((size = 4) && (strncmp(ptr,"dict",4) == 0))
 	{
