@@ -2,16 +2,21 @@
 #define _BERT_DECODER_H_
 
 #include <bert/data.h>
+#include <bert/buffer.h>
 
 #include <sys/types.h>
 
+#define BERT_SHORT_BUFFER	BERT_BUFFER_CHUNK
+
 struct bert_decoder
 {
-	const unsigned char *buffer;
-	size_t length;
+	bert_buffer_t *buffer_head;
+	bert_buffer_t *buffer_tail;
 
-	unsigned int index;
-	const unsigned char *ptr;
+	unsigned int chunk_index;
+	const unsigned char *buffer_ptr;
+
+	unsigned char short_buffer[BERT_SHORT_BUFFER];
 };
 typedef struct bert_decoder bert_decoder_t;
 
