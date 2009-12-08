@@ -2,22 +2,23 @@
 #include <bert/dict.h>
 #include <bert/magic.h>
 #include <bert/errno.h>
-#include <string.h>
 #include <time.h>
+#include <malloc.h>
+#include <string.h>
 
 #include "read.h"
 
-#define BERT_BYTES_LEFT			(decoder->length - decoder->index)
-#define BERT_ASSERT_BYTES(bytes)	if (BERT_BYTES_LEFT < (bytes)) { return BERT_ERRNO_SHORT; }
+#define BERT_DECODER_STEP(decoder,i)	(decoder->short_index += i)
+#define BERT_DECODER_PTR(decoder)	(decoder->short_buffer + decoder->short_index)
+#define BERT_DECODER_PULL(decoder,i)	switch (bert_decoder_pull(decoder,i)) { case BERT_ERRNO_MALLOC: return BERT_ERRNO_MALLOC; case BERT_ERRNO_EMPTY: return BERT_ERRNO_EMPTY; }
 
 inline uint8_t bert_decode_uint8(bert_decoder_t *decoder)
 {
 	uint8_t i;
 
-	i = bert_read_uint8(decoder->ptr);
+	i = bert_read_uint8(BERT_DECODER_PTR(decoder));
 
-	++(decoder->index);
-	++(decoder->ptr);
+	BERT_DECODER_STEP(decoder,1);
 	return i;
 }
 
@@ -25,46 +26,41 @@ inline int8_t bert_decode_int8(bert_decoder_t *decoder)
 {
 	int8_t i;
 
-	i = bert_read_int8(decoder->ptr);
+	i = bert_read_int8(BERT_DECODER_PTR(decoder));
 
-	++(decoder->index);
-	++(decoder->ptr);
+	BERT_DECODER_STEP(decoder,1);
 	return i;
 }
 
 inline uint16_t bert_decode_uint16(bert_decoder_t *decoder)
 {
-	uint16_t i = bert_read_uint16(decoder->ptr);
+	uint16_t i = bert_read_uint16(BERT_DECODER_PTR(decoder));
 
-	decoder->ptr += 2;
-	decoder->index += 2;
+	BERT_DECODER_STEP(decoder,2);
 	return i;
 }
 
 inline uint32_t bert_decode_uint32(bert_decoder_t *decoder)
 {
-	uint32_t i = bert_read_uint32(decoder->ptr);
+	uint32_t i = bert_read_uint32(BERT_DECODER_PTR(decoder));
 
-	decoder->ptr += 4;
-	decoder->index += 4;
+	BERT_DECODER_STEP(decoder,4);
 	return i;
 }
 
 inline int32_t bert_decode_int32(bert_decoder_t *decoder)
 {
-	int32_t i = bert_read_int32(decoder->ptr);
+	int32_t i = bert_read_int32(BERT_DECODER_PTR(decoder));
 
-	decoder->ptr += 4;
-	decoder->index += 4;
+	BERT_DECODER_STEP(decoder,4);
 	return i;
 }
 
 inline bert_magic_t bert_decode_magic(bert_decoder_t *decoder)
 {
-	bert_magic_t m = bert_read_magic(decoder->ptr);
+	bert_magic_t m = bert_read_magic(BERT_DECODER_PTR(decoder));
 
-	++(decoder->ptr);
-	++(decoder->index);
+	BERT_DECODER_STEP(decoder,1);
 	return m;
 }
 
@@ -72,7 +68,7 @@ bert_decoder_t * bert_decoder_create()
 {
 	bert_decoder_t *new_decoder;
 
-	if (!(new_decoder = malloc(sizeof(bert_buffer_t))))
+	if (!(new_decoder = malloc(sizeof(bert_decoder_t))))
 	{
 		// malloc failed
 		return NULL;
@@ -81,10 +77,86 @@ bert_decoder_t * bert_decoder_create()
 	new_decoder->buffer_head = NULL;
 	new_decoder->buffer_tail = NULL;
 
-	new_decoder->chunk_index = 0;
-	new_decoder->buffer_ptr = NULL;
+	new_decoder->short_length = 0;
+	new_decoder->short_index = 0;
 
 	return new_decoder;
+}
+
+int bert_decoder_push(bert_decoder_t *decoder,const unsigned char *data,size_t length)
+{
+	bert_buffer_t *new_buffer;
+
+	if (!(decoder->buffer_head))
+	{
+		bert_buffer_t *new_buffer;
+
+		if (!(new_buffer = bert_buffer_create()))
+		{
+			// malloc failed
+			return BERT_ERRNO_MALLOC;
+		}
+
+		decoder->buffer_head = new_buffer;
+		decoder->buffer_tail = new_buffer;
+	}
+
+	if (!(new_buffer = bert_buffer_write(decoder->buffer_tail,data,length)))
+	{
+		// malloc failed
+		return BERT_ERRNO_MALLOC;
+	}
+
+	decoder->buffer_tail = new_buffer;
+	return BERT_SUCCESS;
+}
+
+int bert_decoder_pull(bert_decoder_t *decoder,size_t size)
+{
+	size_t remaining_space = (decoder->short_length - decoder->short_index);
+
+	if (size <= remaining_space)
+	{
+		// we still have enough data in the short buffer
+		return BERT_SUCCESS;
+	}
+
+	bert_buffer_t *buffer = decoder->buffer_head;
+
+	if (!buffer)
+	{
+		// we have no more data
+		return BERT_ERRNO_EMPTY;
+	}
+
+	size_t empty_space = (BERT_SHORT_BUFFER - decoder->short_length);
+
+	if (empty_space >= BERT_BUFFER_CHUNK)
+	{
+		// fill the remaining space in the short buffer
+		goto fill_short_buffer;
+	}
+
+	size_t unread_space = (decoder->short_length - decoder->short_index);
+
+	if (unread_space > 0)
+	{
+		// shift the other half of the short buffer down
+		memcpy(decoder->short_buffer,decoder->short_buffer+decoder->short_index,sizeof(unsigned char)*unread_space);
+	}
+
+	decoder->short_length = unread_space;
+	decoder->short_index = 0;
+
+fill_short_buffer:
+	// fill up the short buffer
+	memcpy(decoder->short_buffer+decoder->short_length,buffer->chunk,sizeof(unsigned char)*buffer->chunk_length);
+	decoder->short_length += buffer->chunk_length;
+
+	// remove the consumed buffer chunk
+	decoder->buffer_head = buffer->next;
+	bert_buffer_destroy(buffer);
+	return BERT_SUCCESS;
 }
 
 void bert_decoder_destroy(bert_decoder_t *decoder)
@@ -108,9 +180,9 @@ inline int bert_decode_nil(bert_decoder_t *decoder,bert_data_t **data)
 
 inline int bert_decode_small_int(bert_decoder_t *decoder,bert_data_t **data)
 {
-	BERT_ASSERT_BYTES(1)
+	BERT_DECODER_PULL(decoder,1);
 
-	int8_t i = bert_read_int8(decoder->ptr);
+	int8_t i = bert_read_int8(BERT_DECODER_PTR(decoder));
 
 	bert_data_t *new_data;
 
@@ -125,9 +197,9 @@ inline int bert_decode_small_int(bert_decoder_t *decoder,bert_data_t **data)
 
 inline int bert_decode_big_int(bert_decoder_t *decoder,bert_data_t **data)
 {
-	BERT_ASSERT_BYTES(4)
+	BERT_DECODER_PULL(decoder,4);
 
-	int32_t i = bert_read_int32(decoder->ptr);
+	int32_t i = bert_read_int32(BERT_DECODER_PTR(decoder));
 
 	bert_data_t *new_data;
 
@@ -142,11 +214,11 @@ inline int bert_decode_big_int(bert_decoder_t *decoder,bert_data_t **data)
 
 int bert_decode_bignum(bert_decoder_t *decoder,bert_data_t **data,size_t size)
 {
-	BERT_ASSERT_BYTES(1 + size)
+	BERT_DECODER_PULL(decoder,1 + size);
 
 	uint8_t sign = bert_decode_uint8(decoder);
 
-	const unsigned char *ptr = decoder->ptr;
+	const unsigned char *ptr = BERT_DECODER_PTR(decoder);
 
 	uint32_t unsigned_integer;
 	uint8_t b;
@@ -158,8 +230,7 @@ int bert_decode_bignum(bert_decoder_t *decoder,bert_data_t **data,size_t size)
 		unsigned_integer = ((unsigned_integer << 8) | b);
 	}
 
-	decoder->index += size;
-	decoder->ptr += size;
+	BERT_DECODER_STEP(decoder,size);
 
 	int32_t signed_integer = (int32_t)unsigned_integer;
 
@@ -181,29 +252,29 @@ int bert_decode_bignum(bert_decoder_t *decoder,bert_data_t **data,size_t size)
 
 inline int bert_decode_small_bignum(bert_decoder_t *decoder,bert_data_t **data)
 {
-	BERT_ASSERT_BYTES(1)
+	BERT_DECODER_PULL(decoder,1);
 
-	return bert_decode_bignum(decoder,data,bert_read_uint8(decoder->ptr));
+	return bert_decode_bignum(decoder,data,bert_read_uint8(BERT_DECODER_PTR(decoder)));
 }
 
 inline int bert_decode_big_bignum(bert_decoder_t *decoder,bert_data_t **data)
 {
-	BERT_ASSERT_BYTES(4)
+	BERT_DECODER_PULL(decoder,4);
 
-	return bert_decode_bignum(decoder,data,bert_read_uint32(decoder->ptr));
+	return bert_decode_bignum(decoder,data,bert_read_uint32(BERT_DECODER_PTR(decoder)));
 }
 
 inline int bert_decode_string(bert_decoder_t *decoder,bert_data_t **data)
 {
-	BERT_ASSERT_BYTES(4)
+	BERT_DECODER_PULL(decoder,4);
 
 	bert_string_size_t size = bert_decode_uint32(decoder);
 
-	BERT_ASSERT_BYTES(size)
+	BERT_DECODER_PULL(decoder,size);
 
 	bert_data_t *new_data;
 
-	if (!(new_data = bert_data_create_string((const char *)(decoder->ptr),size)))
+	if (!(new_data = bert_data_create_string((const char *)(BERT_DECODER_PTR(decoder)),size)))
 	{
 		return BERT_ERRNO_MALLOC;
 	}
@@ -215,7 +286,7 @@ inline int bert_decode_string(bert_decoder_t *decoder,bert_data_t **data)
 int bert_decode_time(bert_decoder_t *decoder,bert_data_t **data)
 {
 	// 3 magic bytes and 4 uint32s
-	BERT_ASSERT_BYTES(3 * (1 + 4))
+	BERT_DECODER_PULL(decoder,3 * (1 + 4));
 
 	// must be an integer
 	if (bert_decode_magic(decoder) != BERT_INT)
@@ -254,12 +325,21 @@ int bert_decode_time(bert_decoder_t *decoder,bert_data_t **data)
 
 int bert_decode_dict(bert_decoder_t *decoder,bert_data_t **data)
 {
-	BERT_ASSERT_BYTES(1)
+	bert_data_t *list_data;
+	int result;
 
-	bert_magic_t magic = bert_decode_magic(decoder);
-
-	if (magic != BERT_LIST && magic != BERT_NIL)
+	if ((result = bert_decode_data(decoder,&list_data)) != BERT_SUCCESS)
 	{
+		return result;
+	}
+
+	// eat the nil byte
+	bert_decode_uint8(decoder);
+
+	if (list_data->type != bert_data_nil && list_data->type != bert_data_list)
+	{
+		// dicts terms must contain either a nil or a list
+		bert_data_destroy(list_data);
 		return BERT_ERRNO_INVALID;
 	}
 
@@ -267,100 +347,82 @@ int bert_decode_dict(bert_decoder_t *decoder,bert_data_t **data)
 
 	if (!(new_data = bert_data_create_dict()))
 	{
+		bert_data_destroy(list_data);
 		return BERT_ERRNO_MALLOC;
 	}
 
-	if (magic == BERT_LIST)
+	if (list_data->type == bert_data_list)
 	{
-		if (BERT_BYTES_LEFT < 4)
+		bert_list_node_t *next_node = list_data->list->head;
+		bert_data_t *next_tuple;
+		bert_data_t *key_data;
+		bert_data_t *value_data;
+
+		while (next_node)
 		{
-			goto cleanup_short;
-		}
+			next_tuple = next_node->data;
 
-		bert_list_size_t list_size = bert_decode_uint32(decoder);
-		unsigned int i;
-		int result;
-
-		bert_data_t *key;
-		bert_data_t *value;
-
-		for (i=0;i<list_size;i++)
-		{
-			// must have atleast a magic byte
-			if (BERT_BYTES_LEFT < 1)
+			if (next_tuple->type != bert_data_tuple)
 			{
-				goto cleanup_short;
+				// the list must contain tuples
+				bert_data_destroy(new_data);
+				bert_data_destroy(list_data);
+				return BERT_ERRNO_INVALID;
 			}
 
-			// must be a tuple contain the key -> value pair
-			if ((magic = bert_decode_magic(decoder)) != BERT_SMALL_TUPLE)
+			if (next_tuple->tuple.length != 2)
 			{
-				goto cleanup_invalid;
+				// the tuple must have two elements
+				bert_data_destroy(new_data);
+				bert_data_destroy(list_data);
+				return BERT_ERRNO_INVALID;
 			}
 
-			// must have more than the 2 bytes for the tuple length
-			if (BERT_BYTES_LEFT <= 2)
-			{
-				goto cleanup_short;
-			}
-
-			// the tuple must have exactly 2 elements
-			if (bert_decode_uint16(decoder) != 2)
-			{
-				goto cleanup_invalid;
-			}
-
-			// decode the key data
-			if ((result = bert_decode_data(decoder,&key)) != BERT_SUCCESS)
+			if ((result = bert_decode_data(decoder,&key_data)) != BERT_SUCCESS)
 			{
 				bert_data_destroy(new_data);
+				bert_data_destroy(list_data);
 				return result;
 			}
 
-			// decode the value data
-			if ((result = bert_decode_data(decoder,&value)) != BERT_SUCCESS)
+			if ((result = bert_decode_data(decoder,&value_data)) != BERT_SUCCESS)
 			{
-				bert_data_destroy(key);
+				bert_data_destroy(key_data);
 				bert_data_destroy(new_data);
+				bert_data_destroy(list_data);
 				return result;
 			}
 
 			// append the key -> value pair to the dict
-			if (bert_dict_append(new_data->dict,key,value) == BERT_ERRNO_MALLOC)
+			if (bert_dict_append(new_data->dict,key_data,value_data) == BERT_ERRNO_MALLOC)
 			{
-				bert_data_destroy(value);
-				bert_data_destroy(key);
+				bert_data_destroy(value_data);
+				bert_data_destroy(key_data);
 				bert_data_destroy(new_data);
+				bert_data_destroy(list_data);
 				return BERT_ERRNO_MALLOC;
 			}
-		}
 
-		// eat the nil byte
-		bert_decode_uint8(decoder);
+			next_node = next_node->next;
+		}
 	}
+
+	bert_data_destroy(list_data);
 
 	*data = new_data;
 	return BERT_SUCCESS;
-
-cleanup_short:
-	bert_data_destroy(new_data);
-	return BERT_ERRNO_SHORT;
-
-cleanup_invalid:
-	bert_data_destroy(new_data);
-	return BERT_ERRNO_INVALID;
 }
 
 int bert_decode_complex(bert_decoder_t *decoder,bert_data_t **data)
 {
-	BERT_ASSERT_BYTES(2)
+	BERT_DECODER_PULL(decoder,2);
 
 	bert_atom_size_t size = bert_decode_uint16(decoder);
 
-	BERT_ASSERT_BYTES(size)
+	BERT_DECODER_PULL(decoder,size);
 
 	bert_data_t *new_data;
-	const char *ptr = (const char *)(decoder->ptr);
+	const char *ptr = (const char *)BERT_DECODER_PTR(decoder);
 
 	if ((size == 3) && (strncmp(ptr,"nil",3) == 0))
 	{
@@ -398,13 +460,13 @@ int bert_decode_complex(bert_decoder_t *decoder,bert_data_t **data)
 
 int bert_decode_atom(bert_decoder_t *decoder,bert_data_t **data)
 {
-	BERT_ASSERT_BYTES(2)
+	BERT_DECODER_PULL(decoder,2);
 
 	bert_atom_size_t size = bert_decode_uint16(decoder);
 
-	BERT_ASSERT_BYTES(size)
+	BERT_DECODER_PULL(decoder,size);
 
-	const char *ptr = (const char *)(decoder->ptr);
+	const char *ptr = (const char *)BERT_DECODER_PTR(decoder);
 
 	if ((size == 4) && (strncmp(ptr,"bert",4) == 0))
 	{
@@ -413,7 +475,7 @@ int bert_decode_atom(bert_decoder_t *decoder,bert_data_t **data)
 
 	bert_data_t *new_data;
 
-	if (!(new_data = bert_data_create_atom((const char *)(decoder->ptr),size)))
+	if (!(new_data = bert_data_create_atom((const char *)BERT_DECODER_PTR(decoder),size)))
 	{
 		return BERT_ERRNO_MALLOC;
 	}
@@ -424,15 +486,15 @@ int bert_decode_atom(bert_decoder_t *decoder,bert_data_t **data)
 
 inline int bert_decode_bin(bert_decoder_t *decoder,bert_data_t **data)
 {
-	BERT_ASSERT_BYTES(4)
+	BERT_DECODER_PULL(decoder,4);
 
 	bert_bin_size_t size = bert_decode_uint32(decoder);
 
-	BERT_ASSERT_BYTES(size)
+	BERT_DECODER_PULL(decoder,size);
 
 	bert_data_t *new_data;
 
-	if (!(new_data = bert_data_create_bin((const unsigned char *)(decoder->ptr),size)))
+	if (!(new_data = bert_data_create_bin((const unsigned char *)BERT_DECODER_PTR(decoder),size)))
 	{
 		return BERT_ERRNO_MALLOC;
 	}
@@ -468,21 +530,21 @@ inline int bert_decode_tuple(bert_decoder_t *decoder,bert_data_t **data,size_t s
 
 inline int bert_decode_small_tuple(bert_decoder_t *decoder,bert_data_t **data)
 {
-	BERT_ASSERT_BYTES(2)
+	BERT_DECODER_PULL(decoder,2);
 
 	return bert_decode_tuple(decoder,data,bert_decode_uint16(decoder));
 }
 
 inline int bert_decode_big_tuple(bert_decoder_t *decoder,bert_data_t **data)
 {
-	BERT_ASSERT_BYTES(4)
+	BERT_DECODER_PULL(decoder,4);
 
 	return bert_decode_tuple(decoder,data,bert_decode_uint32(decoder));
 }
 
 int bert_decode_list(bert_decoder_t *decoder,bert_data_t **data)
 {
-	BERT_ASSERT_BYTES(4)
+	BERT_DECODER_PULL(decoder,4);
 
 	bert_list_size_t list_size = bert_decode_uint32(decoder);
 	bert_data_t *new_data;
@@ -518,16 +580,15 @@ int bert_decode_list(bert_decoder_t *decoder,bert_data_t **data)
 
 int bert_decode_data(bert_decoder_t *decoder,bert_data_t **data)
 {
-	if (BERT_BYTES_LEFT < 0)
-	{
-		return 0;
-	}
+	BERT_DECODER_PULL(decoder,1);
 
 	bert_magic_t magic = bert_decode_magic(decoder);
 
 	// skip the BERT MAGIC start byte
 	if (magic == BERT_MAGIC)
 	{
+		BERT_DECODER_PULL(decoder,1);
+
 		magic = bert_decode_magic(decoder);
 	}
 

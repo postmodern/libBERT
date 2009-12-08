@@ -17,7 +17,6 @@ struct bert_decoder
 	size_t short_length;
 	unsigned int short_index;
 
-	const unsigned char *short_ptr;
 	unsigned char short_buffer[BERT_SHORT_BUFFER];
 };
 typedef struct bert_decoder bert_decoder_t;
