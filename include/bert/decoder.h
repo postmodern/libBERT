@@ -6,7 +6,7 @@
 
 #include <sys/types.h>
 
-#define BERT_SHORT_BUFFER	BERT_BUFFER_CHUNK
+#define BERT_SHORT_BUFFER	(BERT_BUFFER_CHUNK * 2)
 #define BERT_DECODER_LEFT(b)	(b->buffer_head ? bert_buffer_length(b->buffer_head) - b->chunk_index : 0)
 
 struct bert_decoder
@@ -14,14 +14,11 @@ struct bert_decoder
 	bert_buffer_t *buffer_head;
 	bert_buffer_t *buffer_tail;
 
-	unsigned int chunk_index;
-	const unsigned char *buffer_ptr;
+	size_t short_length;
+	unsigned int short_index;
 
-	unsigned int next_index;
-	const unsigned char *next_ptr;
-
-	size_t boarder_length;
-	unsigned char boarder_buffer[BERT_SHORT_BUFFER];
+	const unsigned char *short_ptr;
+	unsigned char short_buffer[BERT_SHORT_BUFFER];
 };
 typedef struct bert_decoder bert_decoder_t;
 
