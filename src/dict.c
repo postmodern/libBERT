@@ -28,6 +28,7 @@ int bert_dict_append(bert_dict_t *dict,bert_data_t *key,bert_data_t *value)
 
 	new_node->key = key;
 	new_node->value = value;
+	new_node->next = NULL;
 
 	if (dict->head)
 	{
