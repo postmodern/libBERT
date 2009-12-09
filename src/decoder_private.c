@@ -71,6 +71,8 @@ inline int bert_decode_bytes(unsigned char *dest,bert_decoder_t *decoder,size_t 
 
 		memcpy(dest+index,BERT_DECODER_PTR(decoder),sizeof(unsigned char)*chunk_length);
 		index += chunk_length;
+
+		BERT_DECODER_STEP(decoder,chunk_length);
 	}
 
 	return BERT_SUCCESS;
