@@ -138,21 +138,21 @@ inline int bert_decode_string(bert_decoder_t *decoder,bert_data_t **data)
 
 	bert_string_size_t size = bert_decode_uint32(decoder);
 
-	unsigned char string_buffer[size];
+	char string_buffer[size];
 
 	if (size)
 	{
-		switch (bert_buffer_read((unsigned char *)string_buffer,&(decoder->buffer),size))
+		int result;
+
+		if ((result = bert_decode_bytes((unsigned char *)string_buffer,decoder,size)) != BERT_SUCCESS)
 		{
-			case -1:
-			case 0:
-				return BERT_ERRNO_SHORT;
+			return result;
 		}
 	}
 
 	bert_data_t *new_data;
 
-	if (!(new_data = bert_data_create_string((const char *)string_buffer,size)))
+	if (!(new_data = bert_data_create_string(string_buffer,size)))
 	{
 		return BERT_ERRNO_MALLOC;
 	}
@@ -342,15 +342,15 @@ int bert_decode_atom(bert_decoder_t *decoder,bert_data_t **data)
 
 	bert_atom_size_t size = bert_decode_uint16(decoder);
 
-	unsigned char atom_buffer[size];
+	char atom_buffer[size];
 
 	if (size)
 	{
-		switch (bert_buffer_read(atom_buffer,&(decoder->buffer),size))
+		int result;
+
+		if ((result = bert_decode_bytes((unsigned char *)atom_buffer,decoder,size)) != BERT_SUCCESS)
 		{
-			case -1:
-			case 0:
-				return BERT_ERRNO_SHORT;
+			return result;
 		}
 	}
 
@@ -361,7 +361,7 @@ int bert_decode_atom(bert_decoder_t *decoder,bert_data_t **data)
 
 	bert_data_t *new_data;
 
-	if (!(new_data = bert_data_create_atom((const char *)atom_buffer,size)))
+	if (!(new_data = bert_data_create_atom(atom_buffer,size)))
 	{
 		return BERT_ERRNO_MALLOC;
 	}
@@ -380,11 +380,11 @@ inline int bert_decode_bin(bert_decoder_t *decoder,bert_data_t **data)
 
 	if (size)
 	{
-		switch (bert_buffer_read(bin_buffer,&(decoder->buffer),size))
+		int result;
+
+		if ((result = bert_decode_bytes(bin_buffer,decoder,size)) != BERT_SUCCESS)
 		{
-			case -1:
-			case 0:
-				return BERT_ERRNO_SHORT;
+			return result;
 		}
 	}
 
