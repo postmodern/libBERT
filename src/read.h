@@ -3,7 +3,6 @@
 
 #include <bert/types.h>
 
-#include <sys/types.h>
 #include <stdint.h>
 
 inline uint8_t bert_read_uint8(const unsigned char *ptr);

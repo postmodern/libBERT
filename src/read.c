@@ -1,7 +1,5 @@
 #include "read.h"
 
-#include <string.h>
-
 inline uint8_t bert_read_uint8(const unsigned char *ptr)
 {
 	return (uint8_t)(*ptr);
