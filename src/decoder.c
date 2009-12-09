@@ -163,7 +163,7 @@ inline int bert_decode_small_int(bert_decoder_t *decoder,bert_data_t **data)
 
 	bert_data_t *new_data;
 
-	if (!(new_data = bert_data_create_int(bert_decode_int8(decoder))))
+	if (!(new_data = bert_data_create_int(bert_decode_uint8(decoder))))
 	{
 		return BERT_ERRNO_MALLOC;
 	}
@@ -178,7 +178,7 @@ inline int bert_decode_big_int(bert_decoder_t *decoder,bert_data_t **data)
 
 	bert_data_t *new_data;
 
-	if (!(new_data = bert_data_create_int(bert_decode_int32(decoder))))
+	if (!(new_data = bert_data_create_int(bert_decode_uint32(decoder))))
 	{
 		return BERT_ERRNO_MALLOC;
 	}
