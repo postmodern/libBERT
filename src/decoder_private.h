@@ -38,7 +38,7 @@ int bert_decode_atom(bert_decoder_t *decoder,bert_data_t **data);
 inline int bert_decode_bin(bert_decoder_t *decoder,bert_data_t **data);
 inline int bert_decode_tuple(bert_decoder_t *decoder,bert_data_t **data,size_t size);
 inline int bert_decode_small_tuple(bert_decoder_t *decoder,bert_data_t **data);
-inline int bert_decode_big_tuple(bert_decoder_t *decoder,bert_data_t **data);
+inline int bert_decode_large_tuple(bert_decoder_t *decoder,bert_data_t **data);
 int bert_decode_list(bert_decoder_t *decoder,bert_data_t **data);
 
 int bert_decoder_pull(bert_decoder_t *decoder,size_t size);

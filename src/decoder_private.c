@@ -468,7 +468,7 @@ inline int bert_decode_small_tuple(bert_decoder_t *decoder,bert_data_t **data)
 	return bert_decode_tuple(decoder,data,bert_decode_uint8(decoder));
 }
 
-inline int bert_decode_big_tuple(bert_decoder_t *decoder,bert_data_t **data)
+inline int bert_decode_large_tuple(bert_decoder_t *decoder,bert_data_t **data)
 {
 	BERT_DECODER_PULL(decoder,4);
 

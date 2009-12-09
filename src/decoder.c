@@ -91,7 +91,7 @@ int bert_decoder_next(bert_decoder_t *decoder,bert_data_t **data)
 			result = bert_decode_small_tuple(decoder,data);
 			break;
 		case BERT_LARGE_TUPLE:
-			result = bert_decode_big_tuple(decoder,data);
+			result = bert_decode_large_tuple(decoder,data);
 			break;
 		case BERT_LIST:
 			result = bert_decode_list(decoder,data);
