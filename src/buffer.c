@@ -1,11 +1,10 @@
 #include <bert/buffer.h>
+#include <bert/util.h>
 #include <bert/errno.h>
 
 #include <malloc.h>
 #include <string.h>
 #include <math.h>
-
-#define MIN(a,b)	((a) < (b) ? (a) : (b))
 
 bert_chunk_t * bert_chunk_create()
 {
