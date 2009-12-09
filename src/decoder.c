@@ -193,7 +193,7 @@ int bert_decode_bignum(bert_decoder_t *decoder,bert_data_t **data,size_t size)
 
 	const unsigned char *ptr = BERT_DECODER_PTR(decoder);
 
-	uint32_t unsigned_integer;
+	uint32_t unsigned_integer = 0;
 	uint8_t b;
 	uint8_t i;
 
@@ -593,7 +593,7 @@ int bert_decoder_next(bert_decoder_t *decoder,bert_data_t **data)
 		magic = bert_decode_magic(decoder);
 	}
 
-	int result;
+	int result = 0;
 
 	// decode primative data first
 	switch (magic)
