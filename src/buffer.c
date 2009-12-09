@@ -73,13 +73,20 @@ int bert_buffer_write(bert_buffer_t *buffer,const unsigned char *data,size_t len
 	}
 
 	bert_chunk_t *start_chunk = buffer->tail;
+	size_t remaining = BERT_CHUNK_SPACE(start_chunk);
+
+	if (length <= remaining)
+	{
+		memcpy(start_chunk->data+start_chunk->length,data,sizeof(unsigned char)*length);
+		start_chunk->length += length;
+		return BERT_SUCCESS;
+	}
+
+	unsigned int chunks = (int)ceil((length - remaining) / (double)BERT_CHUNK_SIZE);
 	bert_chunk_t *last_chunk = start_chunk;
 	bert_chunk_t *next_chunk;
-
-	size_t remaining = BERT_CHUNK_SPACE(start_chunk);
-	unsigned int chunks = (int)ceil((length - remaining) / (double)BERT_CHUNK_SIZE);
-
 	unsigned int i;
+
 
 	for (i=0;i<chunks;i++)
 	{
