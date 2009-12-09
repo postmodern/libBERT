@@ -313,7 +313,7 @@ int bert_decode_dict(bert_decoder_t *decoder,bert_data_t **data)
 	bert_data_t *list_data;
 	int result;
 
-	if ((result = bert_decoder_next(decoder,&list_data)) != BERT_SUCCESS)
+	if ((result = bert_decoder_next(decoder,&list_data)) != 1)
 	{
 		return result;
 	}
@@ -363,14 +363,14 @@ int bert_decode_dict(bert_decoder_t *decoder,bert_data_t **data)
 				return BERT_ERRNO_INVALID;
 			}
 
-			if ((result = bert_decoder_next(decoder,&key_data)) != BERT_SUCCESS)
+			if ((result = bert_decoder_next(decoder,&key_data)) != 1)
 			{
 				bert_data_destroy(new_data);
 				bert_data_destroy(list_data);
 				return result;
 			}
 
-			if ((result = bert_decoder_next(decoder,&value_data)) != BERT_SUCCESS)
+			if ((result = bert_decoder_next(decoder,&value_data)) != 1)
 			{
 				bert_data_destroy(key_data);
 				bert_data_destroy(new_data);
@@ -520,7 +520,7 @@ inline int bert_decode_tuple(bert_decoder_t *decoder,bert_data_t **data,size_t s
 
 	for (i=0;i<size;i++)
 	{
-		if ((result = bert_decoder_next(decoder,new_data->tuple.elements+i)) != BERT_SUCCESS)
+		if ((result = bert_decoder_next(decoder,new_data->tuple.elements+i)) != 1)
 		{
 			bert_data_destroy(new_data);
 			return result;
@@ -563,7 +563,7 @@ int bert_decode_list(bert_decoder_t *decoder,bert_data_t **data)
 
 	for (i=0;i<list_size;i++)
 	{
-		if ((result = bert_decoder_next(decoder,&list_element)) != BERT_SUCCESS)
+		if ((result = bert_decoder_next(decoder,&list_element)) != 1)
 		{
 			bert_data_destroy(new_data);
 			return result;
