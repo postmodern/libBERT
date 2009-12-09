@@ -5,7 +5,9 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <fcntl.h>
+#include <string.h>
 #include <stdio.h>
+#include <errno.h>
 
 int bert_print(const bert_data_t *data);
 
@@ -261,17 +263,23 @@ int main(int argc,const char **argv)
 
 		for (i=2;i<argc;i++)
 		{
-			if ((fd=open(argv[i],O_RDONLY)))
+			if ((fd = open(argv[i],O_RDONLY)) == -1)
 			{
+				fprintf(stderr,"bert_dump: %s\n",strerror(errno));
+				return -1;
 			}
 
 			if (bert_dump(fd) == -1)
 			{
+				close(fd);
 				return -1;
 			}
 
 			close(fd);
 		}
+
+		putchar('\n');
+		return 0;
 	}
 
 	return bert_dump(STDIN_FILENO);
