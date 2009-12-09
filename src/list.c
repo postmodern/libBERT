@@ -1,4 +1,5 @@
 #include <bert/list.h>
+#include <bert/errno.h>
 
 #include <malloc.h>
 
@@ -23,7 +24,7 @@ int bert_list_append(bert_list_t *list,struct bert_data *data)
 	if (!(new_node = malloc(sizeof(bert_list_node_t))))
 	{
 		// malloc failed
-		return -1;
+		return BERT_ERRNO_MALLOC;
 	}
 
 	new_node->data = data;
@@ -39,7 +40,7 @@ int bert_list_append(bert_list_t *list,struct bert_data *data)
 		list->tail = new_node;
 	}
 
-	return 0;
+	return BERT_SUCCESS;
 }
 
 void bert_list_destroy(bert_list_t *list)
