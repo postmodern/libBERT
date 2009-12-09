@@ -1,5 +1,6 @@
 #include "decoder_private.h"
 #include <bert/types.h>
+#include <bert/magic.h>
 #include <bert/util.h>
 #include <bert/errno.h>
 
