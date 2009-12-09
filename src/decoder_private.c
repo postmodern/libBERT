@@ -60,15 +60,17 @@ inline bert_magic_t bert_decode_magic(bert_decoder_t *decoder)
 
 inline int bert_decode_bytes(unsigned char *dest,bert_decoder_t *decoder,size_t length)
 {
-	unsigned int i;
+	unsigned int index = 0;
 	size_t chunk_length;
 
-	for (i=0;i<length;i+=(BERT_SHORT_BUFFER / 2))
+	while (index < length)
 	{
-		chunk_length = MIN((BERT_SHORT_BUFFER / 2), (length - i));
+		chunk_length = MIN((BERT_SHORT_BUFFER / 2), (length - index));
+
 		BERT_DECODER_PULL(decoder,chunk_length);
 
-		memcpy(dest+i,BERT_DECODER_PTR(decoder),sizeof(unsigned char)*chunk_length);
+		memcpy(dest+index,BERT_DECODER_PTR(decoder),sizeof(unsigned char)*chunk_length);
+		index += chunk_length;
 	}
 
 	return BERT_SUCCESS;
