@@ -19,7 +19,6 @@ bert_chunk_t * bert_chunk_create()
 	memset(new_chunk->data,0,sizeof(unsigned char)*BERT_CHUNK_SIZE);
 
 	new_chunk->next = NULL;
-	new_chunk->prev = NULL;
 	return new_chunk;
 }
 
@@ -95,7 +94,6 @@ int bert_buffer_write(bert_buffer_t *buffer,const unsigned char *data,size_t len
 		}
 
 		last_chunk->next = next_chunk;
-		next_chunk->prev = last_chunk;
 		last_chunk = next_chunk;
 	}
 

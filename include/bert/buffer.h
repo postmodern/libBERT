@@ -10,7 +10,6 @@ struct bert_chunk
 	size_t length;
 	unsigned char data[BERT_CHUNK_SIZE];
 
-	struct bert_chunk *prev;
 	struct bert_chunk *next;
 };
 typedef struct bert_chunk bert_chunk_t;
