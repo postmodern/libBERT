@@ -35,7 +35,7 @@ void bert_buffer_init(bert_buffer_t *buffer)
 
 int bert_buffer_empty(const bert_buffer_t *buffer)
 {
-	return (!(buffer->head) || (buffer->head->length > 0))
+	return (!(buffer->head) || (buffer->head->length > 0));
 }
 
 size_t bert_buffer_length(const bert_buffer_t *buffer)
