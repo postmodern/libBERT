@@ -115,7 +115,9 @@ int bert_buffer_write(bert_buffer_t *buffer,const unsigned char *data,size_t len
 	while (next_chunk && (i < length))
 	{
 		remaining = BERT_CHUNK_SPACE(next_chunk);
-		memcpy(BERT_CHUNK_PTR(next_chunk),data+i,sizeof(unsigned char) * remaining);
+
+		memcpy(BERT_CHUNK_PTR(next_chunk),data+i,sizeof(unsigned char)*remaining);
+		next_chunk->length += remaining;
 
 		next_chunk = next_chunk->next;
 		i += remaining;
