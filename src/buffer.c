@@ -5,6 +5,8 @@
 #include <string.h>
 #include <math.h>
 
+#define MIN(a,b)	((a) < (b) ? (a) : (b))
+
 bert_chunk_t * bert_chunk_create()
 {
 	bert_chunk_t *new_chunk;
@@ -127,6 +129,7 @@ int bert_buffer_write(bert_buffer_t *buffer,const unsigned char *data,size_t len
 ssize_t bert_buffer_read(unsigned char *dest,bert_buffer_t *buffer,size_t length)
 {
 	bert_chunk_t *next_chunk = buffer->head;
+	bert_chunk_t *last_chunk;
 
 	if (!next_chunk)
 	{
@@ -134,80 +137,37 @@ ssize_t bert_buffer_read(unsigned char *dest,bert_buffer_t *buffer,size_t length
 		return 0;
 	}
 
-	size_t total_length = (length + buffer->index);
+	// set the index
+	size_t index = buffer->index;
+	size_t num_read = 0;
+	size_t chunk_length;
 
-	if (total_length <= next_chunk->length)
+	do
 	{
-		// copy the requested length from the first chunk
-		memcpy(dest,next_chunk->data+buffer->index,sizeof(unsigned char)*length);
-		buffer->index += length;
+		// calculate the minimum length to be read
+		chunk_length = MIN((next_chunk->length - index), (length - num_read));
+		memcpy(dest+num_read,next_chunk->data+index,sizeof(unsigned char)*chunk_length);
 
-		if (buffer->index >= next_chunk->length)
-		{
-			// reset the buffer head and index
-			if (!(buffer->head = next_chunk->next))
-			{
-				buffer->tail = NULL;
-			}
-			bert_chunk_destroy(next_chunk);
+		// update the index
+		num_read += chunk_length;
+		index = ((num_read + buffer->index) % BERT_CHUNK_SIZE);
 
-			buffer->index = 0;
-		}
-
-		return length;
-	}
-
-	if (bert_buffer_length(buffer) < total_length)
-	{
-		// not enough data in the buffer
-		return -1;
-	}
-
-	// calculate the front, middle and end lengths
-	size_t front_length = (next_chunk->length - buffer->index);
-	size_t middle_length = (length - front_length);
-	size_t end_length = (middle_length % BERT_CHUNK_SIZE);
-	middle_length -= end_length;
-
-	// copy the front data
-	memcpy(dest,next_chunk->data+buffer->index,sizeof(unsigned char)*front_length);
-
-	// next chunk
-	bert_chunk_t *last_chunk = next_chunk;
-	next_chunk = next_chunk->next;
-
-	// free the read chunk
-	bert_chunk_destroy(last_chunk);
-
-	unsigned int middle_chunks = (middle_length / BERT_CHUNK_SIZE);
-	unsigned char *dest_ptr = (dest+front_length);
-	unsigned int i;
-
-	// copy the middle chunks
-	for (i=0;i<middle_chunks;i++)
-	{
-		// copy a whole middle chunk completely
-		memcpy(dest_ptr,next_chunk->data,sizeof(unsigned char)*BERT_CHUNK_SIZE);
-		dest_ptr += BERT_CHUNK_SIZE;
-
-		// next chunk
+		// get the next chunk
 		last_chunk = next_chunk;
 		next_chunk = next_chunk->next;
 
-		// free the read chunk
+		// destroy the last chunk
 		bert_chunk_destroy(last_chunk);
-	}
-
-	if (end_length)
-	{
-		// copy the end data
-		memcpy(dest_ptr,next_chunk->data,sizeof(unsigned char)*end_length);
-	}
+	} while (next_chunk && (num_read < length));
 
 	// reset the head and index
-	buffer->head = next_chunk;
-	buffer->index = end_length;
-	return length;
+	if (!(buffer->head = next_chunk))
+	{
+		buffer->tail = NULL;
+	}
+	buffer->index = index;
+
+	return num_read;
 }
 
 void bert_buffer_clear(bert_buffer_t *buffer)
