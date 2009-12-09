@@ -88,7 +88,6 @@ int bert_buffer_write(bert_buffer_t *buffer,const unsigned char *data,size_t len
 	bert_chunk_t *next_chunk;
 	unsigned int i;
 
-
 	for (i=0;i<chunks;i++)
 	{
 		if (!(next_chunk = bert_chunk_create()))
