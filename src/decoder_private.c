@@ -252,9 +252,6 @@ int bert_decode_dict(bert_decoder_t *decoder,bert_data_t **data)
 		return result;
 	}
 
-	// eat the nil byte
-	bert_decode_uint8(decoder);
-
 	if (list_data->type != bert_data_nil && list_data->type != bert_data_list)
 	{
 		// dicts terms must contain either a nil or a list
