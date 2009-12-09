@@ -28,8 +28,9 @@ int bert_list_append(bert_list_t *list,struct bert_data *data)
 	}
 
 	new_node->data = data;
+	new_node->next = NULL;
 
-	if (list->head)
+	if (list->tail)
 	{
 		list->tail->next = new_node;
 		list->tail = new_node;
