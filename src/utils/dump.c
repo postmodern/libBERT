@@ -240,6 +240,7 @@ int bert_dump(int fd)
 		{
 			case 1:
 				bert_print(next_data);
+				putchar('\n');
 				break;
 			case 0:
 				return 0;
