@@ -42,7 +42,7 @@ void bert_print_binary(const bert_data_t *data)
 	unsigned int i;
 	unsigned char b;
 
-	puts("<<");
+	printf("<<");
 
 	for (i=0;i<length;i++)
 	{
@@ -58,7 +58,7 @@ void bert_print_binary(const bert_data_t *data)
 		}
 	}
 
-	puts(">>");
+	printf(">>");
 }
 
 int bert_print_tuple(const bert_data_t *data)
@@ -78,7 +78,7 @@ int bert_print_tuple(const bert_data_t *data)
 				return -1;
 			}
 
-			puts(", ");
+			printf(", ");
 		}
 	}
 
@@ -109,7 +109,7 @@ int bert_print_list(const bert_data_t *data)
 
 		if ((list_node = list_node->next))
 		{
-			puts(", ");
+			printf(", ");
 		}
 	}
 
@@ -121,7 +121,7 @@ int bert_print_dict(const bert_data_t *data)
 {
 	bert_dict_node_t *dict_node = data->dict->head;
 
-	puts("{bert, dict, [");
+	printf("{bert, dict, [");
 
 	while (dict_node)
 	{
@@ -132,7 +132,7 @@ int bert_print_dict(const bert_data_t *data)
 			return -1;
 		}
 
-		puts(", ");
+		printf(", ");
 
 		if (bert_print(dict_node->value) == -1)
 		{
@@ -143,11 +143,11 @@ int bert_print_dict(const bert_data_t *data)
 
 		if ((dict_node = dict_node->next))
 		{
-			puts(", ");
+			printf(", ");
 		}
 	}
 
-	puts("]}");
+	printf("]}");
 	return 0;
 }
 
@@ -168,11 +168,11 @@ int bert_print(const bert_data_t *data)
 		case bert_data_boolean:
 			if (data->boolean)
 			{
-				puts("true");
+				printf("true");
 			}
 			else
 			{
-				puts("false");
+				printf("false");
 			}
 		case bert_data_int:
 			printf("%d",data->integer);
@@ -240,7 +240,6 @@ int bert_dump(int fd)
 		{
 			case 1:
 				bert_print(next_data);
-				putchar('\n');
 				break;
 			case 0:
 				return 0;
@@ -275,6 +274,7 @@ int main(int argc,const char **argv)
 				close(fd);
 				return -1;
 			}
+			putchar('\n');
 
 			close(fd);
 		}
@@ -282,5 +282,11 @@ int main(int argc,const char **argv)
 		return 0;
 	}
 
-	return bert_dump(STDIN_FILENO);
+	if (bert_dump(STDIN_FILENO) == -1)
+	{
+		return -1;
+	}
+
+	putchar('\n');
+	return 0;
 }
