@@ -279,7 +279,6 @@ int main(int argc,const char **argv)
 			close(fd);
 		}
 
-		putchar('\n');
 		return 0;
 	}
 
