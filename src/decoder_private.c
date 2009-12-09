@@ -487,21 +487,21 @@ int bert_decode_list(bert_decoder_t *decoder,bert_data_t **data)
 		return BERT_ERRNO_MALLOC;
 	}
 
-	bert_data_t *list_element;
+	bert_data_t *element;
 	unsigned int i;
 	int result;
 
 	for (i=0;i<list_size;i++)
 	{
-		if ((result = bert_decoder_next(decoder,&list_element)) != 1)
+		if ((result = bert_decoder_next(decoder,&element)) != 1)
 		{
 			bert_data_destroy(new_data);
 			return result;
 		}
 
-		if (bert_list_append(new_data->list,list_element) == BERT_ERRNO_MALLOC)
+		if (bert_list_append(new_data->list,element) == BERT_ERRNO_MALLOC)
 		{
-			bert_data_destroy(list_element);
+			bert_data_destroy(element);
 			bert_data_destroy(new_data);
 			return BERT_ERRNO_MALLOC;
 		}
