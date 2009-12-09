@@ -508,6 +508,7 @@ int bert_decode_list(bert_decoder_t *decoder,bert_data_t **data)
 		}
 	}
 
+	BERT_DECODER_PULL(decoder,1);
 	BERT_DECODER_STEP(decoder,1);
 
 	*data = new_data;
