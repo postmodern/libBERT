@@ -1,9 +1,11 @@
-#ifndef _BERT_READ_H_
-#define _BERT_READ_H_
+#ifndef _BERT_UTIL_H_
+#define _BERT_UTIL_H_
 
 #include <bert/types.h>
 
 #include <stdint.h>
+
+#define MIN(a,b)	((a) < (b) ? (a) : (b))
 
 inline uint8_t bert_read_uint8(const unsigned char *ptr);
 inline int8_t bert_read_int8(const unsigned char *ptr);
