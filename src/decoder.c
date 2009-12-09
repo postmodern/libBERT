@@ -10,7 +10,15 @@
 
 #define BERT_DECODER_STEP(decoder,i)	(decoder->short_index += i)
 #define BERT_DECODER_PTR(decoder)	(decoder->short_buffer + decoder->short_index)
-#define BERT_DECODER_PULL(decoder,i)	switch (bert_decoder_pull(decoder,i)) { case BERT_ERRNO_MALLOC: return BERT_ERRNO_MALLOC; case BERT_ERRNO_EMPTY: return BERT_ERRNO_EMPTY; }
+#define BERT_DECODER_PULL(decoder,i)	switch (bert_decoder_pull(decoder,i)) { \
+						case BERT_ERRNO_MALLOC: \
+							return BERT_ERRNO_MALLOC; \
+						case BERT_ERRNO_SHORT: \
+						case BERT_ERRNO_EMPTY: \
+							return BERT_ERRNO_SHORT; \
+						case BERT_ERRNO_INVALID: \
+							return BERT_ERRNO_INVALID; \
+					}
 
 inline uint8_t bert_decode_uint8(bert_decoder_t *decoder)
 {
@@ -581,11 +589,16 @@ int bert_decode_list(bert_decoder_t *decoder,bert_data_t **data)
 
 int bert_decoder_empty(const bert_decoder_t *decoder)
 {
-	return (((decoder->short_length - decoder->short_index) == 0) && (bert_buffer_empty(&(decoder->buffer))));
+	return (((decoder->short_length - decoder->short_index) == 0) && bert_buffer_empty(&(decoder->buffer)));
 }
 
 int bert_decoder_next(bert_decoder_t *decoder,bert_data_t **data)
 {
+	if (bert_decoder_empty(decoder))
+	{
+		return 0;
+	}
+
 	BERT_DECODER_PULL(decoder,1);
 
 	bert_magic_t magic = bert_decode_magic(decoder);
