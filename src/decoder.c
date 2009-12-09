@@ -23,6 +23,8 @@ bert_decoder_t * bert_decoder_create()
 
 	new_decoder->short_length = 0;
 	new_decoder->short_index = 0;
+
+	memset(new_decoder->short_buffer,0,sizeof(unsigned char)*BERT_SHORT_BUFFER);
 	return new_decoder;
 }
 
