@@ -7,7 +7,7 @@
 #include <malloc.h>
 #include <string.h>
 
-
+#define BERT_DECODER_EMPTY(decoder)	(BERT_SHORT_BUFFER - decoder->short_length)
 #define BERT_DECODER_STEP(decoder,i)	(decoder->short_index += i)
 #define BERT_DECODER_PTR(decoder)	(decoder->short_buffer + decoder->short_index)
 #define BERT_DECODER_PULL(decoder,i)	switch (bert_decoder_pull(decoder,i)) { \
@@ -104,9 +104,9 @@ int bert_decoder_pull(bert_decoder_t *decoder,size_t size)
 		return BERT_SUCCESS;
 	}
 
-	size_t empty_space = (BERT_SHORT_BUFFER - decoder->short_length);
+	size_t empty_space = BERT_DECODER_EMPTY(decoder);
 
-	if (empty_space >= BERT_CHUNK_SIZE)
+	if (empty_space >= (BERT_SHORT_BUFFER / 2))
 	{
 		// fill the remaining space in the short buffer
 		goto fill_short_buffer;
@@ -114,7 +114,7 @@ int bert_decoder_pull(bert_decoder_t *decoder,size_t size)
 
 	size_t unread_space = (decoder->short_length - decoder->short_index);
 
-	if (unread_space > 0)
+	if (unread_space)
 	{
 		// shift the other half of the short buffer down
 		memcpy(decoder->short_buffer,decoder->short_buffer+decoder->short_index,sizeof(unsigned char)*unread_space);
@@ -122,22 +122,20 @@ int bert_decoder_pull(bert_decoder_t *decoder,size_t size)
 
 	decoder->short_length = unread_space;
 	decoder->short_index = 0;
+	empty_space = BERT_DECODER_EMPTY(decoder);
 
-	ssize_t read_length;
+	ssize_t length;
 
 fill_short_buffer:
-	read_length = bert_buffer_read(decoder->short_buffer+decoder->short_length,&(decoder->buffer),size);
+	length = bert_buffer_read(decoder->short_buffer+decoder->short_length,&(decoder->buffer),empty_space);
 
-	switch (read_length)
+	decoder->short_length += length;
+
+	if ((decoder->short_length - decoder->short_index) < size)
 	{
-		case -1:
-			return BERT_ERRNO_SHORT;
-		case 0:
-			return BERT_ERRNO_EMPTY;
-		default:
-			decoder->short_index += read_length;
-			return BERT_SUCCESS;
+		return BERT_ERRNO_EMPTY;
 	}
+	return BERT_SUCCESS;
 }
 
 void bert_decoder_destroy(bert_decoder_t *decoder)
