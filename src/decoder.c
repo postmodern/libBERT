@@ -579,6 +579,11 @@ int bert_decode_list(bert_decoder_t *decoder,bert_data_t **data)
 	return BERT_SUCCESS;
 }
 
+int bert_decoder_empty(const bert_decoder_t *decoder)
+{
+	return (((decoder->short_length - decoder->short_index) == 0) && (bert_buffer_empty(&(decoder->buffer))));
+}
+
 int bert_decoder_next(bert_decoder_t *decoder,bert_data_t **data)
 {
 	BERT_DECODER_PULL(decoder,1);
