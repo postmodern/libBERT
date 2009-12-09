@@ -21,7 +21,7 @@ typedef struct bert_decoder bert_decoder_t;
 
 extern bert_decoder_t * bert_decoder_create();
 extern int bert_decoder_push(bert_decoder_t *decoder,const unsigned char *data,size_t length);
-extern int bert_decode_data(bert_decoder_t *decoder,bert_data_t **data_ptr);
+extern int bert_decoder_next(bert_decoder_t *decoder,bert_data_t **data_ptr);
 extern void bert_decode_destroy(bert_decoder_t *decoder);
 
 #endif
