@@ -1,4 +1,5 @@
 #include <bert/decoder.h>
+#include <bert/read.h>
 #include <bert/dict.h>
 #include <bert/magic.h>
 #include <bert/errno.h>
@@ -6,7 +7,6 @@
 #include <malloc.h>
 #include <string.h>
 
-#include "read.h"
 
 #define BERT_DECODER_STEP(decoder,i)	(decoder->short_index += i)
 #define BERT_DECODER_PTR(decoder)	(decoder->short_buffer + decoder->short_index)
@@ -268,7 +268,7 @@ inline int bert_decode_string(bert_decoder_t *decoder,bert_data_t **data)
 
 int bert_decode_time(bert_decoder_t *decoder,bert_data_t **data)
 {
-	// 3 magic bytes and 4 uint32s
+	// 3 magic bytes and uint32s
 	BERT_DECODER_PULL(decoder,3 * (1 + 4));
 
 	// must be an integer
