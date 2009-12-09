@@ -261,7 +261,7 @@ int main(int argc,const char **argv)
 		int i;
 		int fd;
 
-		for (i=2;i<argc;i++)
+		for (i=1;i<argc;i++)
 		{
 			if ((fd = open(argv[i],O_RDONLY)) == -1)
 			{
