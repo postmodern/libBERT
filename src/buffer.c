@@ -27,7 +27,7 @@ inline void bert_chunk_destroy(bert_chunk_t *chunk)
 	free(chunk);
 }
 
-inline void bert_buffer_init(bert_buffer_t *buffer)
+void bert_buffer_init(bert_buffer_t *buffer)
 {
 	buffer->head = NULL;
 	buffer->tail = NULL;
@@ -211,6 +211,5 @@ void bert_buffer_clear(bert_buffer_t *buffer)
 		next_chunk = last_chunk->next;
 	}
 
-	buffer->head = NULL;
-	buffer->tail = NULL;
+	bert_buffer_init(buffer);
 }
