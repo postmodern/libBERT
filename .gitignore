@@ -4,6 +4,7 @@ Makefile
 cmake_install.cmake
 install_manifest.txt
 include/bert/config.h
+bert_dump
 *.o
 *.a
 *.so
