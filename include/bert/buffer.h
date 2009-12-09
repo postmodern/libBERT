@@ -32,6 +32,7 @@ typedef struct bert_buffer bert_buffer_t;
 #define BERT_BUFFER_EMPTY(buffer)	(!(buffer->head) || (buffer->head->length == 0))
 
 void bert_buffer_init(bert_buffer_t *buffer);
+int bert_buffer_empty(const bert_buffer_t *buffer);
 size_t bert_buffer_length(const bert_buffer_t *buffer);
 int bert_buffer_write(bert_buffer_t *buffer,const unsigned char *data,size_t length);
 ssize_t bert_buffer_read(unsigned char *dest,bert_buffer_t *buffer,size_t length);
