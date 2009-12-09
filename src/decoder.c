@@ -74,41 +74,16 @@ bert_decoder_t * bert_decoder_create()
 		return NULL;
 	}
 
-	new_decoder->buffer_head = NULL;
-	new_decoder->buffer_tail = NULL;
+	bert_buffer_init(&(new_decoder->buffer));
 
 	new_decoder->short_length = 0;
 	new_decoder->short_index = 0;
-
 	return new_decoder;
 }
 
 int bert_decoder_push(bert_decoder_t *decoder,const unsigned char *data,size_t length)
 {
-	bert_buffer_t *new_buffer;
-
-	if (!(decoder->buffer_head))
-	{
-		bert_buffer_t *new_buffer;
-
-		if (!(new_buffer = bert_buffer_create()))
-		{
-			// malloc failed
-			return BERT_ERRNO_MALLOC;
-		}
-
-		decoder->buffer_head = new_buffer;
-		decoder->buffer_tail = new_buffer;
-	}
-
-	if (!(new_buffer = bert_buffer_write(decoder->buffer_tail,data,length)))
-	{
-		// malloc failed
-		return BERT_ERRNO_MALLOC;
-	}
-
-	decoder->buffer_tail = new_buffer;
-	return BERT_SUCCESS;
+	return bert_buffer_write(&(decoder->buffer),data,length);
 }
 
 int bert_decoder_pull(bert_decoder_t *decoder,size_t size)
@@ -121,17 +96,9 @@ int bert_decoder_pull(bert_decoder_t *decoder,size_t size)
 		return BERT_SUCCESS;
 	}
 
-	bert_buffer_t *buffer = decoder->buffer_head;
-
-	if (!buffer)
-	{
-		// we have no more data
-		return BERT_ERRNO_EMPTY;
-	}
-
 	size_t empty_space = (BERT_SHORT_BUFFER - decoder->short_length);
 
-	if (empty_space >= BERT_BUFFER_CHUNK)
+	if (empty_space >= BERT_CHUNK_SIZE)
 	{
 		// fill the remaining space in the short buffer
 		goto fill_short_buffer;
@@ -148,20 +115,26 @@ int bert_decoder_pull(bert_decoder_t *decoder,size_t size)
 	decoder->short_length = unread_space;
 	decoder->short_index = 0;
 
-fill_short_buffer:
-	// fill up the short buffer
-	memcpy(decoder->short_buffer+decoder->short_length,buffer->chunk,sizeof(unsigned char)*buffer->chunk_length);
-	decoder->short_length += buffer->chunk_length;
+	ssize_t read_length;
 
-	// remove the consumed buffer chunk
-	decoder->buffer_head = buffer->next;
-	bert_buffer_destroy(buffer);
-	return BERT_SUCCESS;
+fill_short_buffer:
+	read_length = bert_buffer_read(decoder->short_buffer+decoder->short_length,&(decoder->buffer),size);
+
+	switch (read_length)
+	{
+		case -1:
+			return BERT_ERRNO_SHORT;
+		case 0:
+			return BERT_ERRNO_EMPTY;
+		default:
+			decoder->short_index += read_length;
+			return BERT_SUCCESS;
+	}
 }
 
 void bert_decoder_destroy(bert_decoder_t *decoder)
 {
-	bert_buffer_destroy(decoder->buffer_tail);
+	bert_buffer_clear(&(decoder->buffer));
 	free(decoder);
 }
 

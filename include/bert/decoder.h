@@ -6,13 +6,12 @@
 
 #include <sys/types.h>
 
-#define BERT_SHORT_BUFFER	(BERT_BUFFER_CHUNK * 2)
+#define BERT_SHORT_BUFFER	(BERT_CHUNK_SIZE * 2)
 #define BERT_DECODER_LEFT(b)	(b->buffer_head ? bert_buffer_length(b->buffer_head) - b->chunk_index : 0)
 
 struct bert_decoder
 {
-	bert_buffer_t *buffer_head;
-	bert_buffer_t *buffer_tail;
+	bert_buffer_t buffer;
 
 	size_t short_length;
 	unsigned int short_index;
