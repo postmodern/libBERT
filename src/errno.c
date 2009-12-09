@@ -14,7 +14,7 @@ const char * bert_strerror(int errno)
 		return bert_errors[0];
 	}
 
-	unsigned int index = (-errno);
+	unsigned int index = (-errno) - 1;
 
 	return bert_errors[index];
 }
