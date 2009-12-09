@@ -1,133 +1,132 @@
 #include <bert/buffer.h>
+#include <bert/errno.h>
 
 #include <malloc.h>
 #include <string.h>
+#include <math.h>
 
-#define BERT_BUFFER_PTR(buffer)		(buffer->chunk + buffer->chunk_length)
-
-bert_buffer_t * bert_buffer_create()
+bert_chunk_t * bert_chunk_create()
 {
-	bert_buffer_t *new_buffer;
+	bert_chunk_t *new_chunk;
 
-	if (!(new_buffer = malloc(sizeof(bert_buffer_t))))
-	{
-		return NULL;
-	}
-
-	new_buffer->chunk_length = 0;
-	memset(new_buffer->chunk,0,sizeof(unsigned char)*BERT_BUFFER_CHUNK);
-
-	new_buffer->prev = NULL;
-	new_buffer->next = NULL;
-	return new_buffer;
-}
-
-size_t bert_buffer_length(const bert_buffer_t *buffer)
-{
-	const bert_buffer_t *next_buffer = buffer;
-	size_t s;
-
-	while (next_buffer)
-	{
-		s += next_buffer->chunk_length;
-		next_buffer = next_buffer->next;
-	}
-
-	return s;
-}
-
-bert_buffer_t * bert_buffer_extend(bert_buffer_t *buffer,size_t length)
-{
-	bert_buffer_t *next_buffer = buffer;
-	unsigned int remaining = 0;
-
-	while (next_buffer)
-	{
-		remaining += BERT_BUFFER_LEFT(next_buffer);
-		next_buffer = next_buffer->next;
-	}
-
-	if (length <= remaining)
-	{
-		// there is still room left in the buffer's chunk
-		return buffer;
-	}
-
-	// adjust length for space left in the buffer's chunk
-	unsigned int adjusted_length = (length - BERT_BUFFER_LEFT(buffer));
-	unsigned int chunks = (adjusted_length / BERT_BUFFER_CHUNK);
-
-	if (adjusted_length % BERT_BUFFER_CHUNK)
-	{
-		// add a chunk for any length left over
-		++chunks;
-	}
-
-	bert_buffer_t *last_buffer = buffer;
-	bert_buffer_t *new_buffer;
-	unsigned int i;
-
-	for (i=0;i<chunks;i++)
-	{
-		if (!(new_buffer = bert_buffer_create()))
-		{
-			last_buffer = buffer->next;
-
-			// cleanup our new buffers
-			while (last_buffer)
-			{
-				free(last_buffer);
-				last_buffer = last_buffer->next;
-			}
-
-			// malloc failed
-			return NULL;
-		}
-
-		last_buffer->next = new_buffer;
-		new_buffer->prev = last_buffer;
-		last_buffer = new_buffer;
-	}
-
-	return new_buffer;
-}
-
-bert_buffer_t * bert_buffer_write(bert_buffer_t *buffer,const unsigned char *data,size_t length)
-{
-	bert_buffer_t *new_buffer;
-
-	if (!(new_buffer = bert_buffer_extend(buffer,length)))
+	if (!(new_chunk = malloc(sizeof(bert_chunk_t))))
 	{
 		// malloc failed
 		return NULL;
 	}
 
-	bert_buffer_t *next_buffer = buffer;
-	unsigned int index = 0;
-	unsigned int remaining;
+	new_chunk->length = 0;
+	memset(new_chunk->data,0,sizeof(unsigned char)*BERT_CHUNK_SIZE);
 
-	while (next_buffer && (index < length))
-	{
-		remaining = BERT_BUFFER_LEFT(next_buffer);
-		memcpy(BERT_BUFFER_PTR(next_buffer),data+index,remaining * sizeof(unsigned char));
-
-		next_buffer = next_buffer->next;
-		index += remaining;
-	}
-
-	return new_buffer;
+	new_chunk->next = NULL;
+	new_chunk->prev = NULL;
+	return new_chunk;
 }
 
-void bert_buffer_destroy(bert_buffer_t *buffer)
+void bert_chunk_destroy(bert_chunk_t *chunk)
 {
-	bert_buffer_t *prev = buffer;
-	bert_buffer_t *last = NULL;
+	free(chunk);
+}
 
-	while (prev)
+void bert_buffer_init(bert_buffer_t *buffer)
+{
+	buffer->head = NULL;
+	buffer->tail = NULL;
+}
+
+size_t bert_buffer_length(const bert_buffer_t *buffer)
+{
+	if (!BERT_BUFFER_EMPTY(buffer))
 	{
-		last = prev;
-		prev = prev->prev;
-
-		free(last);
+		return 0;
 	}
+
+	const bert_chunk_t *next_chunk = buffer->head;
+	size_t s;
+
+	while (next_chunk)
+	{
+		s += next_chunk->length;
+		next_chunk = next_chunk->next;
+	}
+
+	return s;
+}
+
+int bert_buffer_write(bert_buffer_t *buffer,const unsigned char *data,size_t length)
+{
+	if (!(buffer->tail))
+	{
+		bert_chunk_t *new_chunk;
+		
+		if (!(new_chunk = bert_chunk_create()))
+		{
+			return BERT_ERRNO_MALLOC;
+		}
+
+		buffer->head = new_chunk;
+		buffer->tail = new_chunk;
+	}
+
+	bert_chunk_t *start_chunk = buffer->tail;
+	bert_chunk_t *last_chunk = start_chunk;
+	bert_chunk_t *next_chunk;
+
+	size_t remaining = BERT_CHUNK_SPACE(start_chunk);
+	unsigned int chunks = (int)ceil((length - remaining) / (double)BERT_CHUNK_SIZE);
+
+	unsigned int i;
+
+	for (i=0;i<chunks;i++)
+	{
+		if (!(next_chunk = bert_chunk_create()))
+		{
+			next_chunk = start_chunk->next;
+
+			// cleanup our new buffer chunks
+			while (next_chunk)
+			{
+				bert_chunk_destroy(next_chunk);
+				next_chunk = next_chunk->next;
+			}
+
+			// malloc failed
+			return BERT_ERRNO_MALLOC;
+		}
+
+		last_chunk->next = next_chunk;
+		next_chunk->prev = last_chunk;
+		last_chunk = next_chunk;
+	}
+
+	next_chunk = start_chunk;
+	i = 0;
+
+	while (next_chunk && (i < length))
+	{
+		remaining = BERT_CHUNK_SPACE(next_chunk);
+		memcpy(BERT_CHUNK_PTR(next_chunk),data+i,sizeof(unsigned char) * remaining);
+
+		next_chunk = next_chunk->next;
+		i += remaining;
+	}
+
+	return BERT_SUCCESS;
+}
+
+void bert_buffer_clear(bert_buffer_t *buffer)
+{
+	bert_chunk_t *next_chunk = buffer->head;
+	bert_chunk_t *last_chunk;
+
+	while (next_chunk)
+	{
+		last_chunk = next_chunk;
+
+		bert_chunk_destroy(next_chunk);
+		next_chunk = last_chunk->next;
+	}
+
+	buffer->head = NULL;
+	buffer->tail = NULL;
 }

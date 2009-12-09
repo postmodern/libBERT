@@ -3,24 +3,36 @@
 
 #include <sys/types.h>
 
-#define BERT_BUFFER_CHUNK	256
+#define BERT_CHUNK_SIZE	256
+
+struct bert_chunk
+{
+	size_t length;
+	unsigned char data[BERT_CHUNK_SIZE];
+
+	struct bert_chunk *prev;
+	struct bert_chunk *next;
+};
+typedef struct bert_chunk bert_chunk_t;
+
+#define BERT_CHUNK_SPACE(chunk)	(BERT_CHUNK_SIZE - chunk->length)
+#define BERT_CHUNK_PTR(chunk)	(chunk->data + chunk->length)
+
+bert_chunk_t * bert_chunk_create();
+void bert_chunk_destroy(bert_chunk_t *chunk);
 
 struct bert_buffer
 {
-	size_t chunk_length;
-	unsigned char chunk[BERT_BUFFER_CHUNK];
-
-	struct bert_buffer *prev;
-	struct bert_buffer *next;
+	bert_chunk_t *head;
+	bert_chunk_t *tail;
 };
 typedef struct bert_buffer bert_buffer_t;
 
-#define BERT_BUFFER_LEFT(buffer)	(BERT_BUFFER_CHUNK - buffer->chunk_length)
+#define BERT_BUFFER_EMPTY(buffer)	(!(buffer->head) || (buffer->head->length == 0))
 
-bert_buffer_t * bert_buffer_create();
+void bert_buffer_init(bert_buffer_t *buffer);
 size_t bert_buffer_length(const bert_buffer_t *buffer);
-bert_buffer_t * bert_buffer_extend(bert_buffer_t *buffer,size_t length);
-bert_buffer_t * bert_buffer_write(bert_buffer_t *buffer,const unsigned char *data,size_t length);
-void bert_buffer_destroy(bert_buffer_t *buffer);
+int bert_buffer_write(bert_buffer_t *buffer,const unsigned char *data,size_t length);
+void bert_buffer_clear(bert_buffer_t *buffer);
 
 #endif
