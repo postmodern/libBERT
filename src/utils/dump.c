@@ -240,6 +240,7 @@ int bert_dump(int fd)
 		{
 			case 1:
 				bert_print(next_data);
+				putchar('\n');
 				break;
 			case 0:
 				return 0;
@@ -274,7 +275,6 @@ int main(int argc,const char **argv)
 				close(fd);
 				return -1;
 			}
-			putchar('\n');
 
 			close(fd);
 		}
@@ -282,11 +282,5 @@ int main(int argc,const char **argv)
 		return 0;
 	}
 
-	if (bert_dump(STDIN_FILENO) == -1)
-	{
-		return -1;
-	}
-
-	putchar('\n');
-	return 0;
+	return bert_dump(STDIN_FILENO);
 }
