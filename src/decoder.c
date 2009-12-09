@@ -161,11 +161,9 @@ inline int bert_decode_small_int(bert_decoder_t *decoder,bert_data_t **data)
 {
 	BERT_DECODER_PULL(decoder,1);
 
-	int8_t i = bert_read_int8(BERT_DECODER_PTR(decoder));
-
 	bert_data_t *new_data;
 
-	if (!(new_data = bert_data_create_int(i)))
+	if (!(new_data = bert_data_create_int(bert_decode_int8(decoder))))
 	{
 		return BERT_ERRNO_MALLOC;
 	}
@@ -178,11 +176,9 @@ inline int bert_decode_big_int(bert_decoder_t *decoder,bert_data_t **data)
 {
 	BERT_DECODER_PULL(decoder,4);
 
-	int32_t i = bert_read_int32(BERT_DECODER_PTR(decoder));
-
 	bert_data_t *new_data;
 
-	if (!(new_data = bert_data_create_int(i)))
+	if (!(new_data = bert_data_create_int(bert_decode_int32(decoder))))
 	{
 		return BERT_ERRNO_MALLOC;
 	}
@@ -233,14 +229,14 @@ inline int bert_decode_small_bignum(bert_decoder_t *decoder,bert_data_t **data)
 {
 	BERT_DECODER_PULL(decoder,1);
 
-	return bert_decode_bignum(decoder,data,bert_read_uint8(BERT_DECODER_PTR(decoder)));
+	return bert_decode_bignum(decoder,data,bert_decode_uint8(decoder));
 }
 
 inline int bert_decode_big_bignum(bert_decoder_t *decoder,bert_data_t **data)
 {
 	BERT_DECODER_PULL(decoder,4);
 
-	return bert_decode_bignum(decoder,data,bert_read_uint32(BERT_DECODER_PTR(decoder)));
+	return bert_decode_bignum(decoder,data,bert_decode_uint32(decoder));
 }
 
 inline int bert_decode_string(bert_decoder_t *decoder,bert_data_t **data)
