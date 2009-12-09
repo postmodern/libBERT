@@ -209,7 +209,7 @@ bert_data_t * bert_data_create_tuple(bert_tuple_size_t length)
 {
 	bert_data_t **new_elements;
 
-	if (!(new_elements = malloc(sizeof(bert_data_t *) * length)));
+	if (!(new_elements = malloc(sizeof(bert_data_t *) * length)))
 	{
 		// malloc failed
 		goto cleanup;
