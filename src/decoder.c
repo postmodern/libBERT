@@ -61,7 +61,17 @@ int bert_decoder_push(bert_decoder_t *decoder,const unsigned char *data,size_t l
 
 int bert_decoder_next(bert_decoder_t *decoder,bert_data_t **data)
 {
-	BERT_DECODER_PULL(decoder,1);
+	int result;
+	
+	switch ((result = bert_decoder_pull(decoder,1)))
+	{
+		case BERT_SUCCESS:
+			break;
+		case BERT_ERRNO_EMPTY:
+			return 0;
+		default:
+			return result;
+	}
 
 	bert_magic_t magic = bert_decode_magic(decoder);
 
@@ -72,8 +82,6 @@ int bert_decoder_next(bert_decoder_t *decoder,bert_data_t **data)
 
 		magic = bert_decode_magic(decoder);
 	}
-
-	int result = 0;
 
 	// decode primative data first
 	switch (magic)
