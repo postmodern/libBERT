@@ -39,7 +39,19 @@ bert_decoder_t * bert_decoder_buffer()
 
 int bert_decoder_empty(const bert_decoder_t *decoder)
 {
-	return (((decoder->short_length - decoder->short_index) == 0) && bert_buffer_empty(&(decoder->buffer)));
+	if ((decoder->short_length - decoder->short_index) > 0)
+	{
+		return 0;
+	}
+	    
+	switch (decoder->mode)
+	{
+		case bert_decoder_buffered:
+			return bert_buffer_empty(&(decoder->buffer));
+		case bert_decoder_streaming:
+		default:
+			return 1;
+	}
 }
 
 int bert_decoder_push(bert_decoder_t *decoder,const unsigned char *data,size_t length)
@@ -49,11 +61,6 @@ int bert_decoder_push(bert_decoder_t *decoder,const unsigned char *data,size_t l
 
 int bert_decoder_next(bert_decoder_t *decoder,bert_data_t **data)
 {
-	if (bert_decoder_empty(decoder))
-	{
-		return 0;
-	}
-
 	BERT_DECODER_PULL(decoder,1);
 
 	bert_magic_t magic = bert_decode_magic(decoder);
