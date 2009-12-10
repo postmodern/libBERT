@@ -296,20 +296,12 @@ int bert_decode_dict(bert_decoder_t *decoder,bert_data_t **data)
 				return BERT_ERRNO_INVALID;
 			}
 
-			if ((result = bert_decoder_next(decoder,&key_data)) != 1)
-			{
-				bert_data_destroy(new_data);
-				bert_data_destroy(list_data);
-				return result;
-			}
+			key_data = next_tuple->tuple.elements[0];
+			value_data = next_tuple->tuple.elements[1];
 
-			if ((result = bert_decoder_next(decoder,&value_data)) != 1)
-			{
-				bert_data_destroy(key_data);
-				bert_data_destroy(new_data);
-				bert_data_destroy(list_data);
-				return result;
-			}
+			// hackish but removes the need to do a deep copy
+			next_tuple->tuple.elements[0] = NULL;
+			next_tuple->tuple.elements[1] = NULL;
 
 			// append the key -> value pair to the dict
 			if (bert_dict_append(new_data->dict,key_data,value_data) == BERT_ERRNO_MALLOC)
