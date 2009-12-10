@@ -32,6 +32,7 @@ void bert_buffer_init(bert_buffer_t *buffer)
 {
 	buffer->head = NULL;
 	buffer->tail = NULL;
+	buffer->index = 0;
 }
 
 int bert_buffer_empty(const bert_buffer_t *buffer)
