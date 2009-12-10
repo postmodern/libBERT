@@ -18,7 +18,7 @@ int main()
 
 	const unsigned char data[] = {'A'};
 
-	bert_buffer_write(&buffer,data,sizeof(data));
+	bert_buffer_write(&buffer,data,1);
 
 	if (bert_buffer_empty(&buffer))
 	{

@@ -5,6 +5,11 @@ cmake_install.cmake
 install_manifest.txt
 include/bert/config.h
 bert_dump
+test/test_buffer_empty
+test/test_buffer_length
+test/test_buffer_small_write
+test/test_buffer_big_write
+test/test_buffer_read
 *.o
 *.a
 *.so
