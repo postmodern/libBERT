@@ -576,6 +576,11 @@ fill_short_buffer:
 	{
 		case bert_decoder_streaming:
 			length = read(decoder->fd,short_ptr,sizeof(unsigned char)*empty_space);
+
+			if (length < 0)
+			{
+				return BERT_ERRNO_READ;
+			}
 			break;
 		case bert_decoder_buffered:
 			length = bert_buffer_read(short_ptr,&(decoder->buffer),empty_space);
@@ -584,11 +589,17 @@ fill_short_buffer:
 			return BERT_ERRNO_INVALID;
 	}
 
+	if (!(length && remaining_space))
+	{
+		// no more data to read and the short buffer is empty
+		return BERT_ERRNO_EMPTY;
+	}
+
 	decoder->short_length += length;
 
 	if ((decoder->short_length - decoder->short_index) < size)
 	{
-		return BERT_ERRNO_EMPTY;
+		return BERT_ERRNO_SHORT;
 	}
 	return BERT_SUCCESS;
 }
