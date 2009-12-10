@@ -4,7 +4,6 @@
 
 #include <malloc.h>
 #include <string.h>
-#include <math.h>
 
 bert_chunk_t * bert_chunk_create()
 {
@@ -84,7 +83,13 @@ int bert_buffer_write(bert_buffer_t *buffer,const unsigned char *data,size_t len
 		return BERT_SUCCESS;
 	}
 
-	unsigned int chunks = (int)ceil((length - remaining) / (double)BERT_CHUNK_SIZE);
+	unsigned int chunks = ((length - remaining) / BERT_CHUNK_SIZE);
+
+	if ((length - remaining) % BERT_CHUNK_SIZE)
+	{
+		++chunks;
+	}
+
 	bert_chunk_t *last_chunk = start_chunk;
 	bert_chunk_t *next_chunk;
 	unsigned int i;

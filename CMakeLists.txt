@@ -15,7 +15,7 @@ add_definitions("-Wall")
 add_library(BERT SHARED src/errno.c src/util.c src/buffer.c src/list.c src/dict.c src/data.c src/decoder_private.c src/decoder.c src/bert.c)
 
 add_executable(bert_dump src/utils/dump.c)
-target_link_libraries(bert_dump BERT m)
+target_link_libraries(bert_dump BERT)
 
 install(TARGETS BERT
 	LIBRARY DESTINATION ${LIB_INSTALL_DIR})
