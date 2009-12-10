@@ -7,11 +7,11 @@
 #define BERT_DECODER_STEP(decoder,i)	(decoder->short_index += i)
 #define BERT_DECODER_PTR(decoder)	(decoder->short_buffer + decoder->short_index)
 #define BERT_DECODER_PULL(decoder,i)	switch (bert_decoder_pull(decoder,i)) { \
-						case BERT_ERRNO_MALLOC: \
-							return BERT_ERRNO_MALLOC; \
-						case BERT_ERRNO_SHORT: \
 						case BERT_ERRNO_EMPTY: \
+						case BERT_ERRNO_SHORT: \
 							return BERT_ERRNO_SHORT; \
+						case BERT_ERRNO_READ: \
+							return BERT_ERRNO_READ; \
 						case BERT_ERRNO_INVALID: \
 							return BERT_ERRNO_INVALID; \
 					}
