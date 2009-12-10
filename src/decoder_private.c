@@ -589,7 +589,7 @@ fill_short_buffer:
 			return BERT_ERRNO_INVALID;
 	}
 
-	if (!(length && remaining_space))
+	if (!(length || remaining_space))
 	{
 		// no more data to read and the short buffer is empty
 		return BERT_ERRNO_EMPTY;
