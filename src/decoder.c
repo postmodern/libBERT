@@ -141,6 +141,10 @@ int bert_decoder_next(bert_decoder_t *decoder,bert_data_t **data)
 
 void bert_decoder_destroy(bert_decoder_t *decoder)
 {
-	bert_buffer_clear(&(decoder->buffer));
+	if (decoder->mode == bert_decoder_buffered)
+	{
+		bert_buffer_clear(&(decoder->buffer));
+	}
+
 	free(decoder);
 }
