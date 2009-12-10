@@ -64,7 +64,7 @@ int bert_buffer_write(bert_buffer_t *buffer,const unsigned char *data,size_t len
 	if (!(buffer->tail))
 	{
 		bert_chunk_t *new_chunk;
-		
+
 		if (!(new_chunk = bert_chunk_create()))
 		{
 			return BERT_ERRNO_MALLOC;
