@@ -13,6 +13,7 @@ test/test_buffer_small_write
 test/test_buffer_big_write
 test/test_buffer_small_read
 test/test_buffer_big_read
+test/test_buffer_clear
 *.o
 *.a
 *.so

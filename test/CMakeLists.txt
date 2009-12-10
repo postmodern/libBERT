@@ -25,3 +25,7 @@ add_test(buffer_read_small test_buffer_small_read)
 add_executable(test_buffer_big_read test_buffer_big_read.c)
 target_link_libraries(test_buffer_big_read test BERT m)
 add_test(buffer_read_big test_buffer_big_read)
+
+add_executable(test_buffer_clear test_buffer_clear.c)
+target_link_libraries(test_buffer_clear test BERT m)
+add_test(buffer_clear test_buffer_clear)
