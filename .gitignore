@@ -7,6 +7,7 @@ include/bert/config.h
 bert_dump
 test/Testing
 test/CTestTestfile.cmake
+test/test_buffer_init
 test/test_buffer_empty
 test/test_buffer_length
 test/test_buffer_small_write

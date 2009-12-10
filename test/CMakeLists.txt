@@ -2,6 +2,10 @@ enable_testing()
 
 add_library(test STATIC test.c)
 
+add_executable(test_buffer_init test_buffer_init.c)
+target_link_libraries(test_buffer_init test BERT m)
+add_test(buffer_init test_buffer_init)
+
 add_executable(test_buffer_empty test_buffer_empty.c)
 target_link_libraries(test_buffer_empty test BERT m)
 add_test(buffer_empty test_buffer_empty)
