@@ -15,6 +15,9 @@ int main()
 	bert_buffer_init(&buffer);
 
 	memset(data,'A',DATA_SIZE);
+
+	bert_buffer_write(&buffer,data,DATA_SIZE);
+	bert_buffer_write(&buffer,data,DATA_SIZE);
 	bert_buffer_write(&buffer,data,DATA_SIZE);
 
 	unsigned char output[DATA_SIZE];
@@ -24,8 +27,6 @@ int main()
 	{
 		test_fail("bert_buffer_read only read %u bytes, expected %u",result,DATA_SIZE);
 	}
-
-	int i;
 
 	if (memcmp(output,data,DATA_SIZE))
 	{
