@@ -16,9 +16,12 @@ int main()
 
 	memset(data,'A',DATA_SIZE);
 
-	bert_buffer_write(&buffer,data,DATA_SIZE);
-	bert_buffer_write(&buffer,data,DATA_SIZE);
-	bert_buffer_write(&buffer,data,DATA_SIZE);
+	unsigned int i;
+
+	for (i=0;i<((BERT_CHUNK_SIZE / DATA_SIZE) * 2);i++)
+	{
+		bert_buffer_write(&buffer,data,DATA_SIZE);
+	}
 
 	unsigned char output[DATA_SIZE];
 	size_t result;
