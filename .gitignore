@@ -9,7 +9,7 @@ test/test_buffer_empty
 test/test_buffer_length
 test/test_buffer_small_write
 test/test_buffer_big_write
-test/test_buffer_read
+test/test_buffer_big_read
 *.o
 *.a
 *.so

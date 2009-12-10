@@ -12,5 +12,5 @@ target_link_libraries(test_buffer_small_write test BERT m)
 add_executable(test_buffer_big_write test_buffer_big_write.c)
 target_link_libraries(test_buffer_big_write test BERT m)
 
-add_executable(test_buffer_read test_buffer_read.c)
-target_link_libraries(test_buffer_read test BERT m)
+add_executable(test_buffer_big_read test_buffer_big_read.c)
+target_link_libraries(test_buffer_big_read test BERT m)

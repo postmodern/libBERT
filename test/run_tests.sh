@@ -1,6 +1,6 @@
 #!/bin/sh
 
-TESTS=( buffer_empty buffer_length buffer_small_write buffer_big_write buffer_read )
+TESTS=( buffer_empty buffer_length buffer_small_write buffer_big_write buffer_big_read )
 
 for test_case in ${TESTS[@]}; do
 	echo ">>> Running test: $test_case ..."
