@@ -4,6 +4,8 @@
 #include <bert/util.h>
 #include <bert/errno.h>
 
+#include <malloc.h>
+#include <unistd.h>
 #include <string.h>
 
 inline uint8_t bert_decode_uint8(bert_decoder_t *decoder)
@@ -515,6 +517,25 @@ int bert_decode_list(bert_decoder_t *decoder,bert_data_t **data)
 	return BERT_SUCCESS;
 }
 
+bert_decoder_t * bert_decoder_create()
+{
+	bert_decoder_t *new_decoder;
+
+	if (!(new_decoder = malloc(sizeof(bert_decoder_t))))
+	{
+		// malloc failed
+		return NULL;
+	}
+
+	new_decoder->mode = bert_decoder_none;
+
+	new_decoder->short_length = 0;
+	new_decoder->short_index = 0;
+
+	memset(new_decoder->short_buffer,0,sizeof(unsigned char)*BERT_SHORT_BUFFER);
+	return new_decoder;
+}
+
 int bert_decoder_pull(bert_decoder_t *decoder,size_t size)
 {
 	size_t remaining_space = (decoder->short_length - decoder->short_index);
@@ -546,9 +567,22 @@ int bert_decoder_pull(bert_decoder_t *decoder,size_t size)
 	empty_space = BERT_DECODER_EMPTY(decoder);
 
 	ssize_t length;
+	unsigned char *short_ptr;
 
 fill_short_buffer:
-	length = bert_buffer_read(decoder->short_buffer+decoder->short_length,&(decoder->buffer),empty_space);
+	short_ptr = (decoder->short_buffer + decoder->short_length);
+
+	switch (decoder->mode)
+	{
+		case bert_decoder_streaming:
+			length = read(decoder->fd,short_ptr,sizeof(unsigned char)*empty_space);
+			break;
+		case bert_decoder_buffered:
+			length = bert_buffer_read(short_ptr,&(decoder->buffer),empty_space);
+			break;
+		default:
+			return BERT_ERRNO_INVALID;
+	}
 
 	decoder->short_length += length;
 

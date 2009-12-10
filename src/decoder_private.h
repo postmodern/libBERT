@@ -41,6 +41,7 @@ inline int bert_decode_small_tuple(bert_decoder_t *decoder,bert_data_t **data);
 inline int bert_decode_large_tuple(bert_decoder_t *decoder,bert_data_t **data);
 int bert_decode_list(bert_decoder_t *decoder,bert_data_t **data);
 
+bert_decoder_t * bert_decoder_create();
 int bert_decoder_pull(bert_decoder_t *decoder,size_t size);
 
 #endif

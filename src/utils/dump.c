@@ -211,23 +211,10 @@ int bert_dump(int fd)
 	int result;
 	bert_decoder_t *decoder;
 
-	if (!(decoder = bert_decoder_create()))
+	if (!(decoder = bert_decoder_stream(fd)))
 	{
 		fprintf(stderr,"bert_dump: %s\n",bert_strerror(BERT_ERRNO_MALLOC));
 		return -1;
-	}
-
-	size_t count;
-	unsigned char buffer[512];
-
-	while ((count = read(fd,buffer,sizeof(buffer))) > 0)
-	{
-		if (bert_decoder_push(decoder,buffer,count) == BERT_ERRNO_MALLOC)
-		{
-			fprintf(stderr,"bert_dump: %s\n",bert_strerror(BERT_ERRNO_MALLOC));
-			bert_decoder_destroy(decoder);
-			return -1;
-		}
 	}
 
 	bert_data_t *next_data;

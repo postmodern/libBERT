@@ -9,22 +9,31 @@
 
 #include "decoder_private.h"
 
-bert_decoder_t * bert_decoder_create()
+bert_decoder_t * bert_decoder_stream(int fd)
 {
 	bert_decoder_t *new_decoder;
 
-	if (!(new_decoder = malloc(sizeof(bert_decoder_t))))
+	if (!(new_decoder = bert_decoder_create()))
 	{
-		// malloc failed
 		return NULL;
 	}
 
+	new_decoder->mode = bert_decoder_streaming;
+	new_decoder->fd = fd;
+	return new_decoder;
+}
+
+bert_decoder_t * bert_decoder_buffer()
+{
+	bert_decoder_t *new_decoder;
+
+	if (!(new_decoder = bert_decoder_create()))
+	{
+		return NULL;
+	}
+
+	new_decoder->mode = bert_decoder_buffered;
 	bert_buffer_init(&(new_decoder->buffer));
-
-	new_decoder->short_length = 0;
-	new_decoder->short_index = 0;
-
-	memset(new_decoder->short_buffer,0,sizeof(unsigned char)*BERT_SHORT_BUFFER);
 	return new_decoder;
 }
 
