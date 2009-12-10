@@ -5,7 +5,7 @@
 
 #include "test.h"
 
-#define DATA_SIZE	1024
+#define DATA_SIZE	((BERT_CHUNK_SIZE * 2) + 20)
 
 int main()
 {
@@ -15,7 +15,6 @@ int main()
 	memset(data,'A',DATA_SIZE);
 
 	bert_buffer_init(&buffer);
-
 	bert_buffer_write(&buffer,data,DATA_SIZE);
 
 	if (!(buffer.head))
