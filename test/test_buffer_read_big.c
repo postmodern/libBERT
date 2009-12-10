@@ -1,9 +1,7 @@
 #include <bert/buffer.h>
 
-#include <string.h>
-#include <stdio.h>
-
 #include "test.h"
+#include <string.h>
 
 #define OUTPUT_SIZE	(BERT_CHUNK_SIZE * 4)
 

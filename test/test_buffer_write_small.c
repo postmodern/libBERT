@@ -1,9 +1,7 @@
 #include <bert/buffer.h>
 
-#include <stdio.h>
-#include <string.h>
-
 #include "test.h"
+#include <string.h>
 
 #define DATA_SIZE	4
 

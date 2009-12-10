@@ -1,9 +1,7 @@
 #include <bert/buffer.h>
 
-#include <stdio.h>
-#include <string.h>
-
 #include "test.h"
+#include <string.h>
 
 #define DATA_SIZE	((BERT_CHUNK_SIZE * 2) + 20)
 
@@ -26,7 +24,7 @@ int main()
 
 	if ((length = bert_buffer_length(&buffer)) != DATA_SIZE)
 	{
-		test_fail("bert_buffer_write only wrote %u bytes, expected %u bytes",length,DATA_SIZE);
+		test_fail("bert_buffer_write wrote %u bytes, expected %u bytes",length,DATA_SIZE);
 	}
 
 	const bert_chunk_t *chunk = buffer.head;
