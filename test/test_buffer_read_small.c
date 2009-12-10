@@ -5,35 +5,35 @@
 
 #include "test.h"
 
-#define DATA_SIZE	4
+#define DATA_SIZE	1024
+#define OUTPUT_SIZE	(BERT_CHUNK_SIZE + 64)
 
 int main()
 {
-	unsigned char data[4];
+	unsigned char data[DATA_SIZE];
 	bert_buffer_t buffer;
 
 	bert_buffer_init(&buffer);
-
 	memset(data,'A',DATA_SIZE);
+
+	bert_buffer_write(&buffer,data,DATA_SIZE);
+
+	unsigned char output[OUTPUT_SIZE];
+	size_t result;
+
+	if ((result = bert_buffer_read(output,&buffer,OUTPUT_SIZE)) != OUTPUT_SIZE)
+	{
+		test_fail("bert_buffer_read only read %u bytes, expected %u",result,OUTPUT_SIZE);
+	}
 
 	unsigned int i;
 
-	for (i=0;i<((BERT_CHUNK_SIZE / DATA_SIZE) * 2);i++)
+	for (i=0;i<OUTPUT_SIZE;i++)
 	{
-		bert_buffer_write(&buffer,data,DATA_SIZE);
-	}
-
-	unsigned char output[DATA_SIZE];
-	size_t result;
-
-	if ((result = bert_buffer_read(output,&buffer,DATA_SIZE)) != DATA_SIZE)
-	{
-		test_fail("bert_buffer_read only read %u bytes, expected %u",result,DATA_SIZE);
-	}
-
-	if (memcmp(output,data,DATA_SIZE))
-	{
-		test_fail("bert_buffer_read return %c%c%c%c, expected AAAA",output[0],output[1],output[2],output[3]);
+		if (data[i] != output[i])
+		{
+			test_fail("output[%u] is %c, expected %c",i,output[i],data[i]);
+		}
 	}
 
 	return 0;
