@@ -20,3 +20,5 @@ target_link_libraries(bert_dump BERT m)
 install(TARGETS BERT
 	LIBRARY DESTINATION ${LIB_INSTALL_DIR})
 install(DIRECTORY include/bert DESTINATION ${INCLUDE_INSTALL_DIR})
+
+add_subdirectory(test)
