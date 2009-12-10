@@ -41,13 +41,13 @@ int bert_buffer_empty(const bert_buffer_t *buffer)
 
 size_t bert_buffer_length(const bert_buffer_t *buffer)
 {
-	if (!BERT_BUFFER_EMPTY(buffer))
+	if (BERT_BUFFER_EMPTY(buffer))
 	{
 		return 0;
 	}
 
 	const bert_chunk_t *next_chunk = buffer->head;
-	size_t s;
+	size_t s = 0;
 
 	while (next_chunk)
 	{
