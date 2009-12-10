@@ -56,6 +56,11 @@ int bert_decoder_empty(const bert_decoder_t *decoder)
 
 int bert_decoder_push(bert_decoder_t *decoder,const unsigned char *data,size_t length)
 {
+	if (decoder->mode != bert_decoder_buffered)
+	{
+		return BERT_ERRNO_INVALID;
+	}
+
 	return bert_buffer_write(&(decoder->buffer),data,length);
 }
 
