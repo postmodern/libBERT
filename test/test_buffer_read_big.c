@@ -5,7 +5,7 @@
 
 #include "test.h"
 
-#define OUTPUT_SIZE	(BERT_CHUNK_SIZE * 2)
+#define OUTPUT_SIZE	(BERT_CHUNK_SIZE * 4)
 
 int main()
 {
@@ -23,7 +23,7 @@ int main()
 	unsigned char output[OUTPUT_SIZE];
 	size_t result;
 
-	if ((result = bert_buffer_read(output,&buffer,OUTPUT_SIZE)) != OUTPUT_SIZE)
+	if ((result = bert_buffer_read(output,&buffer,OUTPUT_SIZE)) != (BERT_CHUNK_SIZE * 2))
 	{
 		test_fail("bert_buffer_read only read %u bytes, expected %u",result,OUTPUT_SIZE);
 	}
@@ -38,7 +38,7 @@ int main()
 		}
 	}
 
-	for (i=BERT_CHUNK_SIZE;i<OUTPUT_SIZE;i++)
+	for (i=BERT_CHUNK_SIZE;i<(BERT_CHUNK_SIZE * 2);i++)
 	{
 		if (output[i] != 'B')
 		{
