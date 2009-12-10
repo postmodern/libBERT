@@ -34,5 +34,12 @@ int main()
 		}
 	}
 
+	unsigned int expected_index = (OUTPUT_SIZE % BERT_CHUNK_SIZE);
+
+	if (buffer.index != expected_index)
+	{
+		test_fail("buffer index was set to %u, expected %u",buffer.index,expected_index);
+	}
+
 	return 0;
 }
