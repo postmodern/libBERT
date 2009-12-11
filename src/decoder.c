@@ -68,7 +68,7 @@ int bert_decoder_next(bert_decoder_t *decoder,bert_data_t **data)
 	// skip the BERT MAGIC start byte
 	if (magic == BERT_MAGIC)
 	{
-		BERT_DECODER_PULL(decoder,1);
+		BERT_DECODER_READ(decoder,1);
 
 		magic = bert_decode_magic(decoder);
 	}
