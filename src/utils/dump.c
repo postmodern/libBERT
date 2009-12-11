@@ -203,6 +203,7 @@ int bert_print(const bert_data_t *data)
 			{
 				printf("false");
 			}
+			break;
 		case bert_data_int:
 			printf("%d",data->integer);
 			break;
