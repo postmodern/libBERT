@@ -13,3 +13,7 @@ add_test(decode_big_int test_decode_big_int)
 add_executable(test_decode_float test_decode_float.c)
 target_link_libraries(test_decode_float test BERT)
 add_test(decode_float test_decode_float)
+
+add_executable(test_decode_atom test_decode_atom.c)
+target_link_libraries(test_decode_atom test BERT)
+add_test(decode_atom test_decode_atom)
