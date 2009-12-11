@@ -356,6 +356,39 @@ cleanup:
 	return NULL;
 }
 
+int bert_data_strequal(const bert_data_t *data,const char *str)
+{
+	void *data_ptr;
+	size_t data_length;
+
+	switch (data->type)
+	{
+		case bert_data_string:
+			data_ptr = data->string.text;
+			data_length = data->string.length;
+			break;
+		case bert_data_atom:
+			data_ptr = data->atom.name;
+			data_length = data->atom.length;
+			break;
+		case bert_data_bin:
+			data_ptr = data->bin.data;
+			data_length = data->bin.length;
+			break;
+		default:
+			return 0;
+	}
+
+	size_t str_length = strlen(str);
+
+	if (data_length != str_length)
+	{
+		return 0;
+	}
+
+	return memcmp(data_ptr,str,data_length);
+}
+
 void bert_data_destroy(bert_data_t *data)
 {
 	unsigned int i;
