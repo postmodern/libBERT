@@ -4,6 +4,7 @@
 #include <bert/types.h>
 #include <bert/list.h>
 #include <bert/dict.h>
+#include <bert/regex.h>
 
 #include <stdint.h>
 #include <time.h>
@@ -68,6 +69,8 @@ struct bert_data
 		{
 			bert_regex_size_t length;
 			char *source;
+
+			int options;
 		} regex;
 	};
 };
@@ -85,7 +88,7 @@ extern bert_data_t * bert_data_create_tuple(bert_tuple_size_t length);
 extern bert_data_t * bert_data_create_list();
 extern bert_data_t * bert_data_create_dict();
 extern bert_data_t * bert_data_create_time(time_t timestamp);
-extern bert_data_t * bert_data_create_regex(const char *source,bert_regex_size_t length);
+extern bert_data_t * bert_data_create_regex(const char *source,bert_regex_size_t length,int options);
 extern bert_data_t * bert_data_create_bin(const unsigned char *data,bert_bin_size_t length);
 
 extern int bert_data_strequal(const bert_data_t *data,const char *str);

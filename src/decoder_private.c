@@ -1,4 +1,5 @@
 #include "decoder_private.h"
+#include "regex_private.h"
 #include <bert/types.h>
 #include <bert/magic.h>
 #include <bert/util.h>
@@ -323,41 +324,176 @@ int bert_decode_dict(bert_decoder_t *decoder,bert_data_t **data)
 	return BERT_SUCCESS;
 }
 
-int bert_decode_complex(bert_decoder_t *decoder,bert_data_t **data)
+int bert_decode_regex(bert_decoder_t *decoder,bert_data_t **data)
 {
-	BERT_DECODER_PULL(decoder,2);
+	bert_data_t *source;
+	int result;
 
-	bert_atom_size_t size = bert_decode_uint16(decoder);
+	if ((result = bert_decoder_next(decoder,&source)) != 1)
+	{
+		return result;
+	}
 
-	BERT_DECODER_PULL(decoder,size);
+	if (source->type != bert_data_bin)
+	{
+		bert_data_destroy(source);
+		return BERT_ERRNO_INVALID;
+	}
+
+	bert_data_t *opt_list;
+
+	if ((result = bert_decoder_next(decoder,&opt_list)) != 1)
+	{
+		bert_data_destroy(source);
+		return result;
+	}
+
+	if (opt_list->type != bert_data_list)
+	{
+		goto cleanup;
+	}
+
+	bert_list_node_t *next_node = opt_list->list->head;
+	bert_data_t *next_opt;
+	bert_data_t **tuple_args;
+	int options = 0;
+
+	while (next_node)
+	{
+		next_opt = next_node->data;
+
+		switch (next_opt->type)
+		{
+			case bert_data_atom:
+				options |= bert_regex_optmask(next_opt->atom.name);
+				break;
+			case bert_data_tuple:
+				if (next_opt->tuple.length != 2)
+				{
+					goto cleanup;
+				}
+
+				tuple_args = next_opt->tuple.elements;
+
+				if (tuple_args[0]->type != bert_data_atom)
+				{
+					goto cleanup;
+				}
+
+				if (!bert_data_strequal(tuple_args[0],"newline"))
+				{
+					goto cleanup;
+				}
+
+				if (tuple_args[1]->type != bert_data_atom)
+				{
+					goto cleanup;
+				}
+
+				if (bert_data_strequal(tuple_args[1],"cr"))
+				{
+					options |= BERT_REGEX_NEWLINE_CR;
+				}
+				else if (bert_data_strequal(tuple_args[1],"cr"))
+				{
+					options |= BERT_REGEX_NEWLINE_LF;
+				}
+				else if (bert_data_strequal(tuple_args[1],"crlf"))
+				{
+					options |= BERT_REGEX_NEWLINE_CRLF;
+				}
+				else if (bert_data_strequal(tuple_args[1],"anycrlf"))
+				{
+					options |= BERT_REGEX_NEWLINE_ANYCRLF;
+				}
+				else if (bert_data_strequal(tuple_args[1],"any"))
+				{
+					options |= BERT_REGEX_NEWLINE_ANY;
+				}
+				else
+				{
+					goto cleanup;
+				}
+				break;
+			default:
+				goto cleanup;
+		}
+
+		next_node = next_node->next;
+	}
+
+	bert_data_destroy(opt_list);
 
 	bert_data_t *new_data;
-	const char *ptr = (const char *)BERT_DECODER_PTR(decoder);
 
-	if ((size == 3) && (strncmp(ptr,"nil",3) == 0))
+	if (!(new_data = bert_data_create_regex((char *)source->bin.data,source->bin.length,options)))
 	{
-		new_data = bert_data_create_nil();
+		bert_data_destroy(source);
+		return BERT_ERRNO_MALLOC;
 	}
-	else if ((size == 4) && (strncmp(ptr,"true",4) == 0))
+
+	bert_data_destroy(source);
+
+	*data = new_data;
+	return BERT_SUCCESS;
+
+cleanup:
+	bert_data_destroy(opt_list);
+	bert_data_destroy(source);
+	return BERT_ERRNO_INVALID;
+}
+
+int bert_decode_complex(bert_decoder_t *decoder,bert_data_t **data)
+{
+	bert_data_t *keyword;
+	int result;
+
+	if ((result = bert_decoder_next(decoder,&keyword)) != 1)
 	{
-		new_data = bert_data_create_true();
+		return result;
 	}
-	else if ((size == 5) && (strncmp(ptr,"false",5) == 0))
-	{
-		new_data = bert_data_create_false();
-	}
-	else if ((size == 4) && (strncmp(ptr,"time",4) == 0))
-	{
-		return bert_decode_time(decoder,data);
-	}
-	else if ((size == 4) && (strncmp(ptr,"dict",4) == 0))
-	{
-		return bert_decode_dict(decoder,data);
-	}
-	else
+
+	if (keyword->type != bert_data_atom)
 	{
 		return BERT_ERRNO_INVALID;
 	}
+
+	bert_data_t *new_data;
+
+	if (bert_data_strequal(keyword,"nil"))
+	{
+		new_data = bert_data_create_nil();
+	}
+	else if (bert_data_strequal(keyword,"true"))
+	{
+		new_data = bert_data_create_true();
+	}
+	else if (bert_data_strequal(keyword,"false"))
+	{
+		new_data = bert_data_create_false();
+	}
+	else if (bert_data_strequal(keyword,"time"))
+	{
+		bert_data_destroy(keyword);
+		return bert_decode_time(decoder,data);
+	}
+	else if (bert_data_strequal(keyword,"dict"))
+	{
+		bert_data_destroy(keyword);
+		return bert_decode_dict(decoder,data);
+	}
+	else if (bert_data_strequal(keyword,"regex"))
+	{
+		bert_data_destroy(keyword);
+		return bert_decode_regex(decoder,data);
+	}
+	else
+	{
+		bert_data_destroy(keyword);
+		return BERT_ERRNO_INVALID;
+	}
+
+	bert_data_destroy(keyword);
 
 	if (!new_data)
 	{

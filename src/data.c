@@ -321,7 +321,7 @@ bert_data_t * bert_data_create_time(time_t timestamp)
 	return new_data;
 }
 
-bert_data_t * bert_data_create_regex(const char *source,bert_regex_size_t length)
+bert_data_t * bert_data_create_regex(const char *source,bert_regex_size_t length,int options)
 {
 	char *new_source;
 	size_t new_length = length + 1;
@@ -346,6 +346,7 @@ bert_data_t * bert_data_create_regex(const char *source,bert_regex_size_t length
 	new_data->type = bert_data_regex;
 	new_data->regex.length = length;
 	new_data->regex.source = new_source;
+	new_data->regex.options = options;
 	return new_data;
 
 cleanup_source:
@@ -386,7 +387,7 @@ int bert_data_strequal(const bert_data_t *data,const char *str)
 		return 0;
 	}
 
-	return memcmp(data_ptr,str,data_length);
+	return memcmp(data_ptr,str,data_length) == 0;
 }
 
 void bert_data_destroy(bert_data_t *data)
