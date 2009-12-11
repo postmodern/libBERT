@@ -721,7 +721,7 @@ int bert_decode_list(bert_decoder_t *decoder,bert_data_t **data)
 	return BERT_SUCCESS;
 }
 
-int bert_decoder_pull(bert_decoder_t *decoder,size_t size)
+int bert_decoder_read(bert_decoder_t *decoder,size_t size)
 {
 	size_t remaining_space = (decoder->short_length - decoder->short_index);
 

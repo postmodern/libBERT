@@ -53,7 +53,7 @@ int bert_decoder_next(bert_decoder_t *decoder,bert_data_t **data)
 {
 	int result;
 	
-	switch ((result = bert_decoder_pull(decoder,1)))
+	switch ((result = bert_decoder_read(decoder,1)))
 	{
 		case BERT_SUCCESS:
 			break;
