@@ -1,5 +1,6 @@
 #include <bert/decoder.h>
 #include <bert/errno.h>
+#include "../regex_private.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -158,7 +159,35 @@ void bert_print_time(const bert_data_t *data)
 
 void bert_print_regex(const bert_data_t *data)
 {
-	printf("{bert, regex, <<%s>>, []}",data->regex.source);
+	printf("{bert, regex, <<%s>>, [",data->regex.source);
+
+	unsigned int options = data->regex.options;
+	unsigned int bit_index = 0;
+
+	unsigned int mask;
+	const char *name;
+
+	while (options)
+	{
+		mask = ((options & 0x01) << bit_index);
+
+		options >>= 1;
+		++bit_index;
+
+		if (mask && (name = bert_regex_optname(mask)))
+		{
+			if (options)
+			{
+				printf("%s, ",name);
+			}
+			else
+			{
+				printf("%s",name);
+			}
+		}
+	}
+
+	printf("]}");
 }
 
 int bert_print(const bert_data_t *data)
@@ -197,6 +226,9 @@ int bert_print(const bert_data_t *data)
 			return bert_print_dict(data);
 		case bert_data_time:
 			bert_print_time(data);
+			break;
+		case bert_data_regex:
+			bert_print_regex(data);
 			break;
 		default:
 			fprintf(stderr,"bert_dump: unknown bert data type %u\n",data->type);
