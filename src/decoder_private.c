@@ -721,25 +721,6 @@ int bert_decode_list(bert_decoder_t *decoder,bert_data_t **data)
 	return BERT_SUCCESS;
 }
 
-bert_decoder_t * bert_decoder_create()
-{
-	bert_decoder_t *new_decoder;
-
-	if (!(new_decoder = malloc(sizeof(bert_decoder_t))))
-	{
-		// malloc failed
-		return NULL;
-	}
-
-	new_decoder->mode = bert_mode_none;
-
-	new_decoder->short_length = 0;
-	new_decoder->short_index = 0;
-
-	memset(new_decoder->short_buffer,0,sizeof(unsigned char)*BERT_SHORT_BUFFER);
-	return new_decoder;
-}
-
 int bert_decoder_pull(bert_decoder_t *decoder,size_t size)
 {
 	size_t remaining_space = (decoder->short_length - decoder->short_index);
@@ -778,16 +759,27 @@ fill_short_buffer:
 
 	switch (decoder->mode)
 	{
-		case bert_mode_streaming:
-			length = read(decoder->fd,short_ptr,sizeof(unsigned char)*empty_space);
+		case bert_mode_stream:
+			length = read(decoder->stream,short_ptr,sizeof(unsigned char)*empty_space);
 
 			if (length < 0)
 			{
 				return BERT_ERRNO_READ;
 			}
 			break;
-		case bert_mode_buffered:
-			length = bert_buffer_read(short_ptr,&(decoder->buffer),empty_space);
+		case bert_mode_buffer:
+			length = MIN((decoder->buffer.length - decoder->buffer.index),empty_space);
+
+			memcpy(short_ptr,decoder->buffer.ptr,length);
+			decoder->buffer.index += length;
+			break;
+		case bert_mode_callback:
+			length = decoder->callback.ptr(short_ptr,empty_space,decoder->callback.data);
+
+			if (length < 0)
+			{
+				return BERT_ERRNO_INVALID;
+			}
 			break;
 		default:
 			return BERT_ERRNO_INVALID;
