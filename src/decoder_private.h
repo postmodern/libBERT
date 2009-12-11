@@ -27,6 +27,7 @@ inline int bert_decode_bytes(unsigned char *dest,bert_decoder_t *decoder,size_t 
 inline int bert_decode_nil(bert_decoder_t *decoder,bert_data_t **data);
 inline int bert_decode_small_int(bert_decoder_t *decoder,bert_data_t **data);
 inline int bert_decode_big_int(bert_decoder_t *decoder,bert_data_t **data);
+inline int bert_decode_float(bert_decoder_t *decoder,bert_data_t **data);
 int bert_decode_bignum(bert_decoder_t *decoder,bert_data_t **data,size_t size);
 inline int bert_decode_small_bignum(bert_decoder_t *decoder,bert_data_t **data);
 inline int bert_decode_big_bignum(bert_decoder_t *decoder,bert_data_t **data);

@@ -107,7 +107,7 @@ int bert_decoder_next(bert_decoder_t *decoder,bert_data_t **data)
 			result = bert_decode_big_bignum(decoder,data);
 			break;
 		case BERT_FLOAT:
-			// TODO: implement float decoding
+			result = bert_decode_float(decoder,data);
 			break;
 		case BERT_ATOM:
 			result = bert_decode_atom(decoder,data);
