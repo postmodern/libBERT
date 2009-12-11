@@ -34,7 +34,7 @@ struct bert_data
 	{
 		unsigned int boolean;
 		int integer;
-		float floating_point;
+		double floating_point;
 
 		struct
 		{
@@ -81,7 +81,7 @@ extern bert_data_t * bert_data_create_nil();
 extern bert_data_t * bert_data_create_true();
 extern bert_data_t * bert_data_create_false();
 extern bert_data_t * bert_data_create_int(int i);
-extern bert_data_t * bert_data_create_float(float f);
+extern bert_data_t * bert_data_create_float(double f);
 extern bert_data_t * bert_data_create_atom(const char *name,bert_atom_size_t length);
 extern bert_data_t * bert_data_create_string(const char *name,bert_string_size_t length);
 extern bert_data_t * bert_data_create_tuple(bert_tuple_size_t length);

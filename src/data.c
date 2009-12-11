@@ -114,7 +114,7 @@ bert_data_t * bert_data_create_int(int i)
 	return new_data;
 }
 
-bert_data_t * bert_data_create_float(float f)
+bert_data_t * bert_data_create_float(double f)
 {
 	bert_data_t *new_data;
 
