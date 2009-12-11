@@ -49,23 +49,6 @@ void bert_decoder_buffer(bert_decoder_t *decoder,const unsigned char *buffer,siz
 	decoder->buffer.index = 0;
 }
 
-int bert_decoder_empty(const bert_decoder_t *decoder)
-{
-	if ((decoder->short_length - decoder->short_index) > 0)
-	{
-		return 0;
-	}
-	    
-	switch (decoder->mode)
-	{
-		case bert_mode_buffer:
-			return bert_buffer_empty(&(decoder->buffer));
-		case bert_mode_stream:
-		default:
-			return 1;
-	}
-}
-
 int bert_decoder_push(bert_decoder_t *decoder,const unsigned char *data,size_t length)
 {
 	if (decoder->mode != bert_mode_buffer)

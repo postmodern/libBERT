@@ -46,7 +46,6 @@ void bert_decoder_stream(bert_decoder_t *decoder,int fd);
 void bert_decoder_callback(bert_decoder_t *decoder,bert_decoder_func callback,void *data);
 void bert_decoder_buffer(bert_decoder_t *decoder,const unsigned char *buffer,size_t length);
 
-extern int bert_decoder_empty(const bert_decoder_t *decoder);
 extern int bert_decoder_push(bert_decoder_t *decoder,const unsigned char *data,size_t length);
 extern int bert_decoder_next(bert_decoder_t *decoder,bert_data_t **data_ptr);
 
