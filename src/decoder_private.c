@@ -207,42 +207,71 @@ inline int bert_decode_string(bert_decoder_t *decoder,bert_data_t **data)
 
 int bert_decode_time(bert_decoder_t *decoder,bert_data_t **data)
 {
-	// 3 magic bytes and uint32s
-	BERT_DECODER_PULL(decoder,3 * (1 + 4));
-
-	// must be an integer
-	if (bert_decode_magic(decoder) != BERT_INT)
+	bert_data_t *megaseconds;
+	int result;
+	
+	if ((result = bert_decoder_next(decoder,&megaseconds)) != 1)
 	{
-		return BERT_ERRNO_INVALID;
+		bert_data_destroy(megaseconds);
+		return result;
 	}
 
-	uint32_t megaseconds = bert_decode_uint32(decoder);
-
-	// must be an integer
-	if (bert_decode_magic(decoder) != BERT_INT)
+	if (megaseconds->type != bert_data_int)
 	{
-		return BERT_ERRNO_INVALID;
+		goto cleanup_megaseconds;
 	}
 
-	uint32_t seconds = bert_decode_uint32(decoder);
+	bert_data_t *seconds;
 
-	// must be an integer
-	if (bert_decode_magic(decoder) != BERT_INT)
+	if ((result = bert_decoder_next(decoder,&seconds)) != 1)
 	{
-		return BERT_ERRNO_INVALID;
+		bert_data_destroy(seconds);
+		bert_data_destroy(megaseconds);
+		return result;
 	}
 
-	uint32_t microseconds = bert_decode_uint32(decoder);
+	if (seconds->type != bert_data_int)
+	{
+		goto cleanup_seconds;
+	}
 
-	time_t timestamp = (megaseconds * 1000000) + seconds + (microseconds / 1000000);
+	bert_data_t *microseconds;
+
+	if ((result = bert_decoder_next(decoder,&microseconds)) != 1)
+	{
+		bert_data_destroy(microseconds);
+		bert_data_destroy(seconds);
+		bert_data_destroy(megaseconds);
+		return result;
+	}
+
+	if (seconds->type != bert_data_int)
+	{
+		goto cleanup_microseconds;
+	}
+
+	time_t timestamp = ((megaseconds->integer * 1000000) + seconds->integer + (microseconds->integer / 1000000));
 	bert_data_t *new_data;
+
+	bert_data_destroy(microseconds);
+	bert_data_destroy(seconds);
+	bert_data_destroy(megaseconds);
 
 	if (!(new_data = bert_data_create_time(timestamp)))
 	{
 		return BERT_ERRNO_MALLOC;
 	}
 
+	*data = new_data;
 	return BERT_SUCCESS;
+
+cleanup_microseconds:
+	bert_data_destroy(microseconds);
+cleanup_seconds:
+	bert_data_destroy(seconds);
+cleanup_megaseconds:
+	bert_data_destroy(megaseconds);
+	return BERT_ERRNO_INVALID;
 }
 
 int bert_decode_dict(bert_decoder_t *decoder,bert_data_t **data)
@@ -458,7 +487,7 @@ int bert_decode_complex(bert_decoder_t *decoder,bert_data_t **data)
 		return BERT_ERRNO_INVALID;
 	}
 
-	bert_data_t *new_data;
+	bert_data_t *new_data = NULL;
 
 	if (bert_data_strequal(keyword,"nil"))
 	{
