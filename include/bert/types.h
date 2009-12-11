@@ -14,4 +14,11 @@ typedef bert_bin_size_t bert_regex_size_t;
 typedef uint32_t bert_tuple_size_t;
 typedef uint32_t bert_list_size_t;
 
+typedef enum
+{
+	bert_mode_none = 0,
+	bert_mode_streaming,
+	bert_mode_buffered
+} bert_mode;
+
 #endif

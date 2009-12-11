@@ -3,21 +3,15 @@
 
 #include <bert/data.h>
 #include <bert/buffer.h>
+#include <bert/types.h>
 
 #include <sys/types.h>
-
-typedef enum
-{
-	bert_decoder_none = 0,
-	bert_decoder_streaming,
-	bert_decoder_buffered
-} bert_decoder_mode;
 
 #define BERT_SHORT_BUFFER	(BERT_CHUNK_SIZE * 2)
 
 struct bert_decoder
 {
-	bert_decoder_mode mode;
+	bert_mode mode;
 	union
 	{
 		int fd;

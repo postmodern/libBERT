@@ -1,6 +1,5 @@
 #include "decoder_private.h"
 #include "regex_private.h"
-#include <bert/types.h>
 #include <bert/magic.h>
 #include <bert/util.h>
 #include <bert/errno.h>
@@ -732,7 +731,7 @@ bert_decoder_t * bert_decoder_create()
 		return NULL;
 	}
 
-	new_decoder->mode = bert_decoder_none;
+	new_decoder->mode = bert_mode_none;
 
 	new_decoder->short_length = 0;
 	new_decoder->short_index = 0;
@@ -779,7 +778,7 @@ fill_short_buffer:
 
 	switch (decoder->mode)
 	{
-		case bert_decoder_streaming:
+		case bert_mode_streaming:
 			length = read(decoder->fd,short_ptr,sizeof(unsigned char)*empty_space);
 
 			if (length < 0)
@@ -787,7 +786,7 @@ fill_short_buffer:
 				return BERT_ERRNO_READ;
 			}
 			break;
-		case bert_decoder_buffered:
+		case bert_mode_buffered:
 			length = bert_buffer_read(short_ptr,&(decoder->buffer),empty_space);
 			break;
 		default:

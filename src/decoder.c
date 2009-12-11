@@ -18,7 +18,7 @@ bert_decoder_t * bert_decoder_stream(int fd)
 		return NULL;
 	}
 
-	new_decoder->mode = bert_decoder_streaming;
+	new_decoder->mode = bert_mode_streaming;
 	new_decoder->fd = fd;
 	return new_decoder;
 }
@@ -32,7 +32,7 @@ bert_decoder_t * bert_decoder_buffer()
 		return NULL;
 	}
 
-	new_decoder->mode = bert_decoder_buffered;
+	new_decoder->mode = bert_mode_buffered;
 	bert_buffer_init(&(new_decoder->buffer));
 	return new_decoder;
 }
@@ -46,9 +46,9 @@ int bert_decoder_empty(const bert_decoder_t *decoder)
 	    
 	switch (decoder->mode)
 	{
-		case bert_decoder_buffered:
+		case bert_mode_buffered:
 			return bert_buffer_empty(&(decoder->buffer));
-		case bert_decoder_streaming:
+		case bert_mode_streaming:
 		default:
 			return 1;
 	}
@@ -56,7 +56,7 @@ int bert_decoder_empty(const bert_decoder_t *decoder)
 
 int bert_decoder_push(bert_decoder_t *decoder,const unsigned char *data,size_t length)
 {
-	if (decoder->mode != bert_decoder_buffered)
+	if (decoder->mode != bert_mode_buffered)
 	{
 		return BERT_ERRNO_INVALID;
 	}
@@ -141,7 +141,7 @@ int bert_decoder_next(bert_decoder_t *decoder,bert_data_t **data)
 
 void bert_decoder_destroy(bert_decoder_t *decoder)
 {
-	if (decoder->mode == bert_decoder_buffered)
+	if (decoder->mode == bert_mode_buffered)
 	{
 		bert_buffer_clear(&(decoder->buffer));
 	}
