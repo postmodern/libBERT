@@ -34,7 +34,7 @@ void bert_decoder_stream(bert_decoder_t *decoder,int fd)
 	decoder->stream = fd;
 }
 
-void bert_decoder_callback(bert_decoder_t *decoder,bert_decoder_func *callback,void *data)
+void bert_decoder_callback(bert_decoder_t *decoder,bert_decoder_func callback,void *data)
 {
 	decoder->mode = bert_mode_callback;
 	decoder->callback.ptr = callback;

@@ -7,7 +7,7 @@
 
 #include <sys/types.h>
 
-typedef ssize_t (*bert_decoder_callback)(unsigned char *dest,size_t length,void *data);
+typedef ssize_t (*bert_decoder_func)(unsigned char *dest,size_t length,void *data);
 
 #define BERT_SHORT_BUFFER	(BERT_CHUNK_SIZE * 2)
 
@@ -20,7 +20,7 @@ struct bert_decoder
 
 		struct
 		{
-			bert_decoder_callback *ptr;
+			bert_decoder_func ptr;
 			void *data;
 		} callback;
 		
@@ -40,8 +40,11 @@ struct bert_decoder
 };
 typedef struct bert_decoder bert_decoder_t;
 
-extern bert_decoder_t * bert_decoder_stream(int fd);
-extern bert_decoder_t * bert_decoder_buffer();
+bert_decoder_t * bert_decoder_create();
+
+void bert_decoder_stream(bert_decoder_t *decoder,int fd);
+void bert_decoder_callback(bert_decoder_t *decoder,bert_decoder_func callback,void *data);
+void bert_decoder_buffer(bert_decoder_t *decoder,const unsigned char *buffer,size_t length);
 
 extern int bert_decoder_empty(const bert_decoder_t *decoder);
 extern int bert_decoder_push(bert_decoder_t *decoder,const unsigned char *data,size_t length);
