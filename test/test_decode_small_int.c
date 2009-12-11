@@ -39,7 +39,12 @@ int main()
 		test_fail(strerror(errno));
 	}
 
-	decoder = bert_decoder_stream(fd);
+	if (!(decoder = bert_decoder_create()))
+	{
+		test_fail("malloc failed");
+	}
+
+	bert_decoder_stream(decoder,fd);
 
 	test_read();
 
