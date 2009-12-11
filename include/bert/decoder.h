@@ -2,14 +2,13 @@
 #define _BERT_DECODER_H_
 
 #include <bert/data.h>
-#include <bert/buffer.h>
 #include <bert/types.h>
 
 #include <sys/types.h>
 
 typedef ssize_t (*bert_decoder_func)(unsigned char *dest,size_t length,void *data);
 
-#define BERT_SHORT_BUFFER	(BERT_CHUNK_SIZE * 2)
+#define BERT_SHORT_BUFFER	512
 
 struct bert_decoder
 {
