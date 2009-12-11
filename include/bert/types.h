@@ -18,8 +18,8 @@ typedef enum
 {
 	bert_mode_none = 0,
 	bert_mode_streaming,
-	bert_mode_callback,
-	bert_mode_buffer
+	bert_mode_buffer,
+	bert_mode_callback
 } bert_mode;
 
 #endif
