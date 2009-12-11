@@ -247,11 +247,13 @@ int bert_dump(int fd)
 	int result;
 	bert_decoder_t *decoder;
 
-	if (!(decoder = bert_decoder_stream(fd)))
+	if (!(decoder = bert_decoder_create()))
 	{
-		fprintf(stderr,"bert_dump: %s\n",bert_strerror(BERT_ERRNO_MALLOC));
+		fprintf(stderr,"bert_dump: malloc failed\n");
 		return -1;
 	}
+
+	bert_decoder_stream(decoder,fd);
 
 	bert_data_t *next_data;
 
