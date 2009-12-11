@@ -624,7 +624,7 @@ inline int bert_decode_bin(bert_decoder_t *decoder,bert_data_t **data)
 	return BERT_SUCCESS;
 }
 
-inline int bert_decode_tuple(bert_decoder_t *decoder,bert_data_t **data,size_t size)
+int bert_decode_tuple(bert_decoder_t *decoder,bert_data_t **data,size_t size)
 {
 	bert_data_t *new_data;
 
