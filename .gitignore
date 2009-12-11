@@ -12,6 +12,7 @@ test/test_decode_big_int
 test/test_decode_float
 test/test_decode_atom
 test/test_decode_string
+test/test_decode_long_string
 test/test_decode_bin
 *.a
 *.so

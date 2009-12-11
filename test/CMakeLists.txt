@@ -22,6 +22,10 @@ add_executable(test_decode_string test_decode_string.c)
 target_link_libraries(test_decode_string test BERT)
 add_test(decode_string test_decode_string)
 
+add_executable(test_decode_long_string test_decode_long_string.c)
+target_link_libraries(test_decode_long_string test BERT)
+add_test(decode_long_string test_decode_long_string)
+
 add_executable(test_decode_bin test_decode_bin.c)
 target_link_libraries(test_decode_bin test BERT)
 add_test(decode_bin test_decode_bin)
