@@ -211,7 +211,7 @@ int bert_print(const bert_data_t *data)
 			printf("%d",data->integer);
 			break;
 		case bert_data_float:
-			printf("%f",data->floating_point);
+			printf("%15.15lf",data->floating_point);
 			break;
 		case bert_data_atom:
 			printf("%s",data->atom.name);
