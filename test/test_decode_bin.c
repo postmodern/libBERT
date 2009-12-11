@@ -24,7 +24,7 @@ void test_read()
 		test_fail("bert_decoder_next did not decode bin data");
 	}
 
-	const unsigned char *expected = "hello\0world";
+	const unsigned char *expected = (unsigned char *)"hello\0world";
 	size_t expected_length = 5 + 1 + 5;
 
 	if (data->bin.length != expected_length)
