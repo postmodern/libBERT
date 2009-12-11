@@ -15,6 +15,7 @@ test/test_buffer_write_big
 test/test_buffer_read_small
 test/test_buffer_read_big
 test/test_buffer_clear
+test/test_decode_small_int
 *.o
 *.a
 *.so

@@ -33,3 +33,7 @@ add_test(buffer_read_big test_buffer_read_big)
 add_executable(test_buffer_clear test_buffer_clear.c)
 target_link_libraries(test_buffer_clear test BERT)
 add_test(buffer_clear test_buffer_clear)
+
+add_executable(test_decode_small_int test_decode_small_int.c)
+target_link_libraries(test_decode_small_int test BERT)
+add_test(decode_small_int test_decode_small_int)
