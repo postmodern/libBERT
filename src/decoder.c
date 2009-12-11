@@ -9,32 +9,44 @@
 
 #include "decoder_private.h"
 
-bert_decoder_t * bert_decoder_stream(int fd)
+bert_decoder_t * bert_decoder_create()
 {
 	bert_decoder_t *new_decoder;
 
-	if (!(new_decoder = bert_decoder_create()))
+	if (!(new_decoder = malloc(sizeof(bert_decoder_t))))
 	{
+		// malloc failed
 		return NULL;
 	}
 
-	new_decoder->mode = bert_mode_streaming;
-	new_decoder->fd = fd;
+	new_decoder->mode = bert_mode_none;
+
+	new_decoder->short_length = 0;
+	new_decoder->short_index = 0;
+
+	memset(new_decoder->short_buffer,0,sizeof(unsigned char)*BERT_SHORT_BUFFER);
 	return new_decoder;
 }
 
-bert_decoder_t * bert_decoder_buffer()
+void bert_decoder_stream(bert_decoder_t *decoder,int fd)
 {
-	bert_decoder_t *new_decoder;
+	decoder->mode = bert_mode_stream;
+	decoder->stream = fd;
+}
 
-	if (!(new_decoder = bert_decoder_create()))
-	{
-		return NULL;
-	}
+void bert_decoder_callback(bert_decoder_t *decoder,bert_decoder_func *callback,void *data)
+{
+	decoder->mode = bert_mode_callback;
+	decoder->callback.ptr = callback;
+	decoder->callback.data = data;
+}
 
-	new_decoder->mode = bert_mode_buffered;
-	bert_buffer_init(&(new_decoder->buffer));
-	return new_decoder;
+void bert_decoder_buffer(bert_decoder_t *decoder,const unsigned char *buffer,size_t length)
+{
+	decoder->mode = bert_mode_buffer;
+	decoder->buffer.ptr = buffer;
+	decoder->buffer.length = length;
+	decoder->buffer.index = 0;
 }
 
 int bert_decoder_empty(const bert_decoder_t *decoder)
@@ -46,9 +58,9 @@ int bert_decoder_empty(const bert_decoder_t *decoder)
 	    
 	switch (decoder->mode)
 	{
-		case bert_mode_buffered:
+		case bert_mode_buffer:
 			return bert_buffer_empty(&(decoder->buffer));
-		case bert_mode_streaming:
+		case bert_mode_stream:
 		default:
 			return 1;
 	}
@@ -56,7 +68,7 @@ int bert_decoder_empty(const bert_decoder_t *decoder)
 
 int bert_decoder_push(bert_decoder_t *decoder,const unsigned char *data,size_t length)
 {
-	if (decoder->mode != bert_mode_buffered)
+	if (decoder->mode != bert_mode_buffer)
 	{
 		return BERT_ERRNO_INVALID;
 	}
@@ -141,7 +153,7 @@ int bert_decoder_next(bert_decoder_t *decoder,bert_data_t **data)
 
 void bert_decoder_destroy(bert_decoder_t *decoder)
 {
-	if (decoder->mode == bert_mode_buffered)
+	if (decoder->mode == bert_mode_buffer)
 	{
 		bert_buffer_clear(&(decoder->buffer));
 	}
