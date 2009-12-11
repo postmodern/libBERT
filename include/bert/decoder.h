@@ -7,6 +7,8 @@
 
 #include <sys/types.h>
 
+typedef ssize_t (*bert_decoder_callback)(unsigned char *dest,size_t length,void *data);
+
 #define BERT_SHORT_BUFFER	(BERT_CHUNK_SIZE * 2)
 
 struct bert_decoder
@@ -14,8 +16,21 @@ struct bert_decoder
 	bert_mode mode;
 	union
 	{
-		int fd;
-		bert_buffer_t buffer;
+		int stream;
+
+		struct
+		{
+			bert_decoder_callback *ptr;
+			void *data;
+		} callback;
+		
+		struct
+		{
+			const unsigned char *ptr;
+			size_t length;
+
+			unsigned int index;
+		} buffer;
 	};
 
 	size_t short_length;
