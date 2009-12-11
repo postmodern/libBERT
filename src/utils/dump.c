@@ -194,6 +194,9 @@ int bert_print(const bert_data_t *data)
 {
 	switch (data->type)
 	{
+		case bert_data_nil:
+			printf("nil");
+			break;
 		case bert_data_boolean:
 			if (data->boolean)
 			{
