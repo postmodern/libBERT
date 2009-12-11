@@ -386,11 +386,6 @@ int bert_decode_atom(bert_decoder_t *decoder,bert_data_t **data)
 		}
 	}
 
-	if ((size == 4) && (memcmp(atom_buffer,"bert",4) == 0))
-	{
-		return bert_decode_complex(decoder,data);
-	}
-
 	bert_data_t *new_data;
 
 	if (!(new_data = bert_data_create_atom(atom_buffer,size)))
@@ -440,15 +435,35 @@ inline int bert_decode_tuple(bert_decoder_t *decoder,bert_data_t **data,size_t s
 		return BERT_ERRNO_MALLOC;
 	}
 
-	unsigned int i;
-	int result;
-
-	for (i=0;i<size;i++)
+	if (size)
 	{
-		if ((result = bert_decoder_next(decoder,new_data->tuple.elements+i)) != 1)
+		bert_data_t *first;
+		int result;
+
+		if ((result = bert_decoder_next(decoder,&first)) != 1)
 		{
 			bert_data_destroy(new_data);
 			return result;
+		}
+
+		if ((first->type == bert_data_atom) && bert_data_strequal(first,"bert"))
+		{
+			bert_data_destroy(first);
+			bert_data_destroy(new_data);
+			return bert_decode_complex(decoder,data);
+		}
+
+		new_data->tuple.elements[0] = first;
+
+		unsigned int i;
+
+		for (i=1;i<size;i++)
+		{
+			if ((result = bert_decoder_next(decoder,new_data->tuple.elements+i)) != 1)
+			{
+				bert_data_destroy(new_data);
+				return result;
+			}
 		}
 	}
 
