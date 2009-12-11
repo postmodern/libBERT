@@ -8,6 +8,7 @@ bert_dump
 test/Testing
 test/CTestTestfile.cmake
 test/test_decode_small_int
+test/test_decode_big_int
 *.o
 *.a
 *.so
