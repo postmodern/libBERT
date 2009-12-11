@@ -350,7 +350,7 @@ int bert_decode_complex(bert_decoder_t *decoder,bert_data_t **data)
 	{
 		return bert_decode_time(decoder,data);
 	}
-	else if ((size = 4) && (strncmp(ptr,"dict",4) == 0))
+	else if ((size == 4) && (strncmp(ptr,"dict",4) == 0))
 	{
 		return bert_decode_dict(decoder,data);
 	}
