@@ -9,7 +9,7 @@ test/Testing
 test/CTestTestfile.cmake
 test/test_decode_small_int
 test/test_decode_big_int
-*.o
+test/test_decode_float
 *.a
 *.so
 *.swp
