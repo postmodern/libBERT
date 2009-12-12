@@ -19,7 +19,6 @@
 inline uint8_t bert_decode_uint8(bert_decoder_t *decoder);
 inline uint16_t bert_decode_uint16(bert_decoder_t *decoder);
 inline uint32_t bert_decode_uint32(bert_decoder_t *decoder);
-inline int32_t bert_decode_int32(bert_decoder_t *decoder);
 inline bert_magic_t bert_decode_magic(bert_decoder_t *decoder);
 inline int bert_decode_bytes(unsigned char *dest,bert_decoder_t *decoder,size_t length);
 

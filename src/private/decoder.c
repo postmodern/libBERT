@@ -36,14 +36,6 @@ inline uint32_t bert_decode_uint32(bert_decoder_t *decoder)
 	return i;
 }
 
-inline int32_t bert_decode_int32(bert_decoder_t *decoder)
-{
-	int32_t i = bert_read_int32(BERT_DECODER_PTR(decoder));
-
-	BERT_DECODER_STEP(decoder,4);
-	return i;
-}
-
 inline bert_magic_t bert_decode_magic(bert_decoder_t *decoder)
 {
 	bert_magic_t m = bert_read_magic(BERT_DECODER_PTR(decoder));
