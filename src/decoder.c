@@ -8,6 +8,7 @@
 #include <string.h>
 
 #include "private/decoder.h"
+#include "private/decode.h"
 
 bert_decoder_t * bert_decoder_create()
 {
