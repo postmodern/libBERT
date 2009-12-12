@@ -89,10 +89,44 @@ int bert_encode_bin(bert_encoder_t *encoder,const unsigned char *bin,size_t leng
 	return bert_encoder_write(encoder,buffer,buffer_length);
 }
 
-int bert_encode_tuple_elements(bert_encoder_t *encoder,const bert_data_t **elements,size_t length)
+int bert_encode_tuple_header(bert_encoder_t *encoder,size_t elements)
 {
-	unsigned int i;
+	size_t buffer_length = 1 + 4;
+	unsigned char buffer[buffer_length];
+
+	if (elements <= 0xff)
+	{
+		buffer_length = 1 + 1;
+
+		bert_write_magic(buffer,BERT_SMALL_TUPLE);
+		bert_write_uint8(buffer,elements);
+	}
+	else if (elements <= 0xffffffff)
+	{
+		size_t buffer_length = 1 + 4;
+		unsigned char buffer[buffer_length];
+
+		bert_write_magic(buffer,BERT_LARGE_TUPLE);
+		bert_write_uint32(buffer,elements);
+	}
+	else
+	{
+		return BERT_ERRNO_INVALID;
+	}
+
+	return bert_encoder_write(encoder,buffer,buffer_length);
+}
+
+int bert_encode_tuple(bert_encoder_t *encoder,const bert_data_t **elements,size_t length)
+{
 	int result;
+
+	if ((result = bert_encode_tuple_header(encoder,length)) != BERT_SUCCESS)
+	{
+		return result;
+	}
+
+	unsigned int i;
 
 	for (i=0;i<length;i++)
 	{
@@ -105,40 +139,15 @@ int bert_encode_tuple_elements(bert_encoder_t *encoder,const bert_data_t **eleme
 	return BERT_SUCCESS;
 }
 
-int bert_encode_small_tuple(bert_encoder_t *encoder,const bert_data_t **elements,size_t length)
-{
-	size_t buffer_length = 1 + 1;
-	unsigned char buffer[buffer_length];
-
-	bert_write_magic(buffer,BERT_SMALL_TUPLE);
-	bert_write_uint8(buffer,length);
-
-	return bert_encode_tuple_elements(encoder,elements,length);
-}
-
-int bert_encode_big_tuple(bert_encoder_t *encoder,const bert_data_t **elements,size_t length)
+int bert_encode_list_header(bert_encoder_t *encoder,size_t length)
 {
 	size_t buffer_length = 1 + 4;
 	unsigned char buffer[buffer_length];
 
-	bert_write_magic(buffer,BERT_LARGE_TUPLE);
-	bert_write_uint32(buffer,length);
+	bert_write_magic(buffer,BERT_LIST);
+	bert_write_uint32(buffer+1,length);
 
-	return bert_encode_tuple_elements(encoder,elements,length);
-}
-
-int bert_encode_tuple(bert_encoder_t *encoder,const bert_data_t **elements,size_t length)
-{
-	if (length <= 0xff)
-	{
-		return bert_encode_small_tuple(encoder,elements,length);
-	}
-	else if (length <= 0xffffff)
-	{
-		return bert_encode_big_tuple(encoder,elements,length);
-	}
-
-	return BERT_ERRNO_INVALID;
+	return bert_encoder_write(encoder,buffer,buffer_length);
 }
 
 int bert_encode_list(bert_encoder_t *encoder,const bert_list_t *list)
@@ -152,12 +161,12 @@ int bert_encode_list(bert_encoder_t *encoder,const bert_list_t *list)
 		next_node = next_node->next;
 	}
 
-	unsigned char buffer[1 + 4];
-
-	bert_write_magic(buffer,BERT_LIST);
-	bert_write_uint32(buffer+1,length);
-
 	int result;
+
+	if ((result = bert_encode_list_header(encoder,length)) != BERT_SUCCESS)
+	{
+		return result;
+	}
 
 	next_node = list->head;
 
@@ -174,9 +183,14 @@ int bert_encode_list(bert_encoder_t *encoder,const bert_list_t *list)
 	return BERT_SUCCESS;
 }
 
-int bert_encode_complex(bert_encoder_t *encoder,const char *name)
+int bert_encode_complex(bert_encoder_t *encoder,const char *name,size_t elements)
 {
 	int result;
+
+	if ((result = bert_encode_tuple_header(encoder,elements + 2)) != BERT_SUCCESS)
+	{
+		return result;
+	}
 
 	if ((result = bert_encode_atom(encoder,"bert",4)) != BERT_SUCCESS)
 	{
@@ -193,15 +207,63 @@ int bert_encode_complex(bert_encoder_t *encoder,const char *name)
 
 int bert_encode_nil(bert_encoder_t *encoder)
 {
-	return bert_encode_complex(encoder,"nil");
+	return bert_encode_complex(encoder,"nil",0);
 }
 
 int bert_encode_true(bert_encoder_t *encoder)
 {
-	return bert_encode_complex(encoder,"true");
+	return bert_encode_complex(encoder,"true",0);
 }
 
 int bert_encode_false(bert_encoder_t *encoder)
 {
-	return bert_encode_complex(encoder,"false");
+	return bert_encode_complex(encoder,"false",0);
+}
+
+int bert_encode_dict(bert_encoder_t *encoder,const bert_dict_t *dict)
+{
+	bert_dict_node_t *next_node = dict->head;
+	size_t length = 0;
+
+	while (next_node)
+	{
+		++length;
+		next_node = next_node->next;
+	}
+
+	int result;
+
+	if ((result = bert_encode_complex(encoder,"dict",1)) == BERT_SUCCESS)
+	{
+		return result;
+	}
+
+	if ((result = bert_encode_list_header(encoder,length)) != BERT_SUCCESS)
+	{
+		return result;
+	}
+
+	next_node = dict->head;
+
+	while (next_node)
+	{
+		if ((result = bert_encode_tuple_header(encoder,2)) != BERT_SUCCESS)
+		{
+			return result;
+		}
+
+		if ((result = bert_encoder_push(encoder,next_node->key)) != BERT_SUCCESS)
+		{
+			return result;
+		}
+
+		if ((result = bert_encoder_push(encoder,next_node->value)) != BERT_SUCCESS)
+		{
+			return result;
+		}
+
+		next_node = next_node->next;
+	}
+
+	return BERT_SUCCESS;
 }
