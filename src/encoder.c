@@ -1,5 +1,6 @@
 #include <bert/encoder.h>
 #include <bert/magic.h>
+#include <bert/util.h>
 #include <bert/errno.h>
 #include "private/encode.h"
 

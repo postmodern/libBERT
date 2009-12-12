@@ -23,7 +23,4 @@
 
 #define BERT_VALID_MAGIC(m)	(((97 <= m) && (m <= 100)) || ((104 <= m) && (m <= 111)))
 
-#define BERT_MAX_INT	((1 << 27) - 1)
-#define BERT_MIN_INT	(-(1 << 27))
-
 #endif

@@ -7,6 +7,9 @@
 
 #define MIN(a,b)	((a) < (b) ? (a) : (b))
 
+#define BERT_MAX_INT	((1 << 27) - 1)
+#define BERT_MIN_INT	(-(1 << 27))
+
 inline uint8_t bert_read_uint8(const unsigned char *src);
 inline uint16_t bert_read_uint16(const unsigned char *src);
 inline bert_magic_t bert_read_magic(const unsigned char *src);
