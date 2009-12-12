@@ -9,6 +9,7 @@ const char *bert_errors[] = {
 	"no more data left",
 	"not enough data available",
 	"read error",
+	"write error",
 	"malloc failed"
 };
 
@@ -19,7 +20,7 @@ const char * bert_strerror(int code)
 		return bert_errors[0];
 	}
 
-	if (code == BERT_ERRNO_READ)
+	if (code == BERT_ERRNO_READ || code == BERT_ERRNO_WRITE)
 	{
 		return strerror(errno);
 	}
