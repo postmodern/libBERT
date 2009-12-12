@@ -11,6 +11,7 @@ typedef ssize_t (*bert_write_func)(const unsigned char *data,size_t length,void 
 struct bert_encoder
 {
 	bert_mode mode;
+	unsigned int wrote_magic;
 
 	union
 	{

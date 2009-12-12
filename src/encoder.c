@@ -13,6 +13,7 @@ bert_encoder_t * bert_encoder_create()
 	}
 
 	new_encoder->mode = bert_mode_none;
+	new_encoder->wrote_magic = 0;
 
 	return new_encoder;
 }
