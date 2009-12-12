@@ -7,10 +7,10 @@
 
 #define MIN(a,b)	((a) < (b) ? (a) : (b))
 
-inline uint8_t bert_read_uint8(const unsigned char *ptr);
-inline uint16_t bert_read_uint16(const unsigned char *ptr);
-inline bert_magic_t bert_read_magic(const unsigned char *ptr);
-inline uint32_t bert_read_uint32(const unsigned char *ptr);
+inline uint8_t bert_read_uint8(const unsigned char *src);
+inline uint16_t bert_read_uint16(const unsigned char *src);
+inline bert_magic_t bert_read_magic(const unsigned char *src);
+inline uint32_t bert_read_uint32(const unsigned char *src);
 
 inline void bert_write_uint8(unsigned char *dest,uint8_t i);
 inline void bert_write_uint16(unsigned char *dest,uint16_t i);
