@@ -58,7 +58,14 @@ int bert_encoder_push(bert_encoder_t *encoder,const bert_data_t *data)
 	switch (data->type)
 	{
 		case bert_data_int:
-			return bert_encode_int(encoder,data->integer);
+			if (data->integer <= BERT_MAX_INT && data->integer >= BERT_MIN_INT)
+			{
+				return bert_encode_int(encoder,data->integer);
+			}
+			else
+			{
+				return bert_encode_bignum(encoder,data->integer);
+			}
 		case bert_data_float:
 			return bert_encode_float(encoder,data->floating_point);
 		case bert_data_atom:

@@ -65,6 +65,66 @@ int bert_encode_float(bert_encoder_t *encoder,double d)
 	return bert_encoder_write(encoder,buffer,buffer_length);
 }
 
+int bert_encode_bignum(bert_encoder_t *encoder,int64_t integer)
+{
+	uint8_t sign = (integer < 0);
+	size_t bytes_length = 0;
+
+	uint64_t unsigned_integer = ((((uint64_t)integer) << 1) >> 1);
+	unsigned int i;
+
+	for (i=7;i>=0;i--)
+	{
+		if (unsigned_integer & (0xff << i))
+		{
+			bytes_length = (i + 1);
+			break;
+		}
+	}
+
+	size_t buffer_length = 1;
+
+	if (bytes_length > 4)
+	{
+		// 4 byte length field
+		buffer_length += 4;
+	}
+	else
+	{
+		// 1 byte length field
+		++buffer_length;
+	}
+
+
+	// 1 byte sign field
+	++buffer_length;
+
+	// bytes
+	buffer_length += bytes_length;
+
+	unsigned char buffer[buffer_length];
+
+	if (bytes_length > 4)
+	{
+		bert_write_magic(buffer,BERT_LARGE_BIGNUM);
+		bert_write_uint32(buffer,bytes_length);
+	}
+	else
+	{
+		bert_write_magic(buffer,BERT_SMALL_BIGNUM);
+		bert_write_uint8(buffer,bytes_length);
+	}
+
+	bert_write_uint8(buffer,sign);
+
+	for (i=0;i<bytes_length;i++)
+	{
+		buffer[i] = ((unsigned_integer & (0xff << i)) >> i);
+	}
+
+	return bert_encoder_write(encoder,buffer,buffer_length);
+}
+
 int bert_encode_atom(bert_encoder_t *encoder,const char *atom,size_t length)
 {
 	size_t buffer_length = sizeof(bert_magic_t) + 2 + length;
