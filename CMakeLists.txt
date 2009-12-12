@@ -19,7 +19,9 @@ add_definitions("-Wall")
 add_library(
 	BERT SHARED src/errno.c src/util.c src/list.c src/dict.c
 	src/private/regex.c src/data.c src/private/decode.c
-	src/private/decoder.c src/decoder.c src/bert.c
+	src/private/decoder.c src/decoder.c
+	src/private/encoder.c src/encoder.c
+	src/bert.c
 )
 
 add_executable(bert_dump src/utils/dump.c)
