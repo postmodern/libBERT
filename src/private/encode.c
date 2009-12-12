@@ -281,3 +281,25 @@ int bert_encode_dict(bert_encoder_t *encoder,const bert_dict_t *dict)
 
 	return BERT_SUCCESS;
 }
+
+int bert_encode_time(bert_encoder_t *encoder,time_t timestamp)
+{
+	int result;
+
+	if ((result = bert_encode_complex(encoder,"time",3)) != BERT_SUCCESS)
+	{
+		return result;
+	}
+
+	unsigned int megaseconds = (timestamp / 1000000);
+	unsigned int seconds = (timestamp - megaseconds);
+
+	unsigned int buffer_length = 4 * 3;
+	unsigned char buffer[buffer_length];
+
+	bert_write_uint32(buffer,megaseconds);
+	bert_write_uint32(buffer,seconds);
+	bert_write_uint32(buffer,0);
+
+	return bert_encoder_write(encoder,buffer,buffer_length);
+}
