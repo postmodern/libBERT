@@ -6,6 +6,7 @@
 #include <bert/errno.h>
 
 #include <string.h>
+#include <stdio.h>
 
 int bert_encode_magic(bert_encoder_t *encoder,bert_magic_t magic)
 {
@@ -49,6 +50,19 @@ int bert_encode_int(bert_encoder_t *encoder,unsigned int i)
 	}
 
 	return BERT_ERRNO_INVALID;
+}
+
+int bert_encode_float(bert_encoder_t *encoder,double d)
+{
+	size_t buffer_length = 1 + 31;
+	unsigned char buffer[buffer_length];
+
+	bert_write_magic(buffer,BERT_FLOAT);
+
+	memset(buffer+1,'\0',sizeof(unsigned char)*31);
+	snprintf((char *)(buffer+1),31,"%15.15f",d);
+
+	return bert_encoder_write(encoder,buffer,buffer_length);
 }
 
 int bert_encode_atom(bert_encoder_t *encoder,const char *atom,size_t length)
