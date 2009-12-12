@@ -41,6 +41,8 @@ void bert_encoder_buffer(bert_encoder_t *encoder,unsigned char *buffer,size_t le
 void bert_encoder_callback(bert_encoder_t *encoder,bert_write_func callback,void *data);
 
 size_t bert_encoder_sizeof(const bert_data_t *data);
+int bert_encoder_push(bert_encoder_t *encoder,const bert_data_t *data);
+
 void bert_encoder_destroy(bert_encoder_t *encoder);
 
 #endif

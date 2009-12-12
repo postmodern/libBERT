@@ -6,6 +6,7 @@
 
 #include <stdint.h>
 
+int bert_encode_magic(bert_encoder_t *encoder,bert_magic_t magic);
 int bert_encode_small_int(bert_encoder_t *encoder,uint8_t i);
 int bert_encode_big_int(bert_encoder_t *encoder,uint32_t i);
 int bert_encode_int(bert_encoder_t *encoder,unsigned int i);
@@ -16,11 +17,13 @@ int bert_encode_float(bert_encoder_t *encoder,double d);
 int bert_encode_atom(bert_encoder_t *encoder,const char *atom,size_t length);
 int bert_encode_string(bert_encoder_t *encoder,const char *string,size_t length);
 int bert_encode_bin(bert_encoder_t *encoder,const unsigned char *bin,size_t length);
+int bert_encode_tuple_elements(bert_encoder_t *encoder,const bert_data_t **elements,size_t length);
 int bert_encode_small_tuple(bert_encoder_t *encoder,const bert_data_t **elements,size_t length);
 int bert_encode_large_tuple(bert_encoder_t *encoder,const bert_data_t **elements,size_t length);
-int bert_encode_tuple(bert_encoder_t *encoder,const bert_data_t **element,size_t length);
+int bert_encode_tuple(bert_encoder_t *encoder,const bert_data_t **elements,size_t length);
 int bert_encode_list(bert_encoder_t *encoder,const bert_list_t *list);
 
+int bert_encode_complex(bert_encoder_t *encoder,const char *name);
 int bert_encode_true(bert_encoder_t *encoder);
 int bert_encode_false(bert_encoder_t *encoder);
 int bert_encode_boolean(bert_encoder_t *encoder,unsigned int boolean);
