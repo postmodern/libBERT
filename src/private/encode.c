@@ -1,5 +1,6 @@
 #include "encode.h"
 #include "encoder.h"
+#include "regex.h"
 #include <bert/magic.h>
 #include <bert/util.h>
 #include <bert/errno.h>
@@ -302,4 +303,50 @@ int bert_encode_time(bert_encoder_t *encoder,time_t timestamp)
 	bert_write_uint32(buffer,0);
 
 	return bert_encoder_write(encoder,buffer,buffer_length);
+}
+
+int bert_encode_regex(bert_encoder_t *encoder,const char *source,size_t length,unsigned int options)
+{
+	int result;
+
+	if ((result = bert_encode_complex(encoder,"regex",2)) != BERT_SUCCESS)
+	{
+		return result;
+	}
+
+	if ((result = bert_encode_bin(encoder,(const unsigned char *)source,length)) != BERT_SUCCESS)
+	{
+		return result;
+	}
+
+	size_t opts_length = 0;
+	unsigned int i;
+
+	for (i=0;i<sizeof(int);i++)
+	{
+		if (options & (0x1 << i))
+		{
+			++opts_length;
+		}
+	}
+
+	if ((result = bert_encode_list_header(encoder,opts_length)) != BERT_SUCCESS)
+	{
+		return result;
+	}
+
+	const char *opt_name;
+
+	for (i=0;i<sizeof(int);i++)
+	{
+		if ((opt_name = bert_regex_optname(options & (0x1 << i))))
+		{
+			if ((result = bert_encode_atom(encoder,opt_name,strlen(opt_name))) != BERT_SUCCESS)
+			{
+				return result;
+			}
+		}
+	}
+
+	return BERT_SUCCESS;
 }
