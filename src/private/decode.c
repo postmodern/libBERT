@@ -159,7 +159,7 @@ int bert_decode_bignum(bert_decoder_t *decoder,bert_data_t **data,size_t size)
 
 	BERT_DECODER_STEP(decoder,size);
 
-	int32_t signed_integer = (int32_t)(unsigned_integer & 0x7fffffffffffffff);
+	int32_t signed_integer = (int32_t)BERT_STRIP_SIGN(unsigned_integer);
 
 	if (sign)
 	{

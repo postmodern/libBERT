@@ -70,7 +70,7 @@ int bert_encode_bignum(bert_encoder_t *encoder,int64_t integer)
 	uint8_t sign = (integer < 0);
 	size_t bytes_length = 0;
 
-	uint64_t unsigned_integer = ((((uint64_t)integer) << 1) >> 1);
+	uint64_t unsigned_integer = BERT_STRIP_SIGN((uint64_t)integer);
 	unsigned int i;
 
 	for (i=7;i>=0;i--)
