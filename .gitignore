@@ -19,6 +19,7 @@ test/test_decode_long_bin
 test/test_decode_small_tuple
 test/test_decode_large_tuple
 test/test_decode_list
+test/test_decode_dict
 test/test_decode_true
 test/test_decode_false
 test/test_decode_nil

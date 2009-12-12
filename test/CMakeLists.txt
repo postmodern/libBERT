@@ -46,6 +46,10 @@ add_executable(test_decode_list test_decode_list.c)
 target_link_libraries(test_decode_list test BERT)
 add_test(decode_list test_decode_list)
 
+add_executable(test_decode_dict test_decode_dict.c)
+target_link_libraries(test_decode_dict test BERT)
+add_test(decode_dict test_decode_dict)
+
 add_executable(test_decode_true test_decode_true.c)
 target_link_libraries(test_decode_true test BERT)
 add_test(decode_true test_decode_true)
