@@ -30,6 +30,10 @@ add_executable(test_decode_bin test_decode_bin.c)
 target_link_libraries(test_decode_bin test BERT)
 add_test(decode_bin test_decode_bin)
 
+add_executable(test_decode_long_bin test_decode_long_bin.c)
+target_link_libraries(test_decode_long_bin test BERT)
+add_test(decode_long_bin test_decode_long_bin)
+
 add_executable(test_decode_small_tuple test_decode_small_tuple.c)
 target_link_libraries(test_decode_small_tuple test BERT)
 add_test(decode_small_tuple test_decode_small_tuple)
