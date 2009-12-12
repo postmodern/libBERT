@@ -6,7 +6,7 @@
 
 #include <sys/types.h>
 
-typedef ssize_t (*bert_encoder_func)(const unsigned char *data,size_t length,void *data);
+typedef ssize_t (*bert_encoder_func)(const unsigned char *data,size_t length,void *user_data);
 
 struct bert_encoder
 {
@@ -40,7 +40,6 @@ void bert_encoder_buffer(bert_encoder_t *encoder,unsigned char *buffer,size_t le
 void bert_encoder_callback(bert_encoder_t *encoder,bert_encoder_func callback,void *data);
 
 size_t bert_encoder_sizeof(const bert_data_t *data);
-int bert_encoder_write(bert_encoder_t *encoder,const bert_data_t *data);
 void bert_encoder_destroy(bert_encoder_t *encoder);
 
 #endif
