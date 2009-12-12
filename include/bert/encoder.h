@@ -26,7 +26,7 @@ struct bert_encoder
 
 		struct
 		{
-			bert_encoder_func callback;
+			bert_encoder_func ptr;
 			void *data;
 		} callback;
 	};
