@@ -15,6 +15,7 @@ test/test_decode_string
 test/test_decode_long_string
 test/test_decode_bin
 test/test_decode_small_tuple
+test/test_decode_large_tuple
 *.a
 *.so
 *.swp
