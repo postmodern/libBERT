@@ -18,6 +18,8 @@ test/test_decode_long_bin
 test/test_decode_small_tuple
 test/test_decode_large_tuple
 test/test_decode_list
+test/test_decode_true
+test/test_decode_false
 *.a
 *.so
 *.swp

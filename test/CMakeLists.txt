@@ -45,3 +45,11 @@ add_test(decode_large_tuple test_decode_large_tuple)
 add_executable(test_decode_list test_decode_list.c)
 target_link_libraries(test_decode_list test BERT)
 add_test(decode_list test_decode_list)
+
+add_executable(test_decode_true test_decode_true.c)
+target_link_libraries(test_decode_true test BERT)
+add_test(decode_true test_decode_true)
+
+add_executable(test_decode_false test_decode_false.c)
+target_link_libraries(test_decode_false test BERT)
+add_test(decode_false test_decode_false)
