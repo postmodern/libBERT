@@ -259,7 +259,7 @@ int bert_dump(int fd)
 
 	while (1)
 	{
-		result = bert_decoder_next(decoder,&next_data);
+		result = bert_decoder_pull(decoder,&next_data);
 
 		switch (result)
 		{

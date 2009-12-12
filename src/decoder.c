@@ -50,7 +50,7 @@ void bert_decoder_buffer(bert_decoder_t *decoder,const unsigned char *buffer,siz
 	decoder->buffer.index = 0;
 }
 
-int bert_decoder_next(bert_decoder_t *decoder,bert_data_t **data)
+int bert_decoder_pull(bert_decoder_t *decoder,bert_data_t **data)
 {
 	int result;
 	

@@ -225,7 +225,7 @@ int bert_decode_time(bert_decoder_t *decoder,bert_data_t **data)
 	bert_data_t *megaseconds;
 	int result;
 	
-	if ((result = bert_decoder_next(decoder,&megaseconds)) != 1)
+	if ((result = bert_decoder_pull(decoder,&megaseconds)) != 1)
 	{
 		bert_data_destroy(megaseconds);
 		return result;
@@ -238,7 +238,7 @@ int bert_decode_time(bert_decoder_t *decoder,bert_data_t **data)
 
 	bert_data_t *seconds;
 
-	if ((result = bert_decoder_next(decoder,&seconds)) != 1)
+	if ((result = bert_decoder_pull(decoder,&seconds)) != 1)
 	{
 		bert_data_destroy(seconds);
 		bert_data_destroy(megaseconds);
@@ -252,7 +252,7 @@ int bert_decode_time(bert_decoder_t *decoder,bert_data_t **data)
 
 	bert_data_t *microseconds;
 
-	if ((result = bert_decoder_next(decoder,&microseconds)) != 1)
+	if ((result = bert_decoder_pull(decoder,&microseconds)) != 1)
 	{
 		bert_data_destroy(microseconds);
 		bert_data_destroy(seconds);
@@ -294,7 +294,7 @@ int bert_decode_dict(bert_decoder_t *decoder,bert_data_t **data)
 	bert_data_t *list_data;
 	int result;
 
-	if ((result = bert_decoder_next(decoder,&list_data)) != 1)
+	if ((result = bert_decoder_pull(decoder,&list_data)) != 1)
 	{
 		return result;
 	}
@@ -373,7 +373,7 @@ int bert_decode_regex(bert_decoder_t *decoder,bert_data_t **data)
 	bert_data_t *source;
 	int result;
 
-	if ((result = bert_decoder_next(decoder,&source)) != 1)
+	if ((result = bert_decoder_pull(decoder,&source)) != 1)
 	{
 		return result;
 	}
@@ -386,7 +386,7 @@ int bert_decode_regex(bert_decoder_t *decoder,bert_data_t **data)
 
 	bert_data_t *opt_list;
 
-	if ((result = bert_decoder_next(decoder,&opt_list)) != 1)
+	if ((result = bert_decoder_pull(decoder,&opt_list)) != 1)
 	{
 		bert_data_destroy(source);
 		return result;
@@ -492,7 +492,7 @@ int bert_decode_complex(bert_decoder_t *decoder,bert_data_t **data)
 	bert_data_t *keyword;
 	int result;
 
-	if ((result = bert_decoder_next(decoder,&keyword)) != 1)
+	if ((result = bert_decoder_pull(decoder,&keyword)) != 1)
 	{
 		return result;
 	}
@@ -620,7 +620,7 @@ int bert_decode_tuple(bert_decoder_t *decoder,bert_data_t **data,size_t size)
 		bert_data_t *first;
 		int result;
 
-		if ((result = bert_decoder_next(decoder,&first)) != 1)
+		if ((result = bert_decoder_pull(decoder,&first)) != 1)
 		{
 			bert_data_destroy(new_data);
 			return result;
@@ -639,7 +639,7 @@ int bert_decode_tuple(bert_decoder_t *decoder,bert_data_t **data,size_t size)
 
 		for (i=1;i<size;i++)
 		{
-			if ((result = bert_decoder_next(decoder,new_data->tuple.elements+i)) != 1)
+			if ((result = bert_decoder_pull(decoder,new_data->tuple.elements+i)) != 1)
 			{
 				bert_data_destroy(new_data);
 				return result;
@@ -683,7 +683,7 @@ int bert_decode_list(bert_decoder_t *decoder,bert_data_t **data)
 
 	for (i=0;i<list_size;i++)
 	{
-		if ((result = bert_decoder_next(decoder,&element)) != 1)
+		if ((result = bert_decoder_pull(decoder,&element)) != 1)
 		{
 			bert_data_destroy(new_data);
 			return result;

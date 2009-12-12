@@ -14,7 +14,7 @@ void test_read()
 	bert_data_t *data;
 	int result;
 
-	if ((result = bert_decoder_next(decoder,&data)) != 1)
+	if ((result = bert_decoder_pull(decoder,&data)) != 1)
 	{
 		test_fail(bert_strerror(result));
 	}
