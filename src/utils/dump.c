@@ -208,7 +208,7 @@ int bert_print(const bert_data_t *data)
 			}
 			break;
 		case bert_data_int:
-			printf("%d",data->integer);
+			printf("%lld",data->integer);
 			break;
 		case bert_data_float:
 			printf("%15.15lf",data->floating_point);

@@ -36,7 +36,7 @@ struct bert_data
 	union
 	{
 		unsigned int boolean;
-		int integer;
+		int64_t integer;
 		double floating_point;
 
 		struct
