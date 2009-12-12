@@ -17,7 +17,6 @@
 					}
 
 inline uint8_t bert_decode_uint8(bert_decoder_t *decoder);
-inline int8_t bert_decode_int8(bert_decoder_t *decoder);
 inline uint16_t bert_decode_uint16(bert_decoder_t *decoder);
 inline uint32_t bert_decode_uint32(bert_decoder_t *decoder);
 inline int32_t bert_decode_int32(bert_decoder_t *decoder);

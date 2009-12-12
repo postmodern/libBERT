@@ -20,16 +20,6 @@ inline uint8_t bert_decode_uint8(bert_decoder_t *decoder)
 	return i;
 }
 
-inline int8_t bert_decode_int8(bert_decoder_t *decoder)
-{
-	int8_t i;
-
-	i = bert_read_int8(BERT_DECODER_PTR(decoder));
-
-	BERT_DECODER_STEP(decoder,1);
-	return i;
-}
-
 inline uint16_t bert_decode_uint16(bert_decoder_t *decoder)
 {
 	uint16_t i = bert_read_uint16(BERT_DECODER_PTR(decoder));
