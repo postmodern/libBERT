@@ -20,6 +20,7 @@ test/test_decode_large_tuple
 test/test_decode_list
 test/test_decode_true
 test/test_decode_false
+test/test_decode_nil
 *.a
 *.so
 *.swp
