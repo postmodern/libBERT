@@ -7,7 +7,9 @@ include(install_paths)
 set(LIBRARY_VERSION "0.1.0")
 set(LIBRARY_SOVERSION "0")
 
-configure_file(libBERT.pc.cmake ${BERT_SOURCE_DIR}/libBERT.pc)
+if(UNIX)
+	configure_file(libBERT.pc.cmake ${BERT_SOURCE_DIR}/libBERT.pc)
+endif(UNIX)
 
 configure_file(config.h.cmake ${BERT_SOURCE_DIR}/include/bert/config.h)
 
@@ -22,5 +24,9 @@ target_link_libraries(bert_dump BERT)
 install(TARGETS BERT
 	LIBRARY DESTINATION ${LIB_INSTALL_DIR})
 install(DIRECTORY include/bert DESTINATION ${INCLUDE_INSTALL_DIR})
+
+if(UNIX)
+	install(FILES libBERT.pc DESTINATION ${PKGCONFIG_INSTALL_DIR})
+endif(UNIX)
 
 add_subdirectory(test)
