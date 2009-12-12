@@ -18,9 +18,9 @@ include_directories(${BERT_SOURCE_DIR}/include)
 add_definitions("-Wall")
 add_library(
 	BERT SHARED src/errno.c src/util.c src/list.c src/dict.c
-	src/private/regex.c src/data.c src/private/decode.c
-	src/private/decoder.c src/decoder.c
-	src/private/encoder.c src/encoder.c
+	src/private/regex.c src/data.c
+	src/private/decode.c src/private/decoder.c src/decoder.c
+	src/private/encode.c src/private/encoder.c src/encoder.c
 	src/bert.c
 )
 
