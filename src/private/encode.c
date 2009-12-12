@@ -55,7 +55,7 @@ int bert_encode_int(bert_encoder_t *encoder,unsigned int i)
 int bert_encode_float(bert_encoder_t *encoder,double d)
 {
 	size_t buffer_length = 1 + 31;
-	unsigned char buffer[buffer_length];
+	unsigned char buffer[buffer_length + 1];
 
 	bert_write_magic(buffer,BERT_FLOAT);
 
