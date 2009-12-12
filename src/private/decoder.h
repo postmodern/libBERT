@@ -1,5 +1,5 @@
-#ifndef _BERT_DECODER_PRIVATE_H_
-#define _BERT_DECODER_PRIVATE_H_
+#ifndef _BERT_PRIVATE_DECODER_H_
+#define _BERT_PRIVATE_DECODER_H_
 
 #include <bert/decoder.h>
 
