@@ -26,6 +26,9 @@ typedef enum
 	bert_data_nil
 } bert_data_type;
 
+struct bert_data;
+typedef struct bert_data bert_data_t;
+
 struct bert_data
 {
 	bert_data_type type;
@@ -57,7 +60,7 @@ struct bert_data
 		struct
 		{
 			bert_tuple_size_t length;
-			struct bert_data **elements;
+			bert_data_t **elements;
 		} tuple;
 
 		struct bert_list *list;
@@ -74,7 +77,6 @@ struct bert_data
 		} regex;
 	};
 };
-typedef struct bert_data bert_data_t;
 
 extern bert_data_t * bert_data_create();
 extern bert_data_t * bert_data_create_nil();
