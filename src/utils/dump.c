@@ -1,6 +1,6 @@
 #include <bert/decoder.h>
 #include <bert/errno.h>
-#include "../regex_private.h"
+#include "../private/regex.h"
 
 #include <sys/types.h>
 #include <unistd.h>

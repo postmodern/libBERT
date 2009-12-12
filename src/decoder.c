@@ -7,7 +7,7 @@
 #include <malloc.h>
 #include <string.h>
 
-#include "decoder_private.h"
+#include "private/decoder.h"
 
 bert_decoder_t * bert_decoder_create()
 {

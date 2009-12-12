@@ -16,7 +16,11 @@ configure_file(config.h.cmake ${BERT_SOURCE_DIR}/include/bert/config.h)
 include_directories(${BERT_SOURCE_DIR}/include)
 
 add_definitions("-Wall")
-add_library(BERT SHARED src/errno.c src/util.c src/list.c src/dict.c src/regex_private.c src/data.c src/decoder_private.c src/decoder.c src/bert.c)
+add_library(
+	BERT SHARED src/errno.c src/util.c src/list.c src/dict.c
+	src/private/regex.c src/data.c src/private/decoder.c src/decoder.c
+	src/bert.c
+)
 
 add_executable(bert_dump src/utils/dump.c)
 target_link_libraries(bert_dump BERT)

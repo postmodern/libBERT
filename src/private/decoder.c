@@ -1,5 +1,6 @@
-#include "decoder_private.h"
-#include "regex_private.h"
+#include "decoder.h"
+#include "regex.h"
+
 #include <bert/magic.h>
 #include <bert/util.h>
 #include <bert/errno.h>

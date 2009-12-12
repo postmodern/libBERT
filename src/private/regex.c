@@ -1,4 +1,4 @@
-#include "regex_private.h"
+#include "regex.h"
 
 #include <string.h>
 
