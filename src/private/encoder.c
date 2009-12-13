@@ -15,7 +15,7 @@ int bert_encoder_write(bert_encoder_t *encoder,const unsigned char *data,size_t 
 			}
 			break;
 		case bert_mode_buffer:
-			if ((encoder->buffer.index + length) >= encoder->buffer.length)
+			if ((encoder->buffer.index + length) > encoder->buffer.length)
 			{
 				return BERT_ERRNO_SHORT;
 			}
