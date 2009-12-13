@@ -40,3 +40,16 @@ bert_decoder_t * test_decoder()
 
 	return decoder;
 }
+
+bert_encoder_t * test_encoder(unsigned char *buffer,size_t length)
+{
+	bert_encoder_t *encoder;
+
+	if (!(encoder = bert_encoder_create()))
+	{
+		test_fail("malloc failed");
+	}
+
+	bert_encoder_buffer(encoder,buffer,length);
+	return encoder;
+}

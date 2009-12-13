@@ -16,14 +16,7 @@ void test_output()
 
 int main()
 {
-	bert_encoder_t *encoder;
-
-	if (!(encoder = bert_encoder_create()))
-	{
-		test_fail("malloc failed");
-	}
-
-	bert_encoder_buffer(encoder,output,3);
+	bert_encoder_t *encoder = test_encoder(output,3);
 
 	bert_data_t *data;
 
