@@ -65,3 +65,7 @@ add_test(decode_nil test_decode_nil)
 add_executable(test_decode_regex test_decode_regex.c)
 target_link_libraries(test_decode_regex test BERT)
 add_test(decode_regex test_decode_regex)
+
+add_executable(test_encode_magic test_encode_magic.c)
+target_link_libraries(test_encode_magic test BERT)
+add_test(encode_magic test_encode_magic)

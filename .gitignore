@@ -24,6 +24,7 @@ test/test_decode_true
 test/test_decode_false
 test/test_decode_nil
 test/test_decode_regex
+test/test_encode_magic
 *.a
 *.so
 *.swp
