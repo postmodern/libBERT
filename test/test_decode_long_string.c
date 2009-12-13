@@ -51,16 +51,9 @@ int main()
 {
 	int fd;
 
-	if ((fd = open("files/long_string.bert",O_RDONLY)) == -1)
-	{
-		test_fail(strerror(errno));
-	}
+	decoder = bert_decoder_create();
 
-	if (!(decoder = bert_decoder_create()))
-	{
-		test_fail("malloc failed");
-	}
-
+	fd = test_open_file("files/long_string.bert");
 	bert_decoder_stream(decoder,fd);
 
 	test_read();

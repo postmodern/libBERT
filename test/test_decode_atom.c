@@ -3,7 +3,6 @@
 
 #include "test.h"
 #include <sys/types.h>
-#include <fcntl.h>
 #include <string.h>
 #include <errno.h>
 
@@ -41,17 +40,10 @@ void test_read()
 int main()
 {
 	int fd;
+	
+	decoder = bert_decoder_create();
 
-	if ((fd = open("files/atom.bert",O_RDONLY)) == -1)
-	{
-		test_fail(strerror(errno));
-	}
-
-	if (!(decoder = bert_decoder_create()))
-	{
-		test_fail("malloc failed");
-	}
-
+	fd = test_open_file("files/atom.bert");
 	bert_decoder_stream(decoder,fd);
 
 	test_read();

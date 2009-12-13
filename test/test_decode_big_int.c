@@ -34,16 +34,8 @@ int main()
 {
 	int fd;
 
-	if ((fd = open("files/big_int.bert",O_RDONLY)) == -1)
-	{
-		test_fail(strerror(errno));
-	}
-
-	if (!(decoder = bert_decoder_create()))
-	{
-		test_fail("malloc failed");
-	}
-
+	decoder = bert_decoder_create();
+	fd = test_open_file("files/big_int.bert");
 	bert_decoder_stream(decoder,fd);
 
 	test_read();

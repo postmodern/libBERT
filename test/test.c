@@ -1,6 +1,9 @@
-#include <stdarg.h>
-
 #include "test.h"
+
+#include <fcntl.h>
+#include <stdarg.h>
+#include <string.h>
+#include <errno.h>
 
 void test_fail(const char *mesg,...)
 {
@@ -12,4 +15,28 @@ void test_fail(const char *mesg,...)
 
 	putchar('\n');
 	exit(-1);
+}
+
+int test_open_file(const char *path)
+{
+	int fd;
+
+	if ((fd = open(path,O_RDONLY)) == -1)
+	{
+		test_fail(strerror(errno));
+	}
+
+	return fd;
+}
+
+bert_decoder_t * test_decoder()
+{
+	bert_decoder_t *decoder;
+
+	if (!(decoder = bert_decoder_create()))
+	{
+		test_fail("malloc failed");
+	}
+
+	return decoder;
 }
