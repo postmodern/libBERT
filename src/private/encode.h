@@ -20,7 +20,7 @@ int bert_encode_tuple(bert_encoder_t *encoder,const bert_data_t **elements,size_
 int bert_encode_list_header(bert_encoder_t *encoder,size_t length);
 int bert_encode_list(bert_encoder_t *encoder,const bert_list_t *list);
 
-int bert_encode_complex(bert_encoder_t *encoder,const char *name,size_t elements);
+int bert_encode_complex_header(bert_encoder_t *encoder,const char *name,size_t elements);
 int bert_encode_true(bert_encoder_t *encoder);
 int bert_encode_false(bert_encoder_t *encoder);
 int bert_encode_boolean(bert_encoder_t *encoder,unsigned int boolean);

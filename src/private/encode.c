@@ -257,7 +257,7 @@ int bert_encode_list(bert_encoder_t *encoder,const bert_list_t *list)
 	return BERT_SUCCESS;
 }
 
-int bert_encode_complex(bert_encoder_t *encoder,const char *name,size_t elements)
+int bert_encode_complex_header(bert_encoder_t *encoder,const char *name,size_t elements)
 {
 	int result;
 
@@ -281,12 +281,12 @@ int bert_encode_complex(bert_encoder_t *encoder,const char *name,size_t elements
 
 int bert_encode_nil(bert_encoder_t *encoder)
 {
-	return bert_encode_complex(encoder,"nil",0);
+	return bert_encode_complex_header(encoder,"nil",0);
 }
 
 int bert_encode_true(bert_encoder_t *encoder)
 {
-	return bert_encode_complex(encoder,"true",0);
+	return bert_encode_complex_header(encoder,"true",0);
 }
 
 int bert_encode_boolean(bert_encoder_t *encoder,unsigned int boolean)
@@ -305,7 +305,7 @@ int bert_encode_boolean(bert_encoder_t *encoder,unsigned int boolean)
 
 int bert_encode_false(bert_encoder_t *encoder)
 {
-	return bert_encode_complex(encoder,"false",0);
+	return bert_encode_complex_header(encoder,"false",0);
 }
 
 int bert_encode_dict(bert_encoder_t *encoder,const bert_dict_t *dict)
@@ -321,7 +321,7 @@ int bert_encode_dict(bert_encoder_t *encoder,const bert_dict_t *dict)
 
 	int result;
 
-	if ((result = bert_encode_complex(encoder,"dict",1)) == BERT_SUCCESS)
+	if ((result = bert_encode_complex_header(encoder,"dict",1)) == BERT_SUCCESS)
 	{
 		return result;
 	}
@@ -360,7 +360,7 @@ int bert_encode_time(bert_encoder_t *encoder,time_t timestamp)
 {
 	int result;
 
-	if ((result = bert_encode_complex(encoder,"time",3)) != BERT_SUCCESS)
+	if ((result = bert_encode_complex_header(encoder,"time",3)) != BERT_SUCCESS)
 	{
 		return result;
 	}
@@ -382,7 +382,7 @@ int bert_encode_regex(bert_encoder_t *encoder,const char *source,size_t length,u
 {
 	int result;
 
-	if ((result = bert_encode_complex(encoder,"regex",2)) != BERT_SUCCESS)
+	if ((result = bert_encode_complex_header(encoder,"regex",2)) != BERT_SUCCESS)
 	{
 		return result;
 	}
