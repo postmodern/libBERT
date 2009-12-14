@@ -70,9 +70,9 @@ add_executable(test_encode_magic test_encode_magic.c)
 target_link_libraries(test_encode_magic test BERT)
 add_test(encode_magic test_encode_magic)
 
-add_executable(test_encode_short test_encode_short.c)
-target_link_libraries(test_encode_short test BERT)
-add_test(encode_short test_encode_short)
+add_executable(test_encode_short_write test_encode_short_write.c)
+target_link_libraries(test_encode_short_write test BERT)
+add_test(encode_short_wirte test_encode_short_write)
 
 add_executable(test_encode_small_int test_encode_small_int.c)
 target_link_libraries(test_encode_small_int test BERT)
