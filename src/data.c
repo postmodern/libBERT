@@ -317,7 +317,7 @@ bert_data_t * bert_data_create_bin(const unsigned char *binary_data,bert_bin_siz
 {
 	bert_data_t *new_data;
 
-	if (!(new_data = bert_data_create_empty_bin()))
+	if (!(new_data = bert_data_create_empty_bin(length)))
 	{
 		// malloc failed
 		return NULL;
