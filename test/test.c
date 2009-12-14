@@ -1,4 +1,5 @@
 #include "test.h"
+#include <bert/errno.h>
 
 #include <fcntl.h>
 #include <stdarg.h>
@@ -52,4 +53,15 @@ bert_encoder_t * test_encoder(unsigned char *buffer,size_t length)
 
 	bert_encoder_buffer(encoder,buffer,length);
 	return encoder;
+}
+
+void test_encoder_push(bert_encoder_t *encoder,const bert_data_t *data)
+{
+	int result;
+
+	if ((result = bert_encoder_push(encoder,data)) != BERT_SUCCESS)
+	{
+		test_fail(bert_strerror(result));
+	}
+
 }

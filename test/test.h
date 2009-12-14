@@ -13,5 +13,6 @@ int test_open_file(const char *path);
 bert_decoder_t * test_decoder();
 
 bert_encoder_t * test_encoder(unsigned char *buffer,size_t length);
+void test_encoder_push(bert_encoder_t *encoder,const bert_data_t *data);
 
 #endif

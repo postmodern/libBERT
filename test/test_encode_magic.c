@@ -25,12 +25,7 @@ int main()
 		test_fail("malloc failed");
 	}
 
-	int result;
-
-	if ((result = bert_encoder_push(encoder,data)) != BERT_SUCCESS)
-	{
-		test_fail(bert_strerror(result));
-	}
+	test_encoder_push(encoder,data);
 
 	bert_data_destroy(data);
 	bert_encoder_destroy(encoder);
