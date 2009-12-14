@@ -4,7 +4,11 @@
 
 #include "test.h"
 
-unsigned char output[3];
+#define EXPECTED	127
+
+#define OUTPUT_SIZE	(1 + 1 + 1)
+
+unsigned char output[OUTPUT_SIZE];
 
 void test_output()
 {
@@ -18,19 +22,19 @@ void test_output()
 		test_fail("bert_encoder_push did not add the SMALL_INT magic byte");
 	}
 
-	if (output[2] != 127)
+	if (output[2] != EXPECTED)
 	{
-		test_fail("bert_encoder_push encoded %u as the small int, expected %u",output[2],127);
+		test_fail("bert_encoder_push encoded %u as the small int, expected %u",output[2],EXPECTED);
 	}
 }
 
 int main()
 {
-	bert_encoder_t *encoder = test_encoder(output,3);
+	bert_encoder_t *encoder = test_encoder(output,OUTPUT_SIZE);
 
 	bert_data_t *data;
 
-	if (!(data = bert_data_create_int(127)))
+	if (!(data = bert_data_create_int(EXPECTED)))
 	{
 		test_fail("malloc failed");
 	}
