@@ -315,35 +315,16 @@ cleanup:
 
 bert_data_t * bert_data_create_bin(const unsigned char *binary_data,bert_bin_size_t length)
 {
-	unsigned char *new_binary_data;
-
-	if (!(new_binary_data = malloc(sizeof(unsigned char) * length)))
-	{
-		// malloc failed
-		goto cleanup;
-	}
-
-	memcpy(new_binary_data,binary_data,sizeof(unsigned char) * length);
-
 	bert_data_t *new_data;
 
-	if (!(new_data = bert_data_create()))
+	if (!(new_data = bert_data_create_empty_bin()))
 	{
 		// malloc failed
-		goto cleanup_binary_data;
+		return NULL;
 	}
 
-	new_data->type = bert_data_bin;
-	new_data->bin.length = length;
-	new_data->bin.data = new_binary_data;
+	memcpy(new_data->bin.data,binary_data,length);
 	return new_data;
-
-cleanup_binary_data:
-	// free the new_binary_data
-	free(new_binary_data);
-cleanup:
-	// error
-	return NULL;
 }
 
 bert_data_t * bert_data_create_time(time_t timestamp)
