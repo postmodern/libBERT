@@ -101,3 +101,7 @@ add_test(encode_small_tuple test_encode_small_tuple)
 add_executable(test_encode_big_tuple test_encode_big_tuple.c)
 target_link_libraries(test_encode_big_tuple test BERT)
 add_test(encode_big_tuple test_encode_big_tuple)
+
+add_executable(test_encode_list test_encode_list.c)
+target_link_libraries(test_encode_list test BERT)
+add_test(encode_list test_encode_list)
