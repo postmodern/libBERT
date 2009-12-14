@@ -31,6 +31,7 @@ test/test_encode_int
 test/test_encode_atom
 test/test_encode_string
 test/test_encode_bin
+test/test_encode_small_tuple
 *.a
 *.so
 *.swp

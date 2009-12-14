@@ -93,3 +93,7 @@ add_test(encode_string test_encode_string)
 add_executable(test_encode_bin test_encode_bin.c)
 target_link_libraries(test_encode_bin test BERT)
 add_test(encode_bin test_encode_bin)
+
+add_executable(test_encode_small_tuple test_encode_small_tuple.c)
+target_link_libraries(test_encode_small_tuple test BERT)
+add_test(encode_small_tuple test_encode_small_tuple)
