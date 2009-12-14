@@ -4,7 +4,9 @@
 
 #include "test.h"
 
-unsigned char output[6];
+#define OUTPUT_SIZE (1 + 1 + 4)
+
+unsigned char output[OUTPUT_SIZE];
 
 void test_output()
 {
@@ -18,18 +20,18 @@ void test_output()
 		test_fail("bert_encoder_push did not add the INT magic byte");
 	}
 
-	unsigned char bytes[] = {0xff, 0xff, 0xff, 0xff};
+	unsigned char bytes[] = {0x00, 0xff, 0xff, 0xff};
 
 	test_bytes(output+2,bytes,4);
 }
 
 int main()
 {
-	bert_encoder_t *encoder = test_encoder(output,6);
+	bert_encoder_t *encoder = test_encoder(output,OUTPUT_SIZE);
 
 	bert_data_t *data;
 
-	if (!(data = bert_data_create_int(0xffffffff)))
+	if (!(data = bert_data_create_int(0x00ffffff)))
 	{
 		test_fail("malloc failed");
 	}
