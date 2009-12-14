@@ -178,8 +178,7 @@ int bert_encode_tuple_header(bert_encoder_t *encoder,size_t elements)
 	}
 	else if (elements <= 0xffffffff)
 	{
-		size_t buffer_length = 1 + 4;
-		unsigned char buffer[buffer_length];
+		buffer_length = 1 + 4;
 
 		bert_write_magic(buffer,BERT_LARGE_TUPLE);
 		bert_write_uint32(buffer+1,elements);
