@@ -279,9 +279,14 @@ bert_data_t * bert_data_create_dict()
 
 bert_data_t * bert_data_create_empty_bin(bert_bin_size_t length)
 {
+	/*
+	 * make sure that there is an extra NULL byte, incase someone tries
+	 * to treat a binary blob as a NULL terminated string.
+	 */
+	size_t new_length = length + 1;
 	unsigned char *new_bin;
 
-	if (!(new_bin = calloc(length,sizeof(unsigned char))))
+	if (!(new_bin = calloc(new_length,sizeof(unsigned char))))
 	{
 		// malloc failed
 		goto cleanup;
