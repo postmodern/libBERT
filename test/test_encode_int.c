@@ -18,15 +18,9 @@ void test_output()
 		test_fail("bert_encoder_push did not add the INT magic byte");
 	}
 
-	unsigned int i;
+	unsigned char bytes[] = {0xff, 0xff, 0xff, 0xff};
 
-	for (i=2;i<6;i++)
-	{
-		if (output[i] != 0xff)
-		{
-			test_fail("output[%u] is 0x%x, expected 0x%x",output[i],0xff);
-		}
-	}
+	test_bytes(output+2,bytes,4);
 }
 
 int main()
