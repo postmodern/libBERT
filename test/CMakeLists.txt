@@ -89,3 +89,7 @@ add_test(encode_atom test_encode_atom)
 add_executable(test_encode_string test_encode_string.c)
 target_link_libraries(test_encode_string test BERT)
 add_test(encode_string test_encode_string)
+
+add_executable(test_encode_bin test_encode_bin.c)
+target_link_libraries(test_encode_bin test BERT)
+add_test(encode_bin test_encode_bin)
