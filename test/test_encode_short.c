@@ -18,9 +18,9 @@ int main()
 
 	int result;
 
-	if ((result = bert_encoder_push(encoder,data)) != BERT_ERRNO_SHORT)
+	if ((result = bert_encoder_push(encoder,data)) != BERT_ERRNO_SHORT_READ)
 	{
-		test_fail("bert_encoder_push returned %d, expected BERT_ERRNO_SHORT",result);
+		test_fail("bert_encoder_push returned %d, expected BERT_ERRNO_SHORT_READ",result);
 	}
 
 	bert_data_destroy(data);

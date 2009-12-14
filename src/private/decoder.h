@@ -8,8 +8,8 @@
 #define BERT_DECODER_PTR(decoder)	(decoder->short_buffer + decoder->short_index)
 #define BERT_DECODER_READ(decoder,i)	switch (bert_decoder_read(decoder,i)) { \
 						case BERT_ERRNO_EMPTY: \
-						case BERT_ERRNO_SHORT: \
-							return BERT_ERRNO_SHORT; \
+						case BERT_ERRNO_SHORT_READ: \
+							return BERT_ERRNO_SHORT_READ; \
 						case BERT_ERRNO_READ: \
 							return BERT_ERRNO_READ; \
 						case BERT_ERRNO_INVALID: \

@@ -7,6 +7,7 @@ const char *bert_errors[] = {
 	"unknown libBERT error code",
 	"invalid BERT data",
 	"no more data left",
+	"no more space to write data",
 	"not enough data available",
 	"read error",
 	"write error",

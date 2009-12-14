@@ -82,7 +82,7 @@ fill_short_buffer:
 
 	if ((decoder->short_length - decoder->short_index) < size)
 	{
-		return BERT_ERRNO_SHORT;
+		return BERT_ERRNO_SHORT_READ;
 	}
 	return BERT_SUCCESS;
 }
