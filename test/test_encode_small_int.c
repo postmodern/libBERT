@@ -20,6 +20,7 @@ void test_output()
 
 	if (output[2] != 127)
 	{
+		test_fail("bert_encoder_push encoded %u as the small int, expected %u",output[2],127);
 	}
 }
 
