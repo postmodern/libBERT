@@ -91,3 +91,24 @@ void test_strings(const char *string,const char *expected,size_t expected_length
 		}
 	}
 }
+
+void test_complex(const unsigned char *ptr)
+{
+	if (ptr[0] != BERT_SMALL_TUPLE)
+	{
+		test_fail("complex BERT data must be stored in a small tuple");
+	}
+
+	switch (ptr[1])
+	{
+		case 2:
+		case 3:
+		case 4:
+		case 5:
+			break;
+		default:
+			test_fail("invalid small tuple length %u for BERT complex data",ptr[1]);
+	}
+
+	test_strings((const char *)(ptr+2),"bert",4);
+}

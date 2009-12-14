@@ -18,4 +18,6 @@ void test_encoder_push(bert_encoder_t *encoder,const bert_data_t *data);
 void test_bytes(const unsigned char *bytes,const unsigned char *expected,size_t expected_length);
 void test_strings(const char *string,const char *expected,size_t expected_length);
 
+void test_complex(const unsigned char *ptr);
+
 #endif
