@@ -93,7 +93,7 @@ void test_strings(const char *string,const char *expected,size_t expected_length
 	}
 }
 
-void test_complex(const unsigned char *ptr)
+const unsigned char * test_complex(const unsigned char *ptr)
 {
 	if (ptr[0] != BERT_SMALL_TUPLE)
 	{
@@ -122,4 +122,5 @@ void test_complex(const unsigned char *ptr)
 	}
 
 	test_strings((const char *)(ptr+4),"bert",4);
+	return ptr+8;
 }
