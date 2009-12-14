@@ -81,3 +81,7 @@ add_test(encode_small_int test_encode_small_int)
 add_executable(test_encode_int test_encode_int.c)
 target_link_libraries(test_encode_int test BERT)
 add_test(encode_int test_encode_int)
+
+add_executable(test_encode_atom test_encode_atom.c)
+target_link_libraries(test_encode_atom test BERT)
+add_test(encode_atom test_encode_atom)
