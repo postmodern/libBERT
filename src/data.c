@@ -99,7 +99,7 @@ bert_data_t * bert_data_create_false()
 	return new_data;
 }
 
-bert_data_t * bert_data_create_int(int i)
+bert_data_t * bert_data_create_int(int64_t i)
 {
 	bert_data_t *new_data;
 

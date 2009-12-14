@@ -82,7 +82,7 @@ extern bert_data_t * bert_data_create();
 extern bert_data_t * bert_data_create_nil();
 extern bert_data_t * bert_data_create_true();
 extern bert_data_t * bert_data_create_false();
-extern bert_data_t * bert_data_create_int(int i);
+extern bert_data_t * bert_data_create_int(int64_t i);
 extern bert_data_t * bert_data_create_float(double f);
 extern bert_data_t * bert_data_create_empty_atom(bert_atom_size_t length);
 extern bert_data_t * bert_data_create_atom(const char *name);
