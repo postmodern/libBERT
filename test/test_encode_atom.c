@@ -19,17 +19,16 @@ void test_output()
 		test_fail("bert_encoder_push did not add the SMALL_INT magic byte");
 	}
 
-	if (output[3] != 2)
+	size_t expected_length = 2;
+
+	if (output[3] != expected_length)
 	{
-		test_fail("bert_encoder_push encoded %u as the atom length, expected %u",output[3],2);
+		test_fail("bert_encoder_push encoded %u as the atom length, expected %u",output[3],expected_length);
 	}
 
-	const char *name = "id";
+	const char *expected = "id";
 
-	if (memcmp(output+4,name,sizeof(unsigned char)*2))
-	{
-		test_fail("bert_encoder_push encoded %c%c, expected %s",output[4],output[5],name);
-	}
+	test_strings((const char *)(output+4),expected,expected_length);
 }
 
 int main()
