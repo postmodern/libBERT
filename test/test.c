@@ -65,3 +65,29 @@ void test_encoder_push(bert_encoder_t *encoder,const bert_data_t *data)
 	}
 
 }
+
+void test_bytes(const unsigned char *bytes,const unsigned char *expected,size_t expected_length)
+{
+	unsigned int i;
+
+	for (i=0;i<expected_length;i++)
+	{
+		if (bytes[i] != expected[i])
+		{
+			test_fail("byte[%u] is 0x%x, expected 0x%x",bytes[i],expected[i]);
+		}
+	}
+}
+
+void test_strings(const char *string,const char *expected,size_t expected_length)
+{
+	unsigned int i;
+
+	for (i=0;i<expected_length;i++)
+	{
+		if (string[i] != expected[i])
+		{
+			test_fail("string[%u] is %c, expected %c",string[i],expected[i]);
+		}
+	}
+}
