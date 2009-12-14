@@ -207,7 +207,7 @@ bert_data_t * bert_data_create_string(const char *text)
 	bert_data_t *new_data;
 	bert_string_size_t length = strlen(text);
 
-	if (!(new_data = bert_data_create(length)))
+	if (!(new_data = bert_data_create_empty_string(length)))
 	{
 		// malloc failed
 		return NULL;
