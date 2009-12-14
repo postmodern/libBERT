@@ -1,4 +1,5 @@
 #include "test.h"
+#include <bert/magic.h>
 #include <bert/errno.h>
 
 #include <fcntl.h>
@@ -110,5 +111,15 @@ void test_complex(const unsigned char *ptr)
 			test_fail("invalid small tuple length %u for BERT complex data",ptr[1]);
 	}
 
-	test_strings((const char *)(ptr+2),"bert",4);
+	if (ptr[2] != BERT_ATOM)
+	{
+		test_fail("BERT complex data does not contain the first 'bert' atom");
+	}
+
+	if (ptr[3] != 4)
+	{
+		test_fail("BERT complex keyword has length %u, expected %u",ptr[3],4);
+	}
+
+	test_strings((const char *)(ptr+4),"bert",4);
 }
