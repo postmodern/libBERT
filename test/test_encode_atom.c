@@ -25,10 +25,10 @@ void test_output()
 
 	if (output[3] != EXPECTED_LENGTH)
 	{
-		test_fail("bert_encoder_push encoded %u as the atom length, expected %u",output[3],expected_length);
+		test_fail("bert_encoder_push encoded %u as the atom length, expected %u",output[3],EXPECTED_LENGTH);
 	}
 
-	test_strings((const char *)(output+4),EXPECTED,expected_length);
+	test_strings((const char *)(output+4),EXPECTED,EXPECTED_LENGTH);
 }
 
 int main()
