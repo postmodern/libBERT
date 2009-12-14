@@ -221,18 +221,10 @@ bert_data_t * bert_data_create_tuple(bert_tuple_size_t length)
 {
 	bert_data_t **new_elements;
 
-	if (!(new_elements = malloc(sizeof(bert_data_t *) * length)))
+	if (!(new_elements = calloc(length,sizeof(bert_data_t *))))
 	{
 		// malloc failed
 		goto cleanup;
-	}
-
-	unsigned int i;
-
-	// be explicit about zeroing the pointers
-	for (i=0;i<length;i++)
-	{
-		new_elements[i] = NULL;
 	}
 
 	bert_data_t *new_data;
