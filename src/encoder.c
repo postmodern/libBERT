@@ -76,7 +76,7 @@ int bert_encoder_push(bert_encoder_t *encoder,const bert_data_t *data)
 		case bert_data_bin:
 			return bert_encode_bin(encoder,data->bin.data,data->bin.length);
 		case bert_data_tuple:
-			return bert_encode_tuple(encoder,data->tuple.elements,data->tuple.length);
+			return bert_encode_tuple(encoder,(const bert_data_t **)(data->tuple.elements),data->tuple.length);
 		case bert_data_list:
 			return bert_encode_list(encoder,data->list);
 		case bert_data_nil:
