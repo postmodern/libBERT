@@ -129,22 +129,17 @@ bert_data_t * bert_data_create_float(double f)
 	return new_data;
 }
 
-bert_data_t * bert_data_create_atom(const char *name,bert_atom_size_t length)
+bert_data_t * bert_data_create_empty_atom(bert_atom_size_t length)
 {
 	// +1 is for null terminating byte
 	size_t new_length = length + 1;
 	char *new_name;
 
-	if (!(new_name = malloc(sizeof(char) * new_length)))
+	if (!(new_name = calloc(new_length,sizeof(char))))
 	{
 		// malloc failed
 		goto cleanup;
 	}
-
-	memcpy(new_name,name,sizeof(char) * length);
-
-	// null terminate the name
-	new_name[length] = '\0';
 
 	bert_data_t *new_data;
 
@@ -160,35 +155,39 @@ bert_data_t * bert_data_create_atom(const char *name,bert_atom_size_t length)
 	return new_data;
 
 cleanup_name:
-	// free the new_name
 	free(new_name);
 cleanup:
-	// error
 	return NULL;
 }
 
-bert_data_t * bert_data_create_string(const char *text,bert_string_size_t length)
+bert_data_t * bert_data_create_atom(const char *name)
 {
-	// +1 is for null terminating byte
+	bert_data_t *new_data;
+	bert_atom_size_t length = strlen(name);
+
+	if (!(new_data = bert_data_create_empty_atom(length)))
+	{
+		return NULL;
+	}
+
+	strncpy(new_data->atom.name,name,length);
+	return new_data;
+}
+
+bert_data_t * bert_data_create_empty_string(bert_string_size_t length)
+{
 	size_t new_length = length + 1;
 	char *new_text;
 
-	if (!(new_text = malloc(sizeof(char) * new_length)))
+	if (!(new_text = calloc(new_length,sizeof(char))))
 	{
-		// malloc failed
 		goto cleanup;
 	}
-
-	memcpy(new_text,text,sizeof(char) * length);
-
-	// null terminate the text
-	new_text[length] = '\0';
 
 	bert_data_t *new_data;
 
 	if (!(new_data = bert_data_create()))
 	{
-		// malloc failed
 		goto cleanup_text;
 	}
 
@@ -198,11 +197,24 @@ bert_data_t * bert_data_create_string(const char *text,bert_string_size_t length
 	return new_data;
 
 cleanup_text:
-	// free the new_text
 	free(new_text);
 cleanup:
-	// error
 	return NULL;
+}
+
+bert_data_t * bert_data_create_string(const char *text)
+{
+	bert_data_t *new_data;
+	bert_string_size_t length = strlen(text);
+
+	if (!(new_data = bert_data_create(length)))
+	{
+		// malloc failed
+		return NULL;
+	}
+
+	strncpy(new_data->string.text,text,length);
+	return new_data;
 }
 
 bert_data_t * bert_data_create_tuple(bert_tuple_size_t length)
@@ -271,6 +283,34 @@ bert_data_t * bert_data_create_dict()
 	new_data->type = bert_data_dict;
 	new_data->dict = bert_dict_create();
 	return new_data;
+}
+
+bert_data_t * bert_data_create_empty_bin(bert_bin_size_t length)
+{
+	unsigned char *new_bin;
+
+	if (!(new_bin = calloc(length,sizeof(unsigned char))))
+	{
+		// malloc failed
+		goto cleanup;
+	}
+
+	bert_data_t *new_data;
+
+	if (!(new_data = bert_data_create()))
+	{
+		goto cleanup_bin;
+	}
+
+	new_data->type = bert_data_bin;
+	new_data->bin.length = length;
+	new_data->bin.data = new_bin;
+	return new_data;
+
+cleanup_bin:
+	free(new_bin);
+cleanup:
+	return NULL;
 }
 
 bert_data_t * bert_data_create_bin(const unsigned char *binary_data,bert_bin_size_t length)

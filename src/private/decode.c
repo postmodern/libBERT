@@ -196,24 +196,22 @@ inline int bert_decode_string(bert_decoder_t *decoder,bert_data_t **data)
 	BERT_DECODER_READ(decoder,4);
 
 	bert_string_size_t size = bert_decode_uint32(decoder);
+	bert_data_t *new_data;
 
-	char string_buffer[size];
+	if (!(new_data = bert_data_create_empty_string(size)))
+	{
+		return BERT_ERRNO_MALLOC;
+	}
 
 	if (size)
 	{
 		int result;
 
-		if ((result = bert_decode_bytes((unsigned char *)string_buffer,decoder,size)) != BERT_SUCCESS)
+		if ((result = bert_decode_bytes((unsigned char *)(new_data->string.text),decoder,size)) != BERT_SUCCESS)
 		{
+			bert_data_destroy(new_data);
 			return result;
 		}
-	}
-
-	bert_data_t *new_data;
-
-	if (!(new_data = bert_data_create_string(string_buffer,size)))
-	{
-		return BERT_ERRNO_MALLOC;
 	}
 
 	*data = new_data;
@@ -553,24 +551,22 @@ int bert_decode_atom(bert_decoder_t *decoder,bert_data_t **data)
 	BERT_DECODER_READ(decoder,2);
 
 	bert_atom_size_t size = bert_decode_uint16(decoder);
+	bert_data_t *new_data;
 
-	char atom_buffer[size];
+	if (!(new_data = bert_data_create_empty_atom(size)))
+	{
+		return BERT_ERRNO_MALLOC;
+	}
 
 	if (size)
 	{
 		int result;
 
-		if ((result = bert_decode_bytes((unsigned char *)atom_buffer,decoder,size)) != BERT_SUCCESS)
+		if ((result = bert_decode_bytes((unsigned char *)(new_data->atom.name),decoder,size)) != BERT_SUCCESS)
 		{
+			bert_data_destroy(new_data);
 			return result;
 		}
-	}
-
-	bert_data_t *new_data;
-
-	if (!(new_data = bert_data_create_atom(atom_buffer,size)))
-	{
-		return BERT_ERRNO_MALLOC;
 	}
 
 	*data = new_data;
@@ -582,24 +578,22 @@ inline int bert_decode_bin(bert_decoder_t *decoder,bert_data_t **data)
 	BERT_DECODER_READ(decoder,4);
 
 	bert_bin_size_t size = bert_decode_uint32(decoder);
+	bert_data_t *new_data;
 
-	unsigned char bin_buffer[size];
+	if (!(new_data = bert_data_create_empty_bin(size)))
+	{
+		return BERT_ERRNO_MALLOC;
+	}
 
 	if (size)
 	{
 		int result;
 
-		if ((result = bert_decode_bytes(bin_buffer,decoder,size)) != BERT_SUCCESS)
+		if ((result = bert_decode_bytes(new_data->bin.data,decoder,size)) != BERT_SUCCESS)
 		{
+			bert_data_destroy(new_data);
 			return result;
 		}
-	}
-
-	bert_data_t *new_data;
-
-	if (!(new_data = bert_data_create_bin(bin_buffer,size)))
-	{
-		return BERT_ERRNO_MALLOC;
 	}
 
 	*data = new_data;
