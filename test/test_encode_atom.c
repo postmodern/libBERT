@@ -5,7 +5,11 @@
 #include "test.h"
 #include <string.h>
 
-unsigned char output[6];
+#define EXPECTED_LENGTH 2
+#define EXPECTED	"id"
+#define OUTPUT_SIZE	(1 + 1 + 2 + EXPECTED_LENGTH)
+
+unsigned char output[OUTPUT_SIZE];
 
 void test_output()
 {
@@ -19,24 +23,20 @@ void test_output()
 		test_fail("bert_encoder_push did not add the SMALL_INT magic byte");
 	}
 
-	size_t expected_length = 2;
-
-	if (output[3] != expected_length)
+	if (output[3] != EXPECTED_LENGTH)
 	{
 		test_fail("bert_encoder_push encoded %u as the atom length, expected %u",output[3],expected_length);
 	}
 
-	const char *expected = "id";
-
-	test_strings((const char *)(output+4),expected,expected_length);
+	test_strings((const char *)(output+4),EXPECTED,expected_length);
 }
 
 int main()
 {
-	bert_encoder_t *encoder = test_encoder(output,6);
+	bert_encoder_t *encoder = test_encoder(output,OUTPUT_SIZE);
 	bert_data_t *data;
 
-	if (!(data = bert_data_create_atom("id")))
+	if (!(data = bert_data_create_atom(EXPECTED)))
 	{
 		test_fail("malloc failed");
 	}
