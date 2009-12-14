@@ -84,7 +84,7 @@ int bert_encoder_push(bert_encoder_t *encoder,const bert_data_t *data)
 		case bert_data_boolean:
 			return bert_encode_boolean(encoder,data->boolean);
 		case bert_data_dict:
-			return bert_encode_list(encoder,data->dict);
+			return bert_encode_dict(encoder,data->dict);
 		case bert_data_regex:
 			return bert_encode_regex(encoder,data->regex.source,data->regex.length,data->regex.options);
 		case bert_data_time:
