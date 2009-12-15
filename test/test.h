@@ -18,7 +18,7 @@ void test_encoder_push(bert_encoder_t *encoder,const bert_data_t *data);
 void test_bytes(const unsigned char *bytes,const unsigned char *expected,size_t expected_length);
 void test_strings(const char *string,const char *expected,size_t expected_length);
 
-#define TEST_COMPLEX_HEADER_SIZE	(1 + 1 + 1 + 1 + 4)
+#define TEST_COMPLEX_HEADER_SIZE	(1 + 1 + (1 + 2 + 4))
 
 const unsigned char * test_complex(const unsigned char *ptr);
 
