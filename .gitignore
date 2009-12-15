@@ -35,6 +35,7 @@ test/test_encode_small_tuple
 test/test_encode_big_tuple
 test/test_encode_list
 test/test_encode_true
+test/test_encode_false
 *.a
 *.so
 *.swp
