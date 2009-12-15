@@ -93,7 +93,7 @@ void test_strings(const char *string,const char *expected,size_t expected_length
 	}
 }
 
-const unsigned char * test_complex_header(const unsigned char *ptr)
+const unsigned char * test_complex_header(const unsigned char *ptr,const char *name)
 {
 	if (ptr[0] != BERT_SMALL_TUPLE)
 	{
@@ -118,9 +118,22 @@ const unsigned char * test_complex_header(const unsigned char *ptr)
 
 	if (ptr[4] != 4)
 	{
-		test_fail("BERT complex keyword has length %u, expected %u",ptr[3],4);
+		test_fail("BERT complex keyword has length %u, expected %u",ptr[4],4);
 	}
 
 	test_strings((const char *)(ptr+5),"bert",4);
-	return ptr+TEST_COMPLEX_HEADER_SIZE;
+
+	if (ptr[9] != BERT_ATOM)
+	{
+		test_fail("BERT complex data does not contain the second '%s' atom",name);
+	}
+
+	size_t length = strlen(name);
+
+	if (ptr[11] != length)
+	{
+		test_fail("second BERT complex keyword has length %u, expected %u",ptr[11],length);
+	}
+
+	return ptr+TEST_COMPLEX_HEADER_SIZE+length;
 }
