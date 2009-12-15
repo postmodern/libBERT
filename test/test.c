@@ -116,11 +116,11 @@ const unsigned char * test_complex(const unsigned char *ptr)
 		test_fail("BERT complex data does not contain the first 'bert' atom");
 	}
 
-	if (ptr[3] != 4)
+	if (ptr[4] != 4)
 	{
 		test_fail("BERT complex keyword has length %u, expected %u",ptr[3],4);
 	}
 
-	test_strings((const char *)(ptr+4),"bert",4);
+	test_strings((const char *)(ptr+5),"bert",4);
 	return ptr+TEST_COMPLEX_HEADER_SIZE;
 }
