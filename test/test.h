@@ -20,6 +20,6 @@ void test_strings(const char *string,const char *expected,size_t expected_length
 
 #define TEST_COMPLEX_HEADER_SIZE	(1 + 1 + (1 + 2 + 4))
 
-const unsigned char * test_complex(const unsigned char *ptr);
+const unsigned char * test_complex_header(const unsigned char *ptr);
 
 #endif
