@@ -122,5 +122,5 @@ const unsigned char * test_complex(const unsigned char *ptr)
 	}
 
 	test_strings((const char *)(ptr+4),"bert",4);
-	return ptr+8;
+	return ptr+TEST_COMPLEX_HEADER_SIZE;
 }
