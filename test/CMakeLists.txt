@@ -113,3 +113,7 @@ add_test(encode_true test_encode_true)
 add_executable(test_encode_false test_encode_false.c)
 target_link_libraries(test_encode_false test BERT)
 add_test(encode_false test_encode_false)
+
+add_executable(test_encode_nil test_encode_nil.c)
+target_link_libraries(test_encode_nil test BERT)
+add_test(encode_nil test_encode_nil)
