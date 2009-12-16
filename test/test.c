@@ -87,7 +87,7 @@ void test_strings(const char *string,const char *expected,size_t expected_length
 	{
 		if (string[i] != expected[i])
 		{
-			test_fail("string[%u] is %c, expected %c",string[i],expected[i]);
+			test_fail("string[%u] is %c, expected %c",i,string[i],expected[i]);
 		}
 	}
 }
