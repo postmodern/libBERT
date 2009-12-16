@@ -18,24 +18,22 @@ int bert_encode_magic(bert_encoder_t *encoder,bert_magic_t magic)
 
 int bert_encode_small_int(bert_encoder_t *encoder,uint8_t i)
 {
-	size_t length = sizeof(bert_magic_t) + sizeof(uint8_t);
-	unsigned char buffer[length];
+	unsigned char buffer[2];
 
 	bert_write_magic(buffer,BERT_SMALL_INT);
-	bert_write_uint8(buffer+sizeof(bert_magic_t),i);
+	bert_write_uint8(buffer+1,i);
 
-	return bert_encoder_write(encoder,buffer,length);
+	return bert_encoder_write(encoder,buffer,2);
 }
 
 int bert_encode_big_int(bert_encoder_t *encoder,uint32_t i)
 {
-	size_t length = sizeof(bert_magic_t) + sizeof(uint32_t);
-	unsigned char buffer[length];
+	unsigned char buffer[5];
 
 	bert_write_magic(buffer,BERT_INT);
-	bert_write_uint32(buffer+sizeof(bert_magic_t),i);
+	bert_write_uint32(buffer+1,i);
 
-	return bert_encoder_write(encoder,buffer,length);
+	return bert_encoder_write(encoder,buffer,5);
 }
 
 int bert_encode_int(bert_encoder_t *encoder,unsigned int i)
@@ -127,39 +125,39 @@ int bert_encode_bignum(bert_encoder_t *encoder,int64_t integer)
 
 int bert_encode_atom(bert_encoder_t *encoder,const char *atom,size_t length)
 {
-	size_t buffer_length = sizeof(bert_magic_t) + 2 + length;
+	size_t buffer_length = 1 + 2 + length;
 	unsigned char buffer[buffer_length];
 
 	bert_write_magic(buffer,BERT_ATOM);
-	bert_write_uint16(buffer+sizeof(bert_magic_t),length);
+	bert_write_uint16(buffer+1,length);
 
-	memcpy(buffer+sizeof(bert_magic_t)+2,atom,sizeof(unsigned char)*length);
+	memcpy(buffer+1+2,atom,sizeof(unsigned char)*length);
 
 	return bert_encoder_write(encoder,buffer,buffer_length);
 }
 
 int bert_encode_string(bert_encoder_t *encoder,const char *string,size_t length)
 {
-	size_t buffer_length = sizeof(bert_magic_t) + 4 + length;
+	size_t buffer_length = 1 + 4 + length;
 	unsigned char buffer[buffer_length];
 
 	bert_write_magic(buffer,BERT_STRING);
-	bert_write_uint32(buffer+sizeof(bert_magic_t),length);
+	bert_write_uint32(buffer+1,length);
 
-	memcpy(buffer+sizeof(bert_magic_t)+4,string,sizeof(unsigned char)*length);
+	memcpy(buffer+1+4,string,sizeof(unsigned char)*length);
 
 	return bert_encoder_write(encoder,buffer,buffer_length);
 }
 
 int bert_encode_bin(bert_encoder_t *encoder,const unsigned char *bin,size_t length)
 {
-	size_t buffer_length = sizeof(bert_magic_t) + 4 + length;
+	size_t buffer_length = 1 + 4 + length;
 	unsigned char buffer[buffer_length];
 
 	bert_write_magic(buffer,BERT_BIN);
-	bert_write_uint32(buffer+sizeof(bert_magic_t),length);
+	bert_write_uint32(buffer+1,length);
 
-	memcpy(buffer+sizeof(bert_magic_t)+4,bin,sizeof(unsigned char)*length);
+	memcpy(buffer+1+4,bin,sizeof(unsigned char)*length);
 
 	return bert_encoder_write(encoder,buffer,buffer_length);
 }
