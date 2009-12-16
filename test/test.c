@@ -74,7 +74,7 @@ void test_bytes(const unsigned char *bytes,const unsigned char *expected,size_t 
 	{
 		if (bytes[i] != expected[i])
 		{
-			test_fail("byte[%u] is 0x%x, expected 0x%x",bytes[i],expected[i]);
+			test_fail("byte[%u] is 0x%x, expected 0x%x",i,bytes[i],expected[i]);
 		}
 	}
 }
