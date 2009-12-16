@@ -321,7 +321,7 @@ int bert_encode_dict(bert_encoder_t *encoder,const bert_dict_t *dict)
 
 	int result;
 
-	if ((result = bert_encode_complex_header(encoder,"dict",1)) == BERT_SUCCESS)
+	if ((result = bert_encode_complex_header(encoder,"dict",1)) != BERT_SUCCESS)
 	{
 		return result;
 	}
