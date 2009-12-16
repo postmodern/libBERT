@@ -117,3 +117,7 @@ add_test(encode_false test_encode_false)
 add_executable(test_encode_nil test_encode_nil.c)
 target_link_libraries(test_encode_nil test BERT)
 add_test(encode_nil test_encode_nil)
+
+add_executable(test_encode_dict test_encode_dict.c)
+target_link_libraries(test_encode_dict test BERT)
+add_test(encode_dict test_encode_dict)
