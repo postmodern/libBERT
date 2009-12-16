@@ -366,14 +366,22 @@ int bert_encode_time(bert_encoder_t *encoder,time_t timestamp)
 	unsigned int megaseconds = (timestamp / 1000000);
 	unsigned int seconds = (timestamp - megaseconds);
 
-	unsigned int buffer_length = 4 * 3;
-	unsigned char buffer[buffer_length];
+	if ((result = bert_encode_int(encoder,megaseconds)) != BERT_SUCCESS)
+	{
+		return result;
+	}
 
-	bert_write_uint32(buffer,megaseconds);
-	bert_write_uint32(buffer,seconds);
-	bert_write_uint32(buffer,0);
+	if ((result = bert_encode_int(encoder,seconds)) != BERT_SUCCESS)
+	{
+		return result;
+	}
 
-	return bert_encoder_write(encoder,buffer,buffer_length);
+	if ((result = bert_encode_int(encoder,0)) != BERT_SUCCESS)
+	{
+		return result;
+	}
+
+	return BERT_SUCCESS;
 }
 
 int bert_encode_regex(bert_encoder_t *encoder,const char *source,size_t length,unsigned int options)
