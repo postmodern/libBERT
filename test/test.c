@@ -64,7 +64,6 @@ void test_encoder_push(bert_encoder_t *encoder,const bert_data_t *data)
 	{
 		test_fail(bert_strerror(result));
 	}
-
 }
 
 void test_bytes(const unsigned char *bytes,const unsigned char *expected,size_t expected_length)
