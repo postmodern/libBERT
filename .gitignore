@@ -28,6 +28,7 @@ test/test_encode_short_write
 test/test_encode_magic
 test/test_encode_small_int
 test/test_encode_int
+test/test_encode_float
 test/test_encode_atom
 test/test_encode_string
 test/test_encode_bin
