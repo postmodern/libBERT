@@ -22,13 +22,9 @@ if (UNIX)
     "${CMAKE_INSTALL_PREFIX}/include"
     CACHE PATH "The subdirectory to the header prefix (default prefix/include)"
   )
-  set(SHARE_INSTALL_DIR
-    "${CMAKE_INSTALL_PREFIX}/share"
-    CACHE PATH "The subdirectory to the header prefix (default prefix/share)"
-  )
   set(PKGCONFIG_INSTALL_DIR
-    "${SHARE_INSTALL_DIR}/pkgconfig"
-    CACHE PATH "The subdirectory to the header prefix (default prefix/share/pkgconfig)"
+    "${LIB_INSTALL_DIR}/pkgconfig"
+    CACHE PATH "The subdirectory to the header prefix (default prefix/lib/pkgconfig)"
   )
 
 endif (UNIX)
