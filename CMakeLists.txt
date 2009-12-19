@@ -24,7 +24,7 @@ add_library(
 	src/bert.c
 )
 
-add_executable(bert_dump src/utils/dump.c)
+add_executable(bert_dump src/programs/dump.c)
 target_link_libraries(bert_dump BERT)
 
 install(TARGETS BERT
