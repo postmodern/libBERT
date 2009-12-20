@@ -42,5 +42,6 @@ test/test_encode_dict
 test/test_encode_regex
 *.a
 *.so
+*.so.*
 *.swp
 *~
