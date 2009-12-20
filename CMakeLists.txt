@@ -42,11 +42,19 @@ set_target_properties(
 add_executable(bert_dump src/programs/dump.c)
 target_link_libraries(bert_dump BERT)
 
-install(TARGETS BERT
-	LIBRARY DESTINATION ${LIB_INSTALL_DIR})
-install(TARGETS BERT-static
-	ARCHIVE DESTINATION ${LIB_INSTALL_DIR})
 install(DIRECTORY include/bert DESTINATION ${INCLUDE_INSTALL_DIR})
+install(
+	TARGETS BERT
+	LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+)
+install(
+	TARGETS BERT-static
+	ARCHIVE DESTINATION ${LIB_INSTALL_DIR}
+)
+install(
+	TARGETS bert_dump
+	RUNTIME DESTINATION ${BIN_INSTALL_DIR}
+)
 
 if(UNIX)
 	install(FILES libBERT.pc DESTINATION ${PKGCONFIG_INSTALL_DIR})
