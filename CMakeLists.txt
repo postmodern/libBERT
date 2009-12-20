@@ -26,7 +26,18 @@ include_directories(${BERT_SOURCE_DIR}/include)
 add_definitions("-Wall")
 
 add_library(BERT SHARED ${BERT_FILES})
+set_target_properties(
+	BERT PROPERTIES
+	VERSION ${LIBRARY_VERSION}
+	SOVERSION ${LIBRARY_SOVERSION}
+)
+
 add_library(BERT-static STATIC ${BERT_FILES})
+set_target_properties(
+	BERT-static PROPERTIES
+	VERSION ${LIBRARY_VERSION}
+	SOVERSION ${LIBRARY_SOVERSION}
+)
 
 add_executable(bert_dump src/programs/dump.c)
 target_link_libraries(bert_dump BERT)
