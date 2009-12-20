@@ -26,7 +26,6 @@ if (UNIX)
     "${LIB_INSTALL_DIR}/pkgconfig"
     CACHE PATH "The subdirectory to the header prefix (default prefix/lib/pkgconfig)"
   )
-
 endif (UNIX)
 
 if (WIN32)
