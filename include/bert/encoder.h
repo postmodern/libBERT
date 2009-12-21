@@ -57,8 +57,6 @@ void bert_encoder_buffer(bert_encoder_t *encoder,unsigned char *buffer,size_t le
  */
 void bert_encoder_callback(bert_encoder_t *encoder,bert_write_func callback,void *data);
 
-size_t bert_encoder_sizeof(const bert_data_t *data);
-
 /*
  * Encodes the given bert_data_t and writes it to the encoder.
  * Returns BERT_SUCCESS on success.
