@@ -16,15 +16,11 @@ set(
 )
 option(BERT_PCRE "Enable the use of PCRE Options in bert/regex.h")
 
-if(UNIX)
-	configure_file(libBERT.pc.cmake ${BERT_SOURCE_DIR}/libBERT.pc)
-endif(UNIX)
-
 configure_file(config.h.cmake ${BERT_SOURCE_DIR}/include/bert/config.h)
 
-include_directories(${BERT_SOURCE_DIR}/include)
-
 add_definitions("-Wall")
+
+include_directories(${BERT_SOURCE_DIR}/include)
 
 add_library(BERT SHARED ${BERT_FILES})
 set_target_properties(
@@ -42,6 +38,10 @@ set_target_properties(
 
 add_executable(bert_dump src/programs/dump.c)
 target_link_libraries(bert_dump BERT)
+
+if(UNIX)
+	configure_file(libBERT.pc.cmake ${BERT_SOURCE_DIR}/libBERT.pc)
+endif(UNIX)
 
 install(DIRECTORY include/bert DESTINATION ${INCLUDE_INSTALL_DIR})
 install(
