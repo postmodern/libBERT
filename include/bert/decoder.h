@@ -65,8 +65,11 @@ void bert_decoder_buffer(bert_decoder_t *decoder,const unsigned char *buffer,siz
 /*
  * Reads BERT encoded data from the decoder and attempts to decode it.
  * Points the given data_ptr to the newly decoded bert_data_t.
- * Returns 1 when a bert_data_t has been decoded or 0 when there is no more
- * data to decode.
+ * Returns 1 when a bert_data_t has been decoded.
+ * Returns 0 when there is no more data to be decoded.
+ * Returns BERT_ERRNO_INVALID when invalid BERT data is encountered.
+ * Returns BERT_ERRNO_SHORT_READ when there is not enough data left.
+ * Returns BERT_ERRNO_MALLOC when a call to malloc fails.
  */
 extern int bert_decoder_pull(bert_decoder_t *decoder,bert_data_t **data_ptr);
 
