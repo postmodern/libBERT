@@ -1,5 +1,6 @@
 #include <bert/decoder.h>
 #include <bert/errno.h>
+#include <bert.h>
 #include "../private/regex.h"
 
 #include <sys/types.h>
@@ -288,6 +289,18 @@ int main(int argc,const char **argv)
 {
 	if (argc >= 2)
 	{
+		if (!strcmp(argv[1],"-h") || !strcmp(argv[1],"--help"))
+		{
+			printf("usage: bert_dump [FILES ...]\n");
+			return 0;
+		}
+
+		if (!strcmp(argv[1],"-V") || !strcmp(argv[1],"--version"))
+		{
+			printf("bert_dump %s\n",bert_version());
+			return 0;
+		}
+
 		int i;
 		int fd;
 
