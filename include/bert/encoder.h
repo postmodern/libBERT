@@ -62,7 +62,8 @@ void bert_encoder_callback(bert_encoder_t *encoder,bert_write_func callback,void
  * Returns BERT_SUCCESS on success.
  * Returns BERT_ERRNO_INVALID when invalid bert_data_t is given.
  * Returns BERT_ERRNO_SHORT_WRITE if there is no more space to write the
- * encoded BERT data.
+ *   encoded BERT data.
+ * Returns BERT_ERRNO_WRITE if a call to write() failed.
  */
 int bert_encoder_push(bert_encoder_t *encoder,const bert_data_t *data);
 
