@@ -21,9 +21,9 @@ Benefits of libBERT
 * Fast (did I mention it was written in C, the language of fast?).
 * Supports buffered, streaming or callback-based decoding/encoding of
   BERT data.
-* Licensed under the MIT "as-is" license.
+* Distributed under the MIT "as-is" license.
 
-Dependencies
+Build Dependencies
 ------------
 
 * CMake >= 2.6.0 [2]
