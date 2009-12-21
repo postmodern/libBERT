@@ -18,7 +18,9 @@ option(BERT_PCRE "Enable the use of PCRE Options in bert/regex.h")
 
 configure_file(config.h.cmake ${BERT_SOURCE_DIR}/include/bert/config.h)
 
-add_definitions("-Wall")
+if(UNIX)
+	add_definitions("-Wall")
+endif(UNIX)
 
 include_directories(${BERT_SOURCE_DIR}/include)
 
