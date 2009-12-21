@@ -15,11 +15,16 @@ set(
 	src/bert.c
 )
 option(BERT_PCRE "Enable the use of PCRE Options in bert/regex.h")
+option(BERT_DEBUG "Enable debugging information in libBERT")
 
 configure_file(config.h.cmake ${BERT_SOURCE_DIR}/include/bert/config.h)
 
 if(UNIX)
 	add_definitions("-Wall")
+
+	if(BERT_DEBUG)
+		add_definitions("-ggdb3")
+	endif(BERT_DEBUG)
 endif(UNIX)
 
 include_directories(${BERT_SOURCE_DIR}/include)
