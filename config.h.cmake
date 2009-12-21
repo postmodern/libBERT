@@ -3,4 +3,6 @@
 
 #define BERT_VERSION "${LIBRARY_VERSION}"
 
+#cmakedefine BERT_PCRE
+
 #endif

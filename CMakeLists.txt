@@ -14,6 +14,7 @@ set(
 	src/private/encode.c src/private/encoder.c src/encoder.c
 	src/bert.c
 )
+option(BERT_PCRE "Enable the use of PCRE Options in bert/regex.h")
 
 if(UNIX)
 	configure_file(libBERT.pc.cmake ${BERT_SOURCE_DIR}/libBERT.pc)
