@@ -11,6 +11,9 @@
 #define BERT_ERRNO_INVALID	-1
 #define BERT_SUCCESS		0
 
+/*
+ * Returns a string representation for the given error code.
+ */
 const char * bert_strerror(int code);
 
 #endif
