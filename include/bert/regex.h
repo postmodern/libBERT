@@ -1,6 +1,8 @@
 #ifndef _BERT_REGEX_H_
 #define _BERT_REGEX_H_
 
+#include <bert/config.h>
+
 #if defined(BERT_PCRE)
 
 #include <pcre.h>
