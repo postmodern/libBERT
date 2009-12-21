@@ -26,7 +26,7 @@
 
 #else
 
-// sneakily copied from pcre.h
+// sneakily copied from pcre.h of libpcre-7.9.
 #define BERT_REGEX_UNICODE		0x00000800
 #define BERT_REGEX_ANCHORED		0x00000010
 #define BERT_REGEX_CASELESS		0x00000001
