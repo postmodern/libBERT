@@ -34,15 +34,40 @@ struct bert_encoder
 };
 typedef struct bert_encoder bert_encoder_t;
 
+/*
+ * Allocates a new bert_encoder_t.
+ */
 bert_encoder_t * bert_encoder_create();
 
+/*
+ * Sets the mode of the given encoder to bert_mode_stream, and uses the
+ * given file descriptor as the stream to write BERT encoded data to.
+ */
 void bert_encoder_stream(bert_encoder_t *encoder,int stream);
+
+/*
+ * Sets the mode of the given encoder to bert_mode_buffer, and uses the
+ * given buffer to write BERT encoded data to.
+ */
 void bert_encoder_buffer(bert_encoder_t *encoder,unsigned char *buffer,size_t length);
+
+/*
+ * Sets the mode of the given encoder to bert_mode_callback, and uses the
+ * given callback to write BERT encoded data to.
+ */
 void bert_encoder_callback(bert_encoder_t *encoder,bert_write_func callback,void *data);
 
 size_t bert_encoder_sizeof(const bert_data_t *data);
+
+/*
+ * Encodes the given bert_data_t and writes it to the encoder.
+ * Returns BERT_SUCCESS on success.
+ */
 int bert_encoder_push(bert_encoder_t *encoder,const bert_data_t *data);
 
+/*
+ * Destroys a previously allocated bert_encoder_t.
+ */
 void bert_encoder_destroy(bert_encoder_t *encoder);
 
 #endif
