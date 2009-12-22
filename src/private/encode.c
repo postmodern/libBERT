@@ -364,7 +364,7 @@ int bert_encode_time(bert_encoder_t *encoder,time_t timestamp)
 	}
 
 	unsigned int megaseconds = (timestamp / 1000000);
-	unsigned int seconds = (timestamp - megaseconds);
+	unsigned int seconds = (timestamp % 1000000);
 
 	if ((result = bert_encode_int(encoder,megaseconds)) != BERT_SUCCESS)
 	{
