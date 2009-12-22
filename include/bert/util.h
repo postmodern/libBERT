@@ -10,7 +10,7 @@
 #define BERT_MAX_INT	((1 << 27) - 1)
 #define BERT_MIN_INT	(-(1 << 27))
 
-#define BERT_STRIP_SIGN(i)	(((i) << 1) >> 1)
+#define BERT_STRIP_SIGN(i)	((i) < 0 ? -(i) : (i))
 
 /*
  * Reads a uint8_t from the given unsigned char pointer.

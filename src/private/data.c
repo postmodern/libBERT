@@ -19,7 +19,7 @@ size_t bert_data_sizeof_int(int64_t i)
 		// byte length + signed byte
 		size_t count = 1 + 1;
 
-		uint64_t unsigned_integer = BERT_STRIP_SIGN((uint64_t)i);
+		uint64_t unsigned_integer = BERT_STRIP_SIGN(i);
 		unsigned int j;
 
 		for (j=sizeof(int64_t)-1;j>=0;j--)
