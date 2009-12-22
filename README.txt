@@ -33,7 +33,7 @@ Benefits of libBERT
     * Dictionaries.
     * Time values.
     * Regular Expressions.
-* Supports buffered, streaming or callback-based decoding/encoding of
+* Supports buffered, streaming or callback-based reading/writing of
   BERT data.
 * Distributed under the MIT "as-is" license.
 
