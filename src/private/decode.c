@@ -147,7 +147,7 @@ int bert_decode_bignum(bert_decoder_t *decoder,bert_data_t **data,size_t size)
 
 	const unsigned char *ptr = BERT_DECODER_PTR(decoder);
 
-	uint32_t unsigned_integer = 0;
+	uint64_t unsigned_integer = 0;
 	uint8_t b;
 	uint8_t i;
 
@@ -159,7 +159,7 @@ int bert_decode_bignum(bert_decoder_t *decoder,bert_data_t **data,size_t size)
 
 	BERT_DECODER_STEP(decoder,size);
 
-	int32_t signed_integer = (int32_t)BERT_STRIP_SIGN(unsigned_integer);
+	int64_t signed_integer = BERT_STRIP_SIGN((int64_t)unsigned_integer);
 
 	if (sign)
 	{
