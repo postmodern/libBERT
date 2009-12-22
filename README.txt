@@ -19,6 +19,20 @@ Benefits of libBERT
 * Robust.
 * Small.
 * Fast (did I mention it was written in C, the language of fast?).
+* Supports encoding/decoding of:
+  * Integers.
+  * Floating point numbers.
+  * Atoms.
+  * Strings.
+  * Binary data.
+  * Tuples.
+  * Lists.
+  * Complex types:
+    * Nil.
+    * Boolean True and False values.
+    * Dictionaries.
+    * Time values.
+    * Regular Expressions.
 * Supports buffered, streaming or callback-based decoding/encoding of
   BERT data.
 * Distributed under the MIT "as-is" license.
