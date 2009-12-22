@@ -66,7 +66,7 @@ int bert_encode_float(bert_encoder_t *encoder,double d)
 int bert_encode_bignum(bert_encoder_t *encoder,int64_t integer)
 {
 	uint8_t sign = (integer < 0);
-	size_t bytes_length = 0;
+	size_t bytes = 0;
 
 	uint64_t unsigned_integer = BERT_STRIP_SIGN((uint64_t)integer);
 	unsigned int i;
@@ -75,47 +75,44 @@ int bert_encode_bignum(bert_encoder_t *encoder,int64_t integer)
 	{
 		if (unsigned_integer & (0xff << (i * 8)))
 		{
-			bytes_length = (i + 1);
+			bytes = (i + 1);
 			break;
 		}
 	}
 
+	// magic byte
 	size_t buffer_length = 1;
 
-	if (bytes_length > 4)
+	if (bytes > 4)
 	{
 		// 4 byte length field
 		buffer_length += 4;
 	}
 	else
 	{
-		// 1 byte length field
+		// single byte length field
 		++buffer_length;
 	}
 
-
-	// 1 byte sign field
+	// signed byte
 	++buffer_length;
-
-	// bytes
-	buffer_length += bytes_length;
 
 	unsigned char buffer[buffer_length];
 
-	if (bytes_length > 4)
+	if (bytes > 4)
 	{
 		bert_write_magic(buffer,BERT_LARGE_BIGNUM);
-		bert_write_uint32(buffer,bytes_length);
+		bert_write_uint32(buffer,bytes);
 	}
 	else
 	{
 		bert_write_magic(buffer,BERT_SMALL_BIGNUM);
-		bert_write_uint8(buffer,bytes_length);
+		bert_write_uint8(buffer,bytes);
 	}
 
 	bert_write_uint8(buffer,sign);
 
-	for (i=0;i<bytes_length;i++)
+	for (i=0;i<bytes;i++)
 	{
 		buffer[i] = ((unsigned_integer & (0xff << (i * 8))) >> (i * 8));
 	}
