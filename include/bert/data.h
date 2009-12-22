@@ -187,6 +187,12 @@ extern bert_data_t * bert_data_create_empty_bin(bert_bin_size_t length);
 extern bert_data_t * bert_data_create_bin(const unsigned char *data,bert_bin_size_t length);
 
 /*
+ * Returns the required space in bytes needed to encode the given
+ * bert_data_t.
+ */
+extern size_t bert_data_sizeof(const bert_data_t *data);
+
+/*
  * Compares the string, atom or binary data with the given string.
  * Returns -1, 0 or 1 if the bert_data is less than, equal to or
  * greater than the given string, respectively.

@@ -1,4 +1,6 @@
 #include <bert/data.h>
+#include "private/data.h"
+#include "private/regex.h"
 
 #include <malloc.h>
 #include <string.h>
@@ -373,6 +375,150 @@ cleanup_source:
 cleanup:
 	// error
 	return NULL;
+}
+
+size_t bert_data_sizeof(const bert_data_t *data)
+{
+	// magic byte
+	size_t count = 1;
+
+	unsigned int i;
+	const char *name;
+	bert_list_node_t *list_node;
+	bert_dict_node_t *dict_node;
+
+	switch (data->type)
+	{
+		case bert_data_int:
+			count += bert_data_sizeof_int(data->integer);
+			break;
+		case bert_data_float:
+			count += 31;
+			break;
+		case bert_data_atom:
+			// atom length + data->atom.length
+			count += (2 + data->atom.length);
+			break;
+		case bert_data_string:
+			// string length + data->string.length
+			count += (4 + data->string.length);
+			break;
+		case bert_data_bin:
+			// binary length + data->bin.length
+			count += (4 + data->bin.length);
+			break;
+		case bert_data_tuple:
+			if (data->tuple.length <= 0xff)
+			{
+				++count;
+			}
+			else if (data->tuple.length <= 0xffffffff)
+			{
+				count += 4;
+			}
+			else
+			{
+				break;
+			}
+
+			for (i=0;i<data->tuple.length;i++)
+			{
+				count += bert_data_sizeof(data->tuple.elements[i]);
+			}
+			break;
+		case bert_data_list:
+			count += 4;
+
+			list_node = data->list->head;
+
+			while (list_node)
+			{
+				count += bert_data_sizeof(list_node->data);
+
+				list_node = list_node->next;
+			}
+			break;
+		case bert_data_nil:
+			// small tuple length + magic byte + atom length + strlen("bert") +
+			// magic byte + atom length + strlen("nil")
+			count += (1 + 1 + 2 + 4 + 1 + 2 + 3);
+			break;
+		case bert_data_boolean:
+			// small tuple length + magic byte + atom length + strlen("bert")
+			count += (1 + 1 + 2 + 4);
+
+			switch (data->boolean)
+			{
+				case 1:
+					// magic byte + atom length + strlen("true")
+					count += (1 + 2 + 4);
+					break;
+				case 0:
+					// magic byte + atom length + strlen("false")
+					count += (1 + 2 + 5);
+					break;
+				default:
+					break;
+			}
+			break;
+		case bert_data_dict:
+			// small tuple length + magic byte + atom length + strlen("bert") +
+			// magic byte + atom length + strlen("dict") +
+			// magic byte + list length
+			count += (1 + 1 + 2 + 4 + 1 + 2 + 4 + 1 + 4);
+
+			dict_node = data->dict->head;
+
+			while (dict_node)
+			{
+				// magic byte + small tuple length
+				count += (1 + 1);
+
+				count += bert_data_sizeof(dict_node->key);
+				count += bert_data_sizeof(dict_node->value);
+
+				dict_node = dict_node->next;
+			}
+			break;
+		case bert_data_regex:
+			// small tuple length + magic byte + atom length + strlen("bert") +
+			// magic byte + atom length + strlen("regex")
+			count += (1 + 1 + 2 + 4 + 1 + 2 + 5);
+
+			// magic byte + bin length + data->regex.length
+			count += (1 + 4 + data->regex.length);
+
+			// magic byte + list length
+			count += (1 + 4);
+
+			for (i=0;i<sizeof(int);i++)
+			{
+				if ((name = bert_regex_optname(data->regex.options & (0x01 << i))))
+				{
+					// magic byte + atom length + strlen(name)
+					count += (1 + 2 + strlen(name));
+				}
+			}
+			break;
+		case bert_data_time:
+			// small tuple length + magic byte + atom length + strlen("bert") +
+			// magic byte + atom length + strlen("time")
+			count += (1 + 1 + 2 + 4 + 1 + 2 + 4);
+
+			// magic byte + integer bytes
+			count += (1 + bert_data_sizeof_int(data->time / 1000000));
+
+			// magic byte + integer bytes
+			count += (1 + bert_data_sizeof_int(data->time % 1000000));
+
+			// magic byte + 0 byte
+			count += (1 + bert_data_sizeof_int(0));
+			break;
+		default:
+			return 0;
+	}
+
+	return count;
 }
 
 int bert_data_strequal(const bert_data_t *data,const char *str)
