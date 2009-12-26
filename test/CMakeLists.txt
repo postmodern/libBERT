@@ -86,6 +86,10 @@ add_executable(test_encode_int test_encode_int.c)
 target_link_libraries(test_encode_int test BERT)
 add_test(encode_int test_encode_int)
 
+add_executable(test_encode_small_bignum test_encode_small_bignum.c)
+target_link_libraries(test_encode_small_bignum test BERT)
+add_test(encode_small_bignum test_encode_small_bignum)
+
 add_executable(test_encode_float test_encode_float.c)
 target_link_libraries(test_encode_float test BERT)
 add_test(encode_float test_encode_float)
