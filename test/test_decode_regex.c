@@ -21,7 +21,7 @@ void test_read()
 
 	if (data->type != bert_data_regex)
 	{
-		test_fail("bert_decoder_next did not decode a boolean");
+		test_fail("bert_decoder_next did not decode a regex");
 	}
 
 	const char *expected_source = "hello\\s*world";
