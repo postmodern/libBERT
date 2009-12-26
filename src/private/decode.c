@@ -144,12 +144,11 @@ int bert_decode_bignum(bert_decoder_t *decoder,bert_data_t **data,size_t size)
 	BERT_DECODER_READ(decoder,1 + size);
 
 	uint8_t sign = bert_decode_uint8(decoder);
-
 	const unsigned char *ptr = BERT_DECODER_PTR(decoder);
 
+	unsigned int i;
 	uint64_t unsigned_integer = 0;
 	uint8_t b;
-	uint8_t i;
 
 	for (i=0;i<size;i++)
 	{
