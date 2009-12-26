@@ -40,6 +40,7 @@ test/test_encode_true
 test/test_encode_false
 test/test_encode_nil
 test/test_encode_dict
+test/test_encode_time
 test/test_encode_regex
 *.a
 *.so

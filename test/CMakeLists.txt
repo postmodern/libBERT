@@ -130,6 +130,10 @@ add_executable(test_encode_dict test_encode_dict.c)
 target_link_libraries(test_encode_dict test BERT)
 add_test(encode_dict test_encode_dict)
 
+add_executable(test_encode_time test_encode_time.c)
+target_link_libraries(test_encode_time test BERT)
+add_test(encode_time test_encode_time)
+
 add_executable(test_encode_regex test_encode_regex.c)
 target_link_libraries(test_encode_regex test BERT)
 add_test(encode_regex test_encode_regex)
