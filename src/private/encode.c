@@ -97,6 +97,9 @@ int bert_encode_bignum(bert_encoder_t *encoder,int64_t integer)
 	// signed byte
 	++buffer_length;
 
+	// additional bytes
+	buffer_length += bytes;
+
 	unsigned char buffer[buffer_length];
 	unsigned char *buffer_ptr = buffer;
 
