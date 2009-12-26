@@ -148,12 +148,10 @@ int bert_decode_bignum(bert_decoder_t *decoder,bert_data_t **data,size_t size)
 
 	unsigned int i;
 	uint64_t unsigned_integer = 0;
-	uint8_t b;
 
 	for (i=0;i<size;i++)
 	{
-		b = (uint8_t)(ptr[i]);
-		unsigned_integer = ((unsigned_integer << 8) | b);
+		unsigned_integer |= (((uint64_t)ptr[i]) << (i * 8));
 	}
 
 	BERT_DECODER_STEP(decoder,size);
