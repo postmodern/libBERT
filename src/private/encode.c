@@ -98,23 +98,31 @@ int bert_encode_bignum(bert_encoder_t *encoder,int64_t integer)
 	++buffer_length;
 
 	unsigned char buffer[buffer_length];
+	unsigned char *buffer_ptr = buffer;
 
 	if (bytes > 4)
 	{
-		bert_write_magic(buffer,BERT_LARGE_BIGNUM);
-		bert_write_uint32(buffer,bytes);
+		bert_write_magic(buffer_ptr,BERT_LARGE_BIGNUM);
+		++buffer_ptr;
+
+		bert_write_uint32(buffer_ptr,bytes);
+		buffer_ptr += 4;
 	}
 	else
 	{
-		bert_write_magic(buffer,BERT_SMALL_BIGNUM);
-		bert_write_uint8(buffer,bytes);
+		bert_write_magic(buffer_ptr,BERT_SMALL_BIGNUM);
+		++buffer_ptr;
+
+		bert_write_uint8(buffer_ptr,bytes);
+		++buffer_ptr;
 	}
 
-	bert_write_uint8(buffer,sign);
+	bert_write_uint8(buffer_ptr,sign);
+	++buffer_ptr;
 
 	for (i=0;i<bytes;i++)
 	{
-		buffer[i] = ((unsigned_integer & (0xff << (i * 8))) >> (i * 8));
+		buffer_ptr[i] = ((unsigned_integer & (0xff << (i * 8))) >> (i * 8));
 	}
 
 	return bert_encoder_write(encoder,buffer,buffer_length);
