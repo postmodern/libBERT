@@ -26,7 +26,7 @@ const char * bert_strerror(int code)
 		return strerror(errno);
 	}
 
-	unsigned int index = (-code);
+	unsigned int index = (-code) + 1;
 
 	return bert_errors[index];
 }
