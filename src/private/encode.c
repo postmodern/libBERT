@@ -83,7 +83,7 @@ int bert_encode_bignum(bert_encoder_t *encoder,int64_t integer)
 	// magic byte
 	size_t buffer_length = 1;
 
-	if (bytes > 4)
+	if (bytes > 0xff)
 	{
 		// 4 byte length field
 		buffer_length += 4;
@@ -100,7 +100,7 @@ int bert_encode_bignum(bert_encoder_t *encoder,int64_t integer)
 	unsigned char buffer[buffer_length];
 	unsigned char *buffer_ptr = buffer;
 
-	if (bytes > 4)
+	if (bytes > 0xff)
 	{
 		bert_write_magic(buffer_ptr,BERT_LARGE_BIGNUM);
 		++buffer_ptr;
