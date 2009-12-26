@@ -73,7 +73,7 @@ int bert_encode_bignum(bert_encoder_t *encoder,int64_t integer)
 
 	for (i=7;i>=0;i--)
 	{
-		if (unsigned_integer & (0xff << (i * 8)))
+		if (unsigned_integer & (((uint64_t)0xff) << (i * 8)))
 		{
 			bytes = (i + 1);
 			break;
@@ -122,7 +122,7 @@ int bert_encode_bignum(bert_encoder_t *encoder,int64_t integer)
 
 	for (i=0;i<bytes;i++)
 	{
-		*buffer_ptr = ((unsigned_integer & (0xff << (i * 8))) >> (i * 8));
+		*buffer_ptr = ((unsigned_integer & (((uint64_t)0xff) << (i * 8))) >> (i * 8));
 		++buffer_ptr;
 	}
 
