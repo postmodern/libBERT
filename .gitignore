@@ -23,6 +23,7 @@ test/test_decode_dict
 test/test_decode_true
 test/test_decode_false
 test/test_decode_nil
+test/test_decode_time
 test/test_decode_regex
 test/test_encode_short_write
 test/test_encode_magic
