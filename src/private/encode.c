@@ -122,7 +122,8 @@ int bert_encode_bignum(bert_encoder_t *encoder,int64_t integer)
 
 	for (i=0;i<bytes;i++)
 	{
-		buffer_ptr[i] = ((unsigned_integer & (0xff << (i * 8))) >> (i * 8));
+		*buffer_ptr = ((unsigned_integer & (0xff << (i * 8))) >> (i * 8));
+		++buffer_ptr;
 	}
 
 	return bert_encoder_write(encoder,buffer,buffer_length);
