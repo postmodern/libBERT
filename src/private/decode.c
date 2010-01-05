@@ -10,49 +10,47 @@
 #include <string.h>
 #include <stdio.h>
 
-inline uint8_t bert_decode_uint8(bert_decoder_t *decoder)
+int bert_decode_uint8(bert_decoder_t *decoder,uint8_t *i)
 {
-	uint8_t i;
-
 	BERT_DECODER_READ(decoder,1);
 
-	i = bert_read_uint8(BERT_DECODER_PTR(decoder));
+	*i = bert_read_uint8(BERT_DECODER_PTR(decoder));
 
 	BERT_DECODER_STEP(decoder,1);
-	return i;
+	return BERT_SUCCESS;
 }
 
-inline uint16_t bert_decode_uint16(bert_decoder_t *decoder)
+int bert_decode_uint16(bert_decoder_t *decoder,uint16_t *i)
 {
 	BERT_DECODER_READ(decoder,2);
 
-	uint16_t i = bert_read_uint16(BERT_DECODER_PTR(decoder));
+	*i = bert_read_uint16(BERT_DECODER_PTR(decoder));
 
 	BERT_DECODER_STEP(decoder,2);
-	return i;
+	return BERT_SUCCESS;
 }
 
-inline uint32_t bert_decode_uint32(bert_decoder_t *decoder)
+int bert_decode_uint32(bert_decoder_t *decoder,uint32_t *i)
 {
 	BERT_DECODER_READ(decoder,4);
 
-	uint32_t i = bert_read_uint32(BERT_DECODER_PTR(decoder));
+	*i = bert_read_uint32(BERT_DECODER_PTR(decoder));
 
 	BERT_DECODER_STEP(decoder,4);
-	return i;
+	return BERT_SUCCESS;
 }
 
-inline bert_magic_t bert_decode_magic(bert_decoder_t *decoder)
+int bert_decode_magic(bert_decoder_t *decoder,bert_magic_t *magic)
 {
 	BERT_DECODER_READ(decoder,1);
 
-	bert_magic_t m = bert_read_magic(BERT_DECODER_PTR(decoder));
+	*magic = bert_read_magic(BERT_DECODER_PTR(decoder));
 
 	BERT_DECODER_STEP(decoder,1);
-	return m;
+	return BERT_SUCCESS;
 }
 
-inline int bert_decode_bytes(unsigned char *dest,bert_decoder_t *decoder,size_t length)
+int bert_decode_bytes(unsigned char *dest,bert_decoder_t *decoder,size_t length)
 {
 	unsigned int index = 0;
 	size_t chunk_length;
@@ -87,9 +85,17 @@ inline int bert_decode_nil(bert_decoder_t *decoder,bert_data_t **data)
 
 inline int bert_decode_small_int(bert_decoder_t *decoder,bert_data_t **data)
 {
+	int result;
+	uint8_t i;
+
+	if ((result = bert_decode_uint8(decoder,&i)) != BERT_SUCCESS)
+	{
+		return result;
+	}
+
 	bert_data_t *new_data;
 
-	if (!(new_data = bert_data_create_int(bert_decode_uint8(decoder))))
+	if (!(new_data = bert_data_create_int(i)))
 	{
 		return BERT_ERRNO_MALLOC;
 	}
@@ -100,9 +106,17 @@ inline int bert_decode_small_int(bert_decoder_t *decoder,bert_data_t **data)
 
 inline int bert_decode_big_int(bert_decoder_t *decoder,bert_data_t **data)
 {
+	int result;
+	uint32_t i;
+
+	if ((result = bert_decode_uint32(decoder,&i)) != BERT_SUCCESS)
+	{
+		return result;
+	}
+
 	bert_data_t *new_data;
 
-	if (!(new_data = bert_data_create_int(bert_decode_uint32(decoder))))
+	if (!(new_data = bert_data_create_int(i)))
 	{
 		return BERT_ERRNO_MALLOC;
 	}
@@ -148,10 +162,15 @@ int bert_decode_bignum(bert_decoder_t *decoder,bert_data_t **data,size_t size)
 		return BERT_ERRNO_BIGNUM;
 	}
 
-	uint8_t sign = bert_decode_uint8(decoder);
+	int result;
+	uint8_t sign;
+
+	if ((result = bert_decode_uint8(decoder,&sign)) != BERT_SUCCESS)
+	{
+		return result;
+	}
 
 	unsigned char bytes[size];
-	unsigned int result;
 
 	if ((result = bert_decode_bytes(bytes,decoder,size)) != BERT_SUCCESS)
 	{
@@ -186,17 +205,40 @@ int bert_decode_bignum(bert_decoder_t *decoder,bert_data_t **data,size_t size)
 
 inline int bert_decode_small_bignum(bert_decoder_t *decoder,bert_data_t **data)
 {
-	return bert_decode_bignum(decoder,data,bert_decode_uint8(decoder));
+	int result;
+	uint8_t i;
+
+	if ((result = bert_decode_uint8(decoder,&i)) != BERT_SUCCESS)
+	{
+		return result;
+	}
+
+	return bert_decode_bignum(decoder,data,i);
 }
 
 inline int bert_decode_big_bignum(bert_decoder_t *decoder,bert_data_t **data)
 {
-	return bert_decode_bignum(decoder,data,bert_decode_uint32(decoder));
+	int result;
+	uint32_t i;
+
+	if ((result = bert_decode_uint32(decoder,&i)) != BERT_SUCCESS)
+	{
+		return result;
+	}
+
+	return bert_decode_bignum(decoder,data,i);
 }
 
 inline int bert_decode_string(bert_decoder_t *decoder,bert_data_t **data)
 {
-	bert_string_size_t size = bert_decode_uint32(decoder);
+	int result;
+	bert_string_size_t size;
+
+	if ((result = bert_decode_uint32(decoder,&size)) != BERT_SUCCESS)
+	{
+		return result;
+	}
+
 	bert_data_t *new_data;
 
 	if (!(new_data = bert_data_create_empty_string(size)))
@@ -549,7 +591,14 @@ int bert_decode_complex(bert_decoder_t *decoder,bert_data_t **data)
 
 int bert_decode_atom(bert_decoder_t *decoder,bert_data_t **data)
 {
-	bert_atom_size_t size = bert_decode_uint16(decoder);
+	int result;
+	bert_atom_size_t size;
+
+	if ((result = bert_decode_uint16(decoder,&size)) != BERT_SUCCESS)
+	{
+		return result;
+	}
+
 	bert_data_t *new_data;
 
 	if (!(new_data = bert_data_create_empty_atom(size)))
@@ -574,7 +623,14 @@ int bert_decode_atom(bert_decoder_t *decoder,bert_data_t **data)
 
 inline int bert_decode_bin(bert_decoder_t *decoder,bert_data_t **data)
 {
-	bert_bin_size_t size = bert_decode_uint32(decoder);
+	int result;
+	bert_bin_size_t size;
+
+	if ((result = bert_decode_uint32(decoder,&size)) != BERT_SUCCESS)
+	{
+		return result;
+	}
+
 	bert_data_t *new_data;
 
 	if (!(new_data = bert_data_create_empty_bin(size)))
@@ -644,17 +700,40 @@ int bert_decode_tuple(bert_decoder_t *decoder,bert_data_t **data,size_t size)
 
 inline int bert_decode_small_tuple(bert_decoder_t *decoder,bert_data_t **data)
 {
-	return bert_decode_tuple(decoder,data,bert_decode_uint8(decoder));
+	int result;
+	uint8_t size;
+
+	if ((result = bert_decode_uint8(decoder,&size)) != BERT_SUCCESS)
+	{
+		return result;
+	}
+
+	return bert_decode_tuple(decoder,data,size);
 }
 
 inline int bert_decode_large_tuple(bert_decoder_t *decoder,bert_data_t **data)
 {
-	return bert_decode_tuple(decoder,data,bert_decode_uint32(decoder));
+	int result;
+	uint32_t size;
+
+	if ((result = bert_decode_uint32(decoder,&size)) != BERT_SUCCESS)
+	{
+		return result;
+	}
+
+	return bert_decode_tuple(decoder,data,size);
 }
 
 int bert_decode_list(bert_decoder_t *decoder,bert_data_t **data)
 {
-	bert_list_size_t list_size = bert_decode_uint32(decoder);
+	int result;
+	bert_list_size_t size;
+
+	if ((result = bert_decode_uint32(decoder,&size)) != BERT_SUCCESS)
+	{
+		return result;
+	}
+
 	bert_data_t *new_data;
 
 	if (!(new_data = bert_data_create_list()))
@@ -664,9 +743,8 @@ int bert_decode_list(bert_decoder_t *decoder,bert_data_t **data)
 
 	bert_data_t *element;
 	unsigned int i;
-	int result;
 
-	for (i=0;i<list_size;i++)
+	for (i=0;i<size;i++)
 	{
 		if ((result = bert_decoder_pull(decoder,&element)) != 1)
 		{

@@ -64,14 +64,20 @@ int bert_decoder_pull(bert_decoder_t *decoder,bert_data_t **data)
 			return result;
 	}
 
-	bert_magic_t magic = bert_decode_magic(decoder);
+	bert_magic_t magic;
+	
+	if ((result = bert_decode_magic(decoder,&magic)) != BERT_SUCCESS)
+	{
+		return result;
+	}
 
 	// skip the BERT MAGIC start byte
 	if (magic == BERT_MAGIC)
 	{
-		BERT_DECODER_READ(decoder,1);
-
-		magic = bert_decode_magic(decoder);
+		if ((result = bert_decode_magic(decoder,&magic)) != BERT_SUCCESS)
+		{
+			return result;
+		}
 	}
 
 	// decode primative data first
