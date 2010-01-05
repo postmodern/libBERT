@@ -143,6 +143,11 @@ inline int bert_decode_float(bert_decoder_t *decoder,bert_data_t **data)
 
 int bert_decode_bignum(bert_decoder_t *decoder,bert_data_t **data,size_t size)
 {
+	if (size > sizeof(uint64_t))
+	{
+		return BERT_ERRNO_BIGNUM;
+	}
+
 	uint8_t sign = bert_decode_uint8(decoder);
 
 	unsigned char bytes[size];

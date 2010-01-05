@@ -1,7 +1,8 @@
 #ifndef _BERT_ERRNO_H_
 #define _BERT_ERRNO_H_
 
-#define BERT_ERRNO_MAX		-8
+#define BERT_ERRNO_MAX		-9
+#define BERT_ERRNO_BIGNUM	-8
 #define BERT_ERRNO_MALLOC	-7
 #define BERT_ERRNO_WRITE	-6
 #define BERT_ERRNO_READ		-5

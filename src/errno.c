@@ -11,7 +11,8 @@ const char *bert_errors[] = {
 	"not enough data available",
 	"read error",
 	"write error",
-	"malloc failed"
+	"malloc failed",
+	"BERT large bignums are not fully supported yet"
 };
 
 const char * bert_strerror(int code)
