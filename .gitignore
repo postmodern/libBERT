@@ -11,6 +11,7 @@ test/CTestTestfile.cmake
 test/test_decode_small_int
 test/test_decode_big_int
 test/test_decode_small_bignum
+test/test_decode_large_bignum
 test/test_decode_float
 test/test_decode_atom
 test/test_decode_string

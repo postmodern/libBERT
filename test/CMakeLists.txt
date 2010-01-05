@@ -14,6 +14,10 @@ add_executable(test_decode_small_bignum test_decode_small_bignum.c)
 target_link_libraries(test_decode_small_bignum test BERT)
 add_test(decode_small_bignum test_decode_small_bignum)
 
+add_executable(test_decode_large_bignum test_decode_large_bignum.c)
+target_link_libraries(test_decode_large_bignum test BERT)
+add_test(decode_large_bignum test_decode_large_bignum)
+
 add_executable(test_decode_float test_decode_float.c)
 target_link_libraries(test_decode_float test BERT)
 add_test(decode_float test_decode_float)
