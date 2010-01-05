@@ -6,6 +6,10 @@ add_executable(test_list_append test_list_append.c)
 target_link_libraries(test_list_append test BERT)
 add_test(decode_list_append test_list_append)
 
+add_executable(test_list_get test_list_get.c)
+target_link_libraries(test_list_get test BERT)
+add_test(decode_list_get test_list_get)
+
 add_executable(test_decode_small_int test_decode_small_int.c)
 target_link_libraries(test_decode_small_int test BERT)
 add_test(decode_small_int test_decode_small_int)

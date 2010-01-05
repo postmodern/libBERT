@@ -9,6 +9,7 @@ bert_dump
 test/Testing
 test/CTestTestfile.cmake
 test/test_list_append
+test/test_list_get
 test/test_decode_small_int
 test/test_decode_big_int
 test/test_decode_small_bignum
