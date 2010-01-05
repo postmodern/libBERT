@@ -141,20 +141,25 @@ inline int bert_decode_float(bert_decoder_t *decoder,bert_data_t **data)
 
 int bert_decode_bignum(bert_decoder_t *decoder,bert_data_t **data,size_t size)
 {
-	BERT_DECODER_READ(decoder,1 + size);
+	BERT_DECODER_READ(decoder,1);
 
 	uint8_t sign = bert_decode_uint8(decoder);
-	const unsigned char *ptr = BERT_DECODER_PTR(decoder);
+
+	unsigned char bytes[size];
+	unsigned int result;
+
+	if ((result = bert_decode_bytes(bytes,decoder,size)) != BERT_SUCCESS)
+	{
+		return result;
+	}
 
 	unsigned int i;
 	uint64_t unsigned_integer = 0;
 
 	for (i=0;i<size;i++)
 	{
-		unsigned_integer |= (((uint64_t)ptr[i]) << (i * 8));
+		unsigned_integer |= (((uint64_t)bytes[i]) << (i * 8));
 	}
-
-	BERT_DECODER_STEP(decoder,size);
 
 	int64_t signed_integer = BERT_STRIP_SIGN((int64_t)unsigned_integer);
 
