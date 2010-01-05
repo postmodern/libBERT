@@ -3,8 +3,8 @@
 #include "test.h"
 #include <string.h>
 
-#define EXPECTED_ONE	"hello"
-#define EXPECTED_TWO	"world"
+#define EXPECTED_ONE	42
+#define EXPECTED_TWO	69
 
 bert_list_t *list;
 
@@ -24,12 +24,15 @@ void test_one()
 		test_fail("bert_list_append should set the first data");
 	}
 
-	if (data->type != bert_data_atom)
+	if (data->type != bert_data_int)
 	{
 		test_fail("bert_list_append appended the wrong first data");
 	}
 
-	test_strings(data->atom.name,EXPECTED_ONE,strlen(EXPECTED_ONE));
+	if (data->integer != EXPECTED_ONE)
+	{
+		test_fail("first element is %d, expected %d",data->integer,EXPECTED_ONE);
+	}
 }
 
 void test_two()
@@ -48,12 +51,15 @@ void test_two()
 		test_fail("bert_list_append should set the second data");
 	}
 
-	if (data->type != bert_data_atom)
+	if (data->type != bert_data_int)
 	{
 		test_fail("bert_list_append appended the wrong second data");
 	}
 
-	test_strings(data->atom.name,EXPECTED_TWO,strlen(EXPECTED_TWO));
+	if (data->integer != EXPECTED_TWO)
+	{
+		test_fail("first element is %d, expected %d",data->integer,EXPECTED_TWO);
+	}
 }
 
 int main()
@@ -65,14 +71,14 @@ int main()
 
 	bert_data_t *data;
 
-	if (!(data = bert_data_create_atom(EXPECTED_ONE)))
+	if (!(data = bert_data_create_int(EXPECTED_ONE)))
 	{
 		test_fail("malloc failed");
 	}
 
 	bert_list_append(list,data);
 
-	if (!(data = bert_data_create_atom(EXPECTED_TWO)))
+	if (!(data = bert_data_create_int(EXPECTED_TWO)))
 	{
 		test_fail("malloc failed");
 	}
