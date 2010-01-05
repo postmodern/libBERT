@@ -3,6 +3,8 @@
 
 #include <bert/data.h>
 
+#include <sys/types.h>
+
 struct bert_data;
 
 struct bert_list_node
@@ -29,6 +31,21 @@ extern bert_list_t * bert_list_create();
  * Appends the given bert_data_t to the list.
  */
 extern int bert_list_append(bert_list_t *list,struct bert_data *data);
+
+/*
+ * Retrieves the data at the given index within the list.
+ */
+extern struct bert_data * bert_list_get(const bert_list_t *list,unsigned int index);
+
+/*
+ * Sets the data at the given index within the list.
+ */
+extern int bert_list_set(bert_list_t *list,unsigned int index,struct bert_data *data);
+
+/*
+ * Returns the number of elements within the list.
+ */
+extern size_t bert_list_length(const bert_list_t *list);
 
 /*
  * Destroys a previously allocated bert_list_t.

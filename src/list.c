@@ -44,6 +44,61 @@ int bert_list_append(bert_list_t *list,struct bert_data *data)
 	return BERT_SUCCESS;
 }
 
+struct bert_data * bert_list_get(const bert_list_t *list,unsigned int index)
+{
+	bert_list_node_t *next_node = list->head;
+	unsigned int i = 0;
+
+	while (next_node && i < index)
+	{
+		next_node = next_node->next;
+		++i;
+	}
+
+	if (!next_node)
+	{
+		return NULL;
+	}
+
+	return next_node->data;
+}
+
+int bert_list_set(bert_list_t *list,unsigned int index,struct bert_data *data)
+{
+	bert_list_node_t *next_node = list->head;
+	unsigned int i = 0;
+
+	while (next_node && i < index)
+	{
+		next_node = next_node->next;
+		++i;
+	}
+
+	if (!next_node)
+	{
+		return 0;
+	}
+
+	bert_data_destroy(next_node->data);
+	next_node->data = data;
+
+	return 1;
+}
+
+size_t bert_list_length(const bert_list_t *list)
+{
+	bert_list_node_t *next_node = list->head;
+	size_t length = 0;
+
+	while (next_node)
+	{
+		next_node = next_node->next;
+		++length;
+	}
+
+	return length;
+}
+
 void bert_list_destroy(bert_list_t *list)
 {
 	if (!list)
