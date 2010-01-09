@@ -2,6 +2,8 @@
 #include <bert/magic.h>
 #include <bert/util.h>
 #include <bert/errno.h>
+
+#include "private/encoder.h"
 #include "private/encode.h"
 
 #include <malloc.h>

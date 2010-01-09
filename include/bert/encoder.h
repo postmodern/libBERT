@@ -8,31 +8,7 @@
 
 typedef ssize_t (*bert_write_func)(const unsigned char *data,size_t length,void *user_data);
 
-struct bert_encoder
-{
-	bert_mode mode;
-	unsigned int wrote_magic;
-	size_t total;
-
-	union
-	{
-		int stream;
-
-		struct
-		{
-			unsigned char *ptr;
-			size_t length;
-
-			unsigned int index;
-		} buffer;
-
-		struct
-		{
-			bert_write_func ptr;
-			void *data;
-		} callback;
-	};
-};
+struct bert_encoder;
 typedef struct bert_encoder bert_encoder_t;
 
 /*
