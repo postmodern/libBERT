@@ -15,6 +15,6 @@
 /*
  * Returns a string representation for the given error code.
  */
-const char * bert_strerror(int code);
+extern const char * bert_strerror(int code);
 
 #endif
