@@ -13,6 +13,8 @@ typedef ssize_t (*bert_read_func)(unsigned char *dest,size_t length,void *data);
 struct bert_decoder
 {
 	bert_mode mode;
+	size_t total;
+
 	union
 	{
 		int stream;
@@ -73,6 +75,11 @@ void bert_decoder_buffer(bert_decoder_t *decoder,const unsigned char *buffer,siz
  * Returns BERT_ERRNO_MALLOC when a call to malloc fails.
  */
 extern int bert_decoder_pull(bert_decoder_t *decoder,bert_data_t **data_ptr);
+
+/*
+ * Returns the number of bytes read so far.
+ */
+extern size_t bert_decoder_total(const bert_decoder_t *decoder);
 
 /*
  * Destroys a previously allocated bert_decoder_t.

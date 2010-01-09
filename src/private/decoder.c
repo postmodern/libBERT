@@ -79,6 +79,7 @@ fill_short_buffer:
 	}
 
 	decoder->short_length += length;
+	decoder->total += length;
 
 	if ((decoder->short_length - decoder->short_index) < size)
 	{
