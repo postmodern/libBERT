@@ -16,6 +16,36 @@
 							return BERT_ERRNO_INVALID; \
 					}
 
+struct bert_decoder
+{
+	bert_mode mode;
+	size_t total;
+
+	union
+	{
+		int stream;
+
+		struct
+		{
+			bert_read_func ptr;
+			void *data;
+		} callback;
+		
+		struct
+		{
+			const unsigned char *ptr;
+			size_t length;
+
+			unsigned int index;
+		} buffer;
+	};
+
+	size_t short_length;
+	unsigned int short_index;
+
+	unsigned char short_buffer[BERT_SHORT_BUFFER];
+};
+
 int bert_decoder_read(bert_decoder_t *decoder,size_t size);
 
 #endif
