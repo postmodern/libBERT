@@ -18,6 +18,7 @@ bert_encoder_t * bert_encoder_create()
 
 	new_encoder->mode = bert_mode_none;
 	new_encoder->wrote_magic = 0;
+	new_encoder->total = 0;
 
 	return new_encoder;
 }
@@ -94,6 +95,11 @@ int bert_encoder_push(bert_encoder_t *encoder,const bert_data_t *data)
 	}
 
 	return BERT_SUCCESS;
+}
+
+size_t bert_encoder_total(const bert_encoder_t *encoder)
+{
+	return encoder->total;
 }
 
 void bert_encoder_destroy(bert_encoder_t *encoder)

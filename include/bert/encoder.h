@@ -12,6 +12,7 @@ struct bert_encoder
 {
 	bert_mode mode;
 	unsigned int wrote_magic;
+	size_t total;
 
 	union
 	{
@@ -66,6 +67,11 @@ void bert_encoder_callback(bert_encoder_t *encoder,bert_write_func callback,void
  * Returns BERT_ERRNO_WRITE if a call to write() failed.
  */
 int bert_encoder_push(bert_encoder_t *encoder,const bert_data_t *data);
+
+/*
+ * Returns the number of bytes written so far.
+ */
+size_t bert_encoder_total(const bert_encoder_t *encoder);
 
 /*
  * Destroys a previously allocated bert_encoder_t.

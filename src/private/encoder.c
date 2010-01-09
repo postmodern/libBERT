@@ -33,5 +33,6 @@ int bert_encoder_write(bert_encoder_t *encoder,const unsigned char *data,size_t 
 			return BERT_ERRNO_INVALID;
 	}
 
+	encoder->total += length;
 	return BERT_SUCCESS;
 }
