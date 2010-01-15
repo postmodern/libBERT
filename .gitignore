@@ -40,7 +40,7 @@ test/test_encode_atom
 test/test_encode_string
 test/test_encode_bin
 test/test_encode_small_tuple
-test/test_encode_big_tuple
+test/test_encode_large_tuple
 test/test_encode_list
 test/test_encode_true
 test/test_encode_false
