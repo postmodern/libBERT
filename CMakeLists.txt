@@ -8,7 +8,7 @@ set(LIBRARY_VERSION "0.1.0")
 set(LIBRARY_SOVERSION "0")
 set(
 	BERT_FILES
-	src/errno.c src/util.c src/list.c src/dict.c
+	src/errno.c src/util.c src/tuple.c src/list.c src/dict.c
 	src/private/regex.c src/private/data.c src/data.c
 	src/private/decode.c src/private/decoder.c src/decoder.c
 	src/private/encode.c src/private/encoder.c src/encoder.c

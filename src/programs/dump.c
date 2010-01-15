@@ -65,7 +65,8 @@ void bert_print_binary(const bert_data_t *data)
 
 int bert_print_tuple(const bert_data_t *data)
 {
-	size_t length = data->tuple.length;
+	size_t length = data->tuple->length;
+	struct bert_data **elements = data->tuple->elements;
 
 	putchar('{');
 
@@ -75,7 +76,7 @@ int bert_print_tuple(const bert_data_t *data)
 
 		for (i=0;i<length-1;i++)
 		{
-			if (bert_print(data->tuple.elements[i]) == -1)
+			if (bert_print(elements[i]) == -1)
 			{
 				return -1;
 			}
@@ -86,7 +87,7 @@ int bert_print_tuple(const bert_data_t *data)
 
 	if (length)
 	{
-		if (bert_print(data->tuple.elements[length - 1]) == -1)
+		if (bert_print(elements[length - 1]) == -1)
 		{
 			return -1;
 		}

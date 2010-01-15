@@ -374,7 +374,7 @@ int bert_decode_dict(bert_decoder_t *decoder,bert_data_t **data)
 				return BERT_ERRNO_INVALID;
 			}
 
-			if (next_tuple->tuple.length != 2)
+			if (next_tuple->tuple->length != 2)
 			{
 				// the tuple must have two elements
 				bert_data_destroy(new_data);
@@ -382,12 +382,12 @@ int bert_decode_dict(bert_decoder_t *decoder,bert_data_t **data)
 				return BERT_ERRNO_INVALID;
 			}
 
-			key_data = next_tuple->tuple.elements[0];
-			value_data = next_tuple->tuple.elements[1];
+			key_data = next_tuple->tuple->elements[0];
+			value_data = next_tuple->tuple->elements[1];
 
 			// hackish but removes the need to do a deep copy
-			next_tuple->tuple.elements[0] = NULL;
-			next_tuple->tuple.elements[1] = NULL;
+			next_tuple->tuple->elements[0] = NULL;
+			next_tuple->tuple->elements[1] = NULL;
 
 			// append the key -> value pair to the dict
 			if (bert_dict_append(new_data->dict,key_data,value_data) == BERT_ERRNO_MALLOC)
@@ -453,12 +453,12 @@ int bert_decode_regex(bert_decoder_t *decoder,bert_data_t **data)
 				options |= bert_regex_optmask(next_opt->atom.name);
 				break;
 			case bert_data_tuple:
-				if (next_opt->tuple.length != 2)
+				if (next_opt->tuple->length != 2)
 				{
 					goto cleanup;
 				}
 
-				tuple_args = next_opt->tuple.elements;
+				tuple_args = next_opt->tuple->elements;
 
 				if (tuple_args[0]->type != bert_data_atom)
 				{
@@ -680,13 +680,13 @@ int bert_decode_tuple(bert_decoder_t *decoder,bert_data_t **data,size_t size)
 			return bert_decode_complex(decoder,data);
 		}
 
-		new_data->tuple.elements[0] = first;
+		new_data->tuple->elements[0] = first;
 
 		unsigned int i;
 
 		for (i=1;i<size;i++)
 		{
-			if ((result = bert_decoder_pull(decoder,new_data->tuple.elements+i)) != 1)
+			if ((result = bert_decoder_pull(decoder,new_data->tuple->elements+i)) != 1)
 			{
 				bert_data_destroy(new_data);
 				return result;

@@ -221,11 +221,10 @@ bert_data_t * bert_data_create_string(const char *text)
 
 bert_data_t * bert_data_create_tuple(bert_tuple_size_t length)
 {
-	bert_data_t **new_elements;
+	bert_tuple_t *new_tuple;
 
-	if (!(new_elements = calloc(length,sizeof(bert_data_t *))))
+	if (!(new_tuple = bert_tuple_create(length)))
 	{
-		// malloc failed
 		goto cleanup;
 	}
 
@@ -234,16 +233,15 @@ bert_data_t * bert_data_create_tuple(bert_tuple_size_t length)
 	if (!(new_data = bert_data_create()))
 	{
 		// malloc failed
-		goto cleanup_elements;
+		goto cleanup_tuple;
 	}
 
 	new_data->type = bert_data_tuple;
-	new_data->tuple.length = length;
-	new_data->tuple.elements = new_elements;
+	new_data->tuple = new_tuple;
 	return new_data;
 
-cleanup_elements:
-	free(new_elements);
+cleanup_tuple:
+	bert_tuple_destroy(new_tuple);
 cleanup:
 	// error
 	return NULL;
@@ -426,11 +424,11 @@ size_t bert_data_sizeof(const bert_data_t *data)
 			count += (4 + data->bin.length);
 			break;
 		case bert_data_tuple:
-			if (data->tuple.length <= 0xff)
+			if (data->tuple->length <= 0xff)
 			{
 				++count;
 			}
-			else if (data->tuple.length <= 0xffffffff)
+			else if (data->tuple->length <= 0xffffffff)
 			{
 				count += 4;
 			}
@@ -439,9 +437,9 @@ size_t bert_data_sizeof(const bert_data_t *data)
 				break;
 			}
 
-			for (i=0;i<data->tuple.length;i++)
+			for (i=0;i<data->tuple->length;i++)
 			{
-				count += bert_data_sizeof(data->tuple.elements[i]);
+				count += bert_data_sizeof(data->tuple->elements[i]);
 			}
 			break;
 		case bert_data_list:
@@ -574,9 +572,6 @@ int bert_data_strequal(const bert_data_t *data,const char *str)
 
 void bert_data_destroy(bert_data_t *data)
 {
-	unsigned int i;
-	size_t length;
-
 	if (!data)
 	{
 		return;
@@ -596,15 +591,7 @@ void bert_data_destroy(bert_data_t *data)
 			free(data->string.text);
 			break;
 		case bert_data_tuple:
-			length = data->tuple.length;
-
-			if (data->tuple.elements)
-			{
-				for (i=0;i<length;i++)
-				{
-					bert_data_destroy(data->tuple.elements[i]);
-				}
-			}
+			bert_tuple_destroy(data->tuple);
 			break;
 		case bert_data_list:
 			bert_list_destroy(data->list);

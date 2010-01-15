@@ -58,12 +58,12 @@ int main()
 		test_fail("malloc failed");
 	}
 
-	if (!(data->tuple.elements[0] = bert_data_create_int(1)))
+	if (!(data->tuple->elements[0] = bert_data_create_int(1)))
 	{
 		test_fail("malloc failed");
 	}
 
-	if (!(data->tuple.elements[1] = bert_data_create_int(2)))
+	if (!(data->tuple->elements[1] = bert_data_create_int(2)))
 	{
 		test_fail("malloc failed");
 	}

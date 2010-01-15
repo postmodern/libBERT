@@ -60,7 +60,7 @@ int main()
 
 	for (i=0;i<EXPECTED_LENGTH;i++)
 	{
-		if (!(data->tuple.elements[i] = bert_data_create_int(i)))
+		if (!(data->tuple->elements[i] = bert_data_create_int(i)))
 		{
 			test_fail("malloc failed");
 		}

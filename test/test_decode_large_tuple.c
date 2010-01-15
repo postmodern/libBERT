@@ -26,23 +26,23 @@ void test_read()
 
 	size_t expected_length = 65536;
 
-	if (data->tuple.length != expected_length)
+	if (data->tuple->length != expected_length)
 	{
-		test_fail("bert_decoder_next decoded %u elements, expected %u",data->tuple.length,expected_length);
+		test_fail("bert_decoder_next decoded %u elements, expected %u",data->tuple->length,expected_length);
 	}
 
 	unsigned int i;
 
 	for (i=0;i<expected_length;i++)
 	{
-		if (data->tuple.elements[i]->type != bert_data_int)
+		if (data->tuple->elements[i]->type != bert_data_int)
 		{
 			test_fail("bert_decode_next decoded a non-integer element at tuple index %u",i);
 		}
 
-		if (data->tuple.elements[i]->integer != i+1)
+		if (data->tuple->elements[i]->integer != i+1)
 		{
-			test_fail("bert_decoder_next decoded the integer %u at tuple index %u, expected %u",data->tuple.elements[i]->integer,i,i+1);
+			test_fail("bert_decoder_next decoded the integer %u at tuple index %u, expected %u",data->tuple->elements[i]->integer,i,i+1);
 		}
 	}
 }

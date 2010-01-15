@@ -2,6 +2,7 @@
 #define _BERT_DATA_H_
 
 #include <bert/types.h>
+#include <bert/tuple.h>
 #include <bert/list.h>
 #include <bert/dict.h>
 #include <bert/regex.h>
@@ -63,12 +64,7 @@ struct bert_data
 			unsigned char *data;
 		} bin;
 
-		struct
-		{
-			bert_tuple_size_t length;
-			bert_data_t **elements;
-		} tuple;
-
+		struct bert_tuple *tuple;
 		struct bert_list *list;
 		struct bert_dict *dict;
 
