@@ -251,31 +251,49 @@ cleanup:
 
 bert_data_t * bert_data_create_list()
 {
-	bert_data_t *new_data;
+	bert_list_t *new_list;
 
-	if (!(new_data = bert_data_create()))
+	if (!(new_list = bert_list_create()))
 	{
 		// malloc failed
 		return NULL;
 	}
 
+	bert_data_t *new_data;
+
+	if (!(new_data = bert_data_create()))
+	{
+		// malloc failed
+		bert_list_destroy(new_list);
+		return NULL;
+	}
+
 	new_data->type = bert_data_list;
-	new_data->list = bert_list_create();
+	new_data->list = new_list;
 	return new_data;
 }
 
 bert_data_t * bert_data_create_dict()
 {
-	bert_data_t *new_data;
+	bert_dict_t *new_dict;
 
-	if (!(new_data = bert_data_create()))
+	if (!(new_dict = bert_dict_create()))
 	{
 		// malloc failed
 		return NULL;
 	}
 
+	bert_data_t *new_data;
+
+	if (!(new_data = bert_data_create()))
+	{
+		// malloc failed
+		bert_dict_destroy(new_dict);
+		return NULL;
+	}
+
 	new_data->type = bert_data_dict;
-	new_data->dict = bert_dict_create();
+	new_data->dict = new_dict;
 	return new_data;
 }
 
