@@ -2,7 +2,7 @@
 #include "private/data.h"
 #include "private/regex.h"
 
-#include <malloc.h>
+#include <stdlib.h>
 #include <string.h>
 
 bert_list_node_t * bert_list_node_create(bert_data_t *data)

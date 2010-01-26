@@ -1,7 +1,7 @@
 #include <bert/list.h>
 #include <bert/errno.h>
 
-#include <malloc.h>
+#include <stdlib.h>
 
 bert_list_t * bert_list_create()
 {

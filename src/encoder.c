@@ -6,7 +6,7 @@
 #include "private/encoder.h"
 #include "private/encode.h"
 
-#include <malloc.h>
+#include <stdlib.h>
 
 bert_encoder_t * bert_encoder_create()
 {

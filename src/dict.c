@@ -1,7 +1,7 @@
 #include <bert/dict.h>
 #include <bert/errno.h>
 
-#include <malloc.h>
+#include <stdlib.h>
 
 bert_dict_t * bert_dict_create()
 {

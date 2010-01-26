@@ -4,7 +4,7 @@
 #include <bert/magic.h>
 #include <bert/errno.h>
 #include <time.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "private/decoder.h"

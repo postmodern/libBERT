@@ -1,7 +1,7 @@
 #include <bert/tuple.h>
 #include <bert/data.h>
 
-#include <malloc.h>
+#include <stdlib.h>
 
 bert_tuple_t * bert_tuple_create(bert_tuple_size_t length)
 {
