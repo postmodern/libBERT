@@ -16,25 +16,25 @@ typedef struct bert_decoder bert_decoder_t;
 /*
  * Allocates a new bert_decoder_t and sets the mode to bert_mode_none.
  */
-bert_decoder_t * bert_decoder_create();
+extern bert_decoder_t * bert_decoder_create();
 
 /*
  * Sets the mode of the given decoder to bert_mode_stream, and uses the given
  * file descriptor as the stream to read BERT encoded data from.
  */
-void bert_decoder_stream(bert_decoder_t *decoder,int fd);
+extern void bert_decoder_stream(bert_decoder_t *decoder,int fd);
 
 /*
  * Sets the mode of the given decoder to bert_mode_callback, and uses the
  * given bert_read_func as the callback to read BERT encoded data from.
  */
-void bert_decoder_callback(bert_decoder_t *decoder,bert_read_func callback,void *data);
+extern void bert_decoder_callback(bert_decoder_t *decoder,bert_read_func callback,void *data);
 
 /*
  * Sets the mode of the given decoder to bert_mode_buffer, and uses the
  * given buffer as the BERT encoded data to decode.
  */
-void bert_decoder_buffer(bert_decoder_t *decoder,const unsigned char *buffer,size_t length);
+extern void bert_decoder_buffer(bert_decoder_t *decoder,const unsigned char *buffer,size_t length);
 
 /*
  * Reads BERT encoded data from the decoder and attempts to decode it.
