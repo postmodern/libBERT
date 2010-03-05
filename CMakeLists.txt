@@ -50,6 +50,7 @@ if(UNIX)
 	configure_file(libBERT.pc.cmake ${BERT_SOURCE_DIR}/libBERT.pc)
 endif(UNIX)
 
+install(FILES include/bert.h DESTINATION ${INCLUDE_INSTALL_DIR})
 install(DIRECTORY include/bert DESTINATION ${INCLUDE_INSTALL_DIR})
 install(
 	TARGETS BERT
