@@ -37,6 +37,53 @@ Benefits of libBERT
   BERT data.
 * Distributed under the MIT "as-is" license.
 
+Examples
+--------
+
+Decode a given buffer:
+
+    #include <stdio.h>
+    #include <bert.h>
+
+    int main(int argc,const char *argv[])
+    {
+        char *buffer;
+        size_t buffer_length;
+
+        // allocate and fill the buffer
+
+        bert_decoder_t *decoder = bert_decoder_create();
+        bert_decoder_buffer(decoder, buffer, buffer_length);
+
+        bert_data_t *data;
+        int result;
+
+        // decode BERT data
+        if ((result = bert_decoder_pull(decoder, &data)) != 1)
+        {
+            fprintf(stderr,"bert error: %s\n", bert_strerror(result));
+
+            bert_decoder_destroy(decoder);
+            return -1;
+	}
+
+        if (data->type != bert_data_tuple)
+        {
+            fprintf(stderr,"BERT data was not a tuple\n");
+
+	    bert_data_destroy(data);
+	    bert_decoder_destroy(decoder);
+	    return -1;
+        }
+
+        printf("BERT tuple decoded with %d elements\n",data->tuple->length);
+
+        bert_data_destroy(data);
+        bert_decoder_destroy(decoder);
+        return 0;
+    }
+
+
 Build Dependencies
 ------------
 
