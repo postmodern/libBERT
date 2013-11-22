@@ -36,6 +36,7 @@ void bert_encoder_buffer(bert_encoder_t *encoder,unsigned char *buffer,size_t le
 	encoder->mode = bert_mode_buffer;
 	encoder->buffer.ptr = buffer;
 	encoder->buffer.length = length;
+	encoder->buffer.index = 0;
 }
 
 void bert_encoder_callback(bert_encoder_t *encoder,bert_write_func callback,void *data)
