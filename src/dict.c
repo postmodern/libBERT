@@ -57,7 +57,7 @@ void bert_dict_destroy(bert_dict_t *dict)
 		bert_data_destroy(last_node->key);
 		bert_data_destroy(last_node->value);
 
-		free(next_node);
+		free(last_node);
 	}
 
 	free(dict);
