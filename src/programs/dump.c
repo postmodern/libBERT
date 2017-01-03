@@ -211,9 +211,9 @@ int bert_print(const bert_data_t *data)
 			break;
 		case bert_data_int:
 #if (__WORDISZE == 64 || defined(__GLIBC_HAVE_LONG_LONG))
-			printf("%ld",data->integer);
-#else
 			printf("%lld",data->integer);
+#else
+			printf("%ld",data->integer);
 #endif
 			break;
 		case bert_data_float:
