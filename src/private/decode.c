@@ -234,7 +234,7 @@ int bert_decode_string(bert_decoder_t *decoder,bert_data_t **data)
 	int result;
 	bert_string_size_t size;
 
-	if ((result = bert_decode_uint32(decoder,&size)) != BERT_SUCCESS)
+	if ((result = bert_decode_uint16(decoder,&size)) != BERT_SUCCESS)
 	{
 		return result;
 	}
