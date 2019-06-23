@@ -7,8 +7,8 @@
 
 #define MIN(a,b)	((a) < (b) ? (a) : (b))
 
-#define BERT_MAX_INT	((1 << 27) - 1)
-#define BERT_MIN_INT	(-(1 << 27))
+#define BERT_MAX_INT	((1 << 31) - 1)
+#define BERT_MIN_INT	(-(1 << 31))
 
 #define BERT_STRIP_SIGN(i)	((i) < 0 ? -(i) : (i))
 
